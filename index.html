@@ -2,19 +2,13 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
 <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/LsDj0HsL/99985605cd73e222fa4ad523333b0706.jpg">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <title>EPhone</title>
-<link rel="manifest" href="manifest.json">
-<meta name="apple-mobile-web-app-title" content="EPhone">
-<meta name="mobile-web-app-capable" content="yes">
-
-
 
 
 
@@ -42,7 +36,7 @@ body {
 /* 2. 让 #phone-screen 成为新的“根”容器，撑满整个浏览器窗口 */
 #phone-screen {
     width: 100%;
-    height: 100vh; /* <--- 修改这里！ */
+    height: 100%;
     position: relative;
     overflow: hidden;
     display: flex;
@@ -114,7 +108,7 @@ body {
         .form-button { width: 100%; padding: 15px; background-color: var(--accent-color); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; }
         .form-button-secondary { background-color: #f0f0f0; color: var(--text-primary); border: 1px solid var(--border-color); }
         #wallpaper-screen .form-container { align-items: center; }
-        #wallpaper-preview { width: 180px; height: 320px; border: 2px dashed var(--border-color); background-color: #f0f2f5; margin-bottom: 20px; background-size: cover; background-position: center; border-radius: 10px; display: flex; justify-content: center; align-items: center; color: var(--text-secondary); }
+        #wallpaper-preview { width: 180px; height: 320px; border: 2px dashed var(--border-color); background-color: var(--secondary-bg); margin-bottom: 20px; background-size: cover; background-position: center; border-radius: 10px; display: flex; justify-content: center; align-items: center; color: var(--text-secondary); }
         #wallpaper-upload-input { display: none; }
 /* 修改后的 #world-book-list 样式 */
 #world-book-list {
@@ -1680,8 +1674,9 @@ body {
     align-items: center;
     padding: 12px 15px;
     cursor: pointer;
-    background-color: #f7f7f7;
+    background-color: var(--secondary-bg); /* <-- 修改这里，使用变量 */
 }
+
 
 .chat-group-header .arrow {
     font-size: 14px;
@@ -2176,26 +2171,19 @@ body {
 }
 /* ▲▲▲ 新CSS粘贴结束 ▲▲▲ */
 
-/* === 【新增】统一设置页面的背景色 (已修正) === */
-#api-settings-screen,
-#font-settings-screen,
-#wallpaper-screen,
-#memories-view,
-#contact-picker-screen,
-#member-management-screen,
-#world-book-editor-screen {  
-    background-color: var(--secondary-bg);
-}
-
-/* 确保这些页面的内容区能正确滚动 */
+/* 确保这些页面的内容区能正确滚动，同时背景透明以显示父级颜色 */
 #api-settings-screen .form-container,
 #font-settings-screen .form-container,
 #wallpaper-screen .form-container {
     padding-top: 100px;
     margin-top: -80px;
+    /* 不再需要背景色，让父元素决定 */
+}
+#font-settings-screen,
+#wallpaper-screen {
+    /* 将背景色设置为变量，这样夜间模式才能覆盖它 */
     background-color: var(--secondary-bg);
 }
-
 /* 壁纸设置页面的预览区比较特殊，需要额外调整 */
 #wallpaper-screen .form-container {
     align-items: center; /* 保持内容居中 */
@@ -3213,273 +3201,13 @@ body {
 }
 /* ▲▲▲ 新样式粘贴结束 ▲▲▲ */
 
-/* ▼▼▼ 把这一整块全新的CSS，粘贴到 <style> 的末尾 ▼▼▼ */
-
-/* === 【全新】夜间模式样式 === */
-
-/* 核心：当 #phone-screen 拥有 .dark-mode 类时，激活以下所有样式 */
-
-/* 1. 全局背景和文本颜色 */
-#phone-screen.dark-mode {
-  --status-bar-text-color: #ffffff;
-    --secondary-bg: #1c1c1e; /* 主要卡片背景色 */
-    --border-color: #38383a;  /* 边框颜色 */
-    --text-primary: #ffffff;   /* 主要文字颜色 */
-    --text-secondary: #8d8d92; /* 次要文字/图标颜色 */
-
-}
-
-/* 2. 各个页面的主背景色 */
-#phone-screen.dark-mode #chat-list-screen,
-#phone-screen.dark-mode #qzone-screen .qzone-content,
-#phone-screen.dark-mode #memories-view {
-    background-color: #000000;
-}
-
-/* 3. 聊天列表 */
-#phone-screen.dark-mode #chat-list {
-    background-color: #000000;
-}
-#phone-screen.dark-mode .chat-list-item {
-    border-bottom-color: rgba(255, 255, 255, 0.15);
-}
-#phone-screen.dark-mode .chat-group-header {
-    background-color: #1c1c1e; /* 从白色改为深灰色 */
-    border-bottom: 1px solid #38383a; /* 给它一个细微的下边框 */
-}
-#phone-screen.dark-mode .chat-list-item .name,
-#phone-screen.dark-mode .chat-group-header .group-name {
-    color: #ffffff;
-}
-#phone-screen.dark-mode .chat-list-item:hover {
-    background-color: #1c1c1e;
-}
-
-/* 4. 顶部/底部导航栏 */
-#phone-screen.dark-mode .header,
-#phone-screen.dark-mode .qzone-header {
-    background-color: rgba(25, 25, 25, 0.9);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-bottom-color: rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-}
-#phone-screen.dark-mode .header .back-btn,
-#phone-screen.dark-mode .header .action-btn,
-#phone-screen.dark-mode .header .save-btn {
-    color: #ffffff;
-}
-#phone-screen.dark-mode #chat-list-bottom-nav {
-    background-color: rgba(25, 25, 25, 0.9);
-    border-top-color: rgba(255, 255, 255, 0.15);
-}
-#phone-screen.dark-mode .nav-item.active {
-    color: #ffffff;
-}
-
-/* 5. 聊天界面 */
-#phone-screen.dark-mode #chat-input-area {
-    background-color: rgba(5, 5, 5, 0.8);
-    border-top: none;
-}
-#phone-screen.dark-mode #chat-input {
-    background-color: #3e3e42;
-    color: #ffffff;
-}
-#phone-screen.dark-mode #chat-input::placeholder {
-    color: #8d8d92;
-}
-#phone-screen.dark-mode .chat-action-icon-btn {
-    color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: none;
-}
-#phone-screen.dark-mode #send-btn {
+/* ▼▼▼ 【请求7】主屏幕预设保存按钮主题色适配 (请将这块代码也粘贴到 <style> 的末尾) ▼▼▼ */
+#save-home-preset-btn {
     background-color: var(--accent-color);
+    color: white;
 }
-
-/* 6. 动态 (QZone) 界面 */
-#phone-screen.dark-mode .qzone-actions-bar,
-#phone-screen.dark-mode .qzone-post-item {
-    background-color: #1c1c1e;
-    border: 1px solid #333;
-    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
-}
-#phone-screen.dark-mode .action-item:not(:last-child)::after {
-    background-color: #333;
-}
-#phone-screen.dark-mode .post-footer,
-#phone-screen.dark-mode .post-likes-section {
-    border-top-color: #333;
-}
-#phone-screen.dark-mode .post-likes-section {
-    background-color: rgba(0, 123, 255, 0.1);
-}
-#phone-screen.dark-mode .comment-input {
-    background-color: #333;
-    color: #ffffff;
-}
-#phone-screen.dark-mode .comment-input::placeholder {
-    color: #8d8d92;
-}
-#phone-screen.dark-mode .post-actions-btn:hover {
-    background-color: #333;
-}
-#phone-screen.dark-mode .at-mention-popup {
-    background-color: #1c1c1e;
-    border-color: #333;
-}
-#phone-screen.dark-mode .at-mention-item {
-    border-bottom-color: #333;
-}
-#phone-screen.dark-mode .at-mention-item:hover {
-    background-color: #333;
-}
-
-/* 7. 回忆录界面 */
-#phone-screen.dark-mode .memory-card {
-    background-color: #1c1c1e;
-    border-left-color: #e6a753;
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.08);
-}
-#phone-screen.dark-mode .memory-card .header {
-    background-color: #2c2c2e;
-    border-bottom-color: #38383a;
-    margin: -15px -15px 8px -15px;
-    padding: 12px 15px;
-    border-radius: 12px 12px 0 0;
-}
-#phone-screen.dark-mode .memory-card .header .date,
-#phone-screen.dark-mode .memory-card .header .author,
-#phone-screen.dark-mode .memory-card .content {
-    color: #e0e0e0;
-}
-
-/* 8. 其他设置和列表页 */
-#phone-screen.dark-mode #api-settings-screen,
-#phone-screen.dark-mode #font-settings-screen,
-#phone-screen.dark-mode #wallpaper-screen,
-#phone-screen.dark-mode #contact-picker-screen,
-#phone-screen.dark-mode #member-management-screen,
-#phone-screen.dark-mode #world-book-editor-screen,
-#phone-screen.dark-mode #world-book-list,
-#phone-screen.dark-mode .list-item:hover,
-#phone-screen.dark-mode .list-container,
-#phone-screen.dark-mode .form-container {
-    background-color: #000000;
-}
-#phone-screen.dark-mode .form-group input, 
-#phone-screen.dark-mode .form-group select, 
-#phone-screen.dark-mode .form-group textarea {
-    background-color: #1c1c1e;
-    color: #ffffff;
-    border-color: #38383a;
-}
-#phone-screen.dark-mode .form-button-secondary {
-    background-color: #333;
-    border-color: #555;
-    color: #fff;
-}
-#phone-screen.dark-mode #font-preview {
-    background-color: #1c1c1e;
-    border-color: #38383a;
-}
-#phone-screen.dark-mode #font-preview p {
-    color: #ffffff;
-}
-
 /* ▲▲▲ 粘贴结束 ▲▲▲ */
 
-/* ▼▼▼ 把这一整块【全新的修正CSS】，粘贴到 <style> 的末尾 ▼▼▼ */
-
-/* === 【全新】夜间模式视觉修正 === */
-
-/* 1. 修正动态卡片内的文字颜色 */
-#phone-screen.dark-mode .qzone-post-item .post-nickname,
-#phone-screen.dark-mode .qzone-post-item .post-content {
-    color: #f0f0f0; /* 从深灰色改为明亮的浅灰色 */
-}
-
-/* 2. 修正收藏卡片内的文字颜色 */
-#phone-screen.dark-mode .favorite-item-card .fav-card-header .name,
-#phone-screen.dark-mode .favorite-item-card .fav-card-content {
-    color: #f0f0f0; /* 同样改为浅灰色 */
-}
-#phone-screen.dark-mode .favorite-item-card .fav-card-header .source {
-    color: #8d8d92; /* 来源文字用次要灰色 */
-}
-
-/* 3. 修正收藏页的搜索栏背景和输入框样式 */
-#phone-screen.dark-mode .search-bar-container {
-    background-color: #000000; /* 容器背景变为纯黑 */
-}
-#phone-screen.dark-mode #favorites-search-input {
-    background-color: #1c1c1e; /* 输入框背景变为深灰 */
-    border-color: #38383a;     /* 边框颜色变暗 */
-    color: #ffffff;            /* 输入文字变为白色 */
-}
-#phone-screen.dark-mode #favorites-search-input::placeholder {
-    color: #8d8d92; /* 占位符文字颜色变暗 */
-}
-
-/* ▲▲▲ 修正CSS粘贴结束 ▲▲▲ */
-
-/* ▼▼▼ 把这一整块全新的CSS，粘贴到 <style> 的末尾 ▼▼▼ */
-
-/* === 【全新】iOS风格的Toggle Switch开关样式 === */
-
-/* 1. 开关的容器 */
-.toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 51px;
-    height: 31px;
-}
-
-/* 2. 隐藏掉原始的 checkbox 输入框 */
-.toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-/* 3. 开关的背景（那个椭圆） */
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #e9e9eb; /* 关闭时的背景色 */
-    transition: .4s;
-    border-radius: 34px;
-}
-
-/* 4. 开关上的圆点 */
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 27px;
-    width: 27px;
-    left: 2px;
-    bottom: 2px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-
-/* 5. 【核心】当 checkbox 被选中时（即开启状态） */
-input:checked + .slider {
-    background-color: #34c759; /* 开启时的背景色（iOS绿色）*/
-}
-
-input:checked + .slider:before {
-    transform: translateX(20px); /* 让圆点滑动到右边 */
-}
-
-/* ▲▲▲ 新CSS粘贴结束 ▲▲▲ */
 
 /* ▼▼▼ 【全新】引用回复功能样式 ▼▼▼ */
 
@@ -3563,12 +3291,12 @@ input:checked + .slider:before {
 
 /* === 字体预览框样式 (修正后) === */
 
-/* 默认（日间模式）的样式 */
+/* 将它修改为 ▼▼▼ */
 #font-preview {
     padding: 20px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    background-color: #f9f9f9; /* 日间模式的浅灰色背景 */
+    background-color: #f0f2f5; /* 统一为更浅的灰色，然后让夜间模式CSS去覆盖 */
     transition: background-color 0.3s, border-color 0.3s;
 }
 
@@ -5044,77 +4772,6 @@ input:checked + .slider:before {
 }
 /* ▲▲▲ 新CSS粘贴结束 ▲▲▲ */
 
-/* ▼▼▼ 【全新】主屏幕滑动功能样式 ▼▼▼ */
-
-/* 修正 #home-screen 的flex布局，以适应新的滑动容器 */
-#home-screen {
-    justify-content: flex-start; /* 内容从顶部开始，而不是居中 */
-    padding-bottom: 20px; /* 给小圆点留出空间 */
-}
-
-/* 滑动轨道容器 */
-.home-screen-slider {
-    display: flex;
-    height: 100%;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* 每一页 */
-.home-screen-page {
-    flex: 0 0 100%; /* 每页固定100%屏宽 */
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 20px 0;
-    box-sizing: border-box;
-}
-
-/* 分页小圆点的容器 */
-.pagination-dots {
-    position: absolute;
-    bottom: 25px; /* 定位在屏幕底部 */
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 8px;
-}
-
-/* 单个小圆点的样式 */
-.dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.4);
-    transition: background-color 0.3s;
-}
-
-/* 当前激活页面的小圆点样式 */
-.dot.active {
-    background-color: rgba(255, 255, 255, 0.9);
-}
-
-/* ▲▲▲ 新样式结束 ▲▲▲ */
-
-/* ▼▼▼ 【全新】第二页主屏幕图标网格样式 ▼▼▼ */
-.app-grid-standard {
-    display: grid; /* 使用现代的网格布局，而不是flex */
-    grid-template-columns: repeat(4, 1fr); /* 创建一个4列的网格，每列宽度平分 */
-    gap: 20px; /* 图标之间的上下左右间距 */
-    padding: 20px 20px; /* 在网格的上下和左右各留出一点边距 */
-    margin-top: 0; /* 覆盖掉原有的 margin-top: auto，让图标从顶部开始排列 */
-    width: 75%;
-    box-sizing: border-box; /* 确保 padding 不会撑破容器 */
-}
-
-/* 覆盖掉 .app-grid 中可能影响布局的旧样式 */
-.app-grid-standard {
-    align-items: flex-start; /* 从顶部对齐 */
-    justify-content: flex-start; /* 从左侧对齐 */
-}
-/* ▲▲▲ 新样式粘贴结束 ▲▲▲ */
-
 /* ▼▼▼ 【全新】“查角色手机”功能相关样式 ▼▼▼ */
 
 /* 角色选择列表项 */
@@ -5159,11 +4816,11 @@ input:checked + .slider:before {
 .character-data-item {
     padding: 12px 15px;
     border-bottom: 1px solid #f0f0f0; /* 边框颜色变浅 */
-    background-color: #ffffff; /* 增加白色背景 */
     margin: 8px 10px; /* 增加外边距，形成卡片感 */
     border-radius: 8px; /* 增加圆角 */
     box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* 增加非常淡的阴影 */
     transition: transform 0.2s, box-shadow 0.2s; /* 增加悬浮动画 */
+    background-color: var(--secondary-bg);
 }
 
 .character-data-item:hover {
@@ -5200,16 +4857,17 @@ input:checked + .slider:before {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f0f2f5;
-    padding-top: 50px; /* ★★★ 在顶部留出50px空间，把手机框推到主顶栏下方 ★★★ */
+    /* background-color 已被删除 */
+    padding-top: 50px; 
     box-sizing: border-box; /* 确保内边距计算正确 */
 }
+
 
 /* 2. 手机边框样式 (保持不变) */
 .character-phone-frame {
     width: 95%;
     height: 98%;
-    background-color: #1a1a1a;
+    background-color: #111;
     border-radius: 30px;
     padding: 10px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
@@ -5218,12 +4876,14 @@ input:checked + .slider:before {
     display: flex;
 }
 
-/* 3. 【核心修改1】缩小App图标的背景方格 */
+/* ▼▼▼ 用下面这块【已修复】的代码替换旧的 #character-app-grid .app-icon .icon-bg 规则 ▼▼▼ */
 #character-app-grid .app-icon .icon-bg {
-    width: 55px;  /* ★★★ 从 65px 显著缩小到 50px ★★★ */
-    height: 55px; /* ★★★ 高度同步缩小 ★★★ */
-    border-radius: 12px; /* 圆角也可以稍微小一点 */
+    width: 65px;  /* 恢复原来的尺寸 */
+    height: 65px; /* 恢复原来的尺寸 */
+    border-radius: 18px; /* 恢复原来的圆角 */
+    background-color: #fff5f7; /* 设置为你想要的淡粉色背景 */
 }
+/* ▲▲▲ 替换结束 ▲▲▲ */
 
 /* 3. 【核心修正2】缩小APP图标内的SVG */
 #character-app-grid .app-icon .icon-bg svg {
@@ -5234,10 +4894,10 @@ input:checked + .slider:before {
 /* 4. 其余样式保持不变 */
 .character-phone-inner-screen {
     flex-grow: 1;
-    background-color: #fff;
     border-radius: 20px;
     overflow: hidden;
     position: relative;
+    background-color: var(--secondary-bg) !important; /* 使用变量 */
 }
 .character-phone-notch {
     position: absolute;
@@ -5246,7 +4906,6 @@ input:checked + .slider:before {
     transform: translateX(-50%);
     width: 100px;
     height: 20px;
-    background-color: #1a1a1a;
     border-radius: 0 0 10px 10px;
     z-index: 10;
 }
@@ -5271,7 +4930,6 @@ input:checked + .slider:before {
     flex-shrink: 0;
     padding: 8px 12px;
     padding-top: 35px;
-    background-color: rgba(247, 247, 247, 0.7);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     font-size: 16px;
@@ -5281,25 +4939,31 @@ input:checked + .slider:before {
     color: var(--accent-color);
 }
 #character-chat-history-messages {
-    background-image: none !important;      /* ★★★ 移除背景图片 ★★★ */
-    background-color: #F5F5F5
- !important; /* ★★★ 设置为白色背景 ★★★ */
+     background-color: var(--secondary-bg) !important; /* 使用变量 */      /* ★★★ 移除背景图片 ★★★ */
 }
 /* ▲▲▲ 样式修正结束 ▲▲▲ */
 
-/* ▼▼▼ 【V5修正版】角色手机APP图标布局修正 ▼▼▼ */
+/* ▼▼▼ 【V5最终修复版】角色手机APP图标布局修正 ▼▼▼ */
 #character-app-grid.app-grid-standard {
-    grid-template-columns: repeat(3, 1fr); /* 核心：从4列改为3列 */
-    width: 100%; /* 稍微加宽一点，让3个图标的间距更和谐 */
-    padding-top: 70px; /* 稍微增加顶部距离，避免和刘海太近 */
+    display: grid; /* ★★★ 核心修复：告诉浏览器这是一个网格布局！ ★★★ */
+    grid-template-columns: repeat(3, 1fr); /* 保持三列的设置 */
+    gap: 20px 15px;  /* ★★★ 新增：为图标之间添加合适的 垂直 和 水平 间距 ★★★ */
+    padding: 20px; /* ★★★ 修改：统一设置内边距，让布局更规整 ★★★ */
+    padding-top: 50px; /* 覆盖一下顶部内边距，离刘海远一点 */
+    box-sizing: border-box; /* 确保内边距不会撑破容器 */
+    width: 100%;
+    
+    /* 覆盖掉旧flex布局的影响 */
+    flex-direction: initial; 
+    align-items: initial;
 }
 /* ▲▲▲ 样式修正结束 ▲▲▲ */
+
 
 /* ▼▼▼ 【全新】角色手机微信风格聊天气泡样式 ▼▼▼ */
 
 /* 1. 聊天记录界面的背景色 */
 #character-chat-history-messages {
-    background-color: #ededed; /* 微信经典的灰色背景 */
     /* 移除之前版本可能存在的背景图片 */
     background-image: none;
 }
@@ -5357,10 +5021,6 @@ input:checked + .slider:before {
 .character-chat-bubble-container.received {
     align-self: flex-start; /* 整体靠左 */
 }
-.character-chat-bubble-container.received .character-chat-bubble {
-    background-color: #ffffff; /* 白色 */
-    color: #000;
-}
 /* 对方气泡的小尾巴 */
 .character-chat-bubble-container.received .character-chat-bubble::before {
     content: "";
@@ -5385,7 +5045,6 @@ input:checked + .slider:before {
     content: none !important;
 }
 /* ▲▲▲ 样式添加结束 ▲▲▲ */
-
 /* ▼▼▼ 【全新】角色手机新增APP页面样式 ▼▼▼ */
 
 /* 1. 相册页面的网格布局 */
@@ -6043,7 +5702,6 @@ input:checked + .slider:before {
 }
 
 .font-preset-slot {
-    background-color: #f9f9f9;
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 15px;
@@ -6053,7 +5711,6 @@ input:checked + .slider:before {
 }
 
 #phone-screen.dark-mode .font-preset-slot {
-    background-color: #1c1c1e;
     border-color: #38383a;
 }
 
@@ -6067,7 +5724,6 @@ input:checked + .slider:before {
 .font-preview-text {
     font-size: 22px;
     padding: 10px;
-    background-color: #fff;
     border-radius: 8px;
     text-align: center;
     min-height: 30px;
@@ -6137,6 +5793,23 @@ input:checked + .slider:before {
 }
 /* ▼▼▼ 【全新】BGM搜索结果弹窗样式 ▼▼▼ */
 
+/* ▼▼▼ 在这里添加下面这段新样式 ▼▼▼ */
+#music-search-results-modal .modal-content {
+    z-index: 220; /* 这个值比播放列表的 210 要高 */
+}
+/* ▲▲▲ 添加结束 ▲▲▲ */
+
+.search-result-item {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+/* ▼▼▼ 【全新】BGM搜索结果弹窗样式 ▼▼▼ */
+
 .search-result-item {
     display: flex;
     flex-direction: column;
@@ -6176,8 +5849,832 @@ input:checked + .slider:before {
     margin-left: 8px;
 }
 /* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 【全新】BGM搜索源选择弹窗样式 ▼▼▼ */
+#music-source-selector-modal .modal-body label {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#music-source-selector-modal .modal-body input[type="radio"] {
+    width: 18px;
+    height: 18px;
+}
+/* ▲▲▲ 新增CSS结束 ▲▲▲ */
+/* ▼▼▼ 用这整块【布局微调版】样式，替换掉上一次的旧样式 ▼▼▼ */
 
-/* ▲▲▲ 样式添加结束 ▲▲▲ */
+/* 1. 闪烁动画 (保持不变) */
+@keyframes flash-char {
+    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 3px rgba(255,192,203, 0); }
+    50% { opacity: 0.8; transform: scale(1.08); box-shadow: 0 0 12px rgba(255,192,203, 0.9); }
+}
+@keyframes flash-user {
+    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 3px rgba(173,216,230, 0); }
+    50% { opacity: 0.8; transform: scale(1.08); box-shadow: 0 0 12px rgba(173,216,230, 0.9); }
+}
+
+/* 2. 【核心修改】调整头像容器的下边距 */
+#music-avatars-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 8px; /* <<<< 从 25px 减小到 8px，让它和下面的文字更近 */
+    position: relative;
+    z-index: 5;
+}
+
+/* 3. 单个头像样式 (保持不变) */
+#music-avatars-container img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* 4. 分开闪烁动画 (保持不变) */
+#music-avatars-container.flashing #music-char-avatar {
+    animation: flash-char 2.2s infinite ease-in-out;
+}
+#music-avatars-container.flashing #music-user-avatar {
+    animation: flash-user 2.2s infinite ease-in-out 0.3s;
+}
+
+/* 5. 心电图样式 (保持不变) */
+#heartbeat-line {
+    width: 80px;
+    height: 30px;
+    overflow: visible;
+    margin: 0 -15px;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+#music-avatars-container.flashing #heartbeat-line {
+    opacity: 1;
+}
+.heartbeat-path {
+    stroke: #FFC0CB;
+    stroke-width: 1.5;
+    fill: none;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: draw-line 2.2s infinite linear;
+    filter: drop-shadow(0 0 3px #FFC0CB); 
+}
+.heartbeat-heart {
+    display: none;
+}
+@keyframes draw-line {
+    to { stroke-dashoffset: 0; }
+}
+
+/* 6. 【核心修改】调整“一起听了”文字的样式和边距 */
+#music-time-counter {
+    margin-bottom: 20px; /* <<<< 现在由它来负责和下面的封面拉开距离 */
+    font-size: 11px;
+    color: #666; /* 颜色稍微加深一点 */
+    text-align: center;
+}
+
+/* 7. 唱片旋转动画 (保持不变) */
+@keyframes spin-record {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 8. 封面和歌词的切换容器 (保持不变) */
+#music-display-area {
+    width: 192px;
+    height: 192px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.3s ease;
+}
+#music-display-area:active {
+    transform: scale(0.98);
+}
+
+/* 9. 歌曲封面 (保持不变) */
+#music-album-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    display: block;
+}
+#music-album-cover.rotating {
+    animation: spin-record 10s linear infinite;
+}
+#music-album-cover.paused {
+    animation-play-state: paused;
+}
+
+/* 10. 其他样式 (保持不变) */
+#music-lyrics-container { display: none; }
+#music-display-area.show-lyrics #music-album-cover { display: none; }
+#music-display-area.show-lyrics #music-lyrics-container { display: block; }
+#music-player-song-title { margin-bottom: 2px; }
+#music-player-artist { margin-bottom: 10px; }
+.music-player-window { min-height: 480px; }
+
+/* ▲▲▲ 布局微调版样式粘贴结束 ▲▲▲ */
+/* ▼▼▼ 【最终修复版】提升搜索相关弹窗的层级 ▼▼▼ */
+#music-source-selector-modal,
+#custom-modal-overlay {
+    z-index: 250 !important; /* 这个值必须高于播放列表(210)，!important确保它拥有最高优先级 */
+}
+/* ▲▲▲ 粘贴结束 ▲▲▲ */
+/* ▼▼▼ 步骤 1：把这一整块全新的CSS，粘贴到 <style> 的末尾 ▼▼▼ */
+
+/* --- 1. 隐藏旧的主屏幕元素 --- */
+/* 我们不再需要旧的锁屏时钟和图标网格了，新的布局会完全取代它们 */
+#home-screen #clock-container,
+#home-screen .app-grid {
+    display: none !important;
+}
+
+/* --- 2. 【核心】重新定义主屏幕布局 --- */
+/* 
+   这将把你的主屏幕从一个简单的垂直列表，变成一个撑满全屏、
+   使用Flexbox布局的强大容器，为新的“桌面式”布局打下基础。
+*/
+#home-screen {
+    /* 使用一个漂亮的线性渐变作为默认背景，当然你可以在“外观设置”里随时换掉它 */
+    background: linear-gradient(135deg, #6DD5FA, #2980B9);
+    background-size: cover;
+    background-position: center;
+    
+    /* 适配iPhone刘海和底部安全区 */
+    padding-top: calc(20px + env(safe-area-inset-top));
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    
+    /* 使用Flexbox让内容区和Dock栏上下分离 */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    align-items: center;
+    height: 100%; /* 确保它撑满屏幕 */
+}
+
+/* --- 3. 中间主要内容区 (个人资料卡 + 小组件 + App图标) --- */
+#main-content-area {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* 卡片和下方图标的间距 */
+    align-items: center;
+    margin-top: 20px; /* 距离屏幕顶部一点距离 */
+}
+
+/* --- 4. 个人资料卡片 (这是视觉核心) --- */
+
+/* 4a. 卡片外层容器：这是所有内部元素定位的“锚点” */
+#profile-widget {
+    position: relative; /* 关键：让内部的头像和伪元素可以相对于它进行绝对定位 */
+    width: 100%;
+    max-width: 380px;
+    flex-shrink: 0;
+}
+
+/* 4b. 背景头图：只给顶部设置圆角 */
+#profile-banner-img {
+    display: block; 
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 24px 24px 0 0; /* 只给顶部设置圆角 */
+    position: relative;
+    z-index: 1; /* 层级1：在最下方 */
+}
+
+/* 4c. 头像容器：精确定位，使其中心线与头图底部对齐 */
+#profile-widget .profile-avatar-container {
+    position: absolute;
+    top: 80px; /* 从顶部向下偏移，让它一半在头图上，一半在下面 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: white; /* 白色背景板，让头像更突出 */
+    padding: 4px; /* 白色边框的效果 */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 3; /* 层级3：最高层，压住一切 */
+}
+
+#profile-avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* 4d. 白色信息卡片：使用负外边距实现无缝拼接 */
+#profile-widget .profile-info {
+  /* 【修改后】白色到透明的渐变背景，并加上一层柔和的阴影 */
+background: linear-gradient(to bottom, rgba(255, 255, 255, 0.85) 20%, rgba(255, 255, 255, 0));
+box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 24px;
+    
+    /* 核心魔法：使用负外边距，将卡片向上移动，与头图和头像重叠 */
+    margin-top: -24px; 
+    
+    /* 同时，为上移的头像留出精确的空间，避免文字压住头像 */
+    padding-top: 54px; /* 头像半径(40px) + 额外间距(14px) */
+    
+    min-height: 120px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+    text-align: center;
+    color: #1c1c1e;
+    position: relative;
+    z-index: 2; /* 层级2：在头图之上，但在头像之下 */
+}
+
+/* 4e. 个人资料内部的文字样式 */
+#profile-username { font-size: 18px; font-weight: 600; margin: 0 0 2px 0; }
+#profile-sub-username { font-size: 13px; color: #8a8a8a; margin: 0 0 10px 0; }
+#profile-bio { font-size: 14px; margin: 0 0 12px 0; color: #333; }
+#profile-location {
+    font-size: 12px; color: #8a8a8a; margin: 0 auto; display: inline-flex;
+    align-items: center; gap: 4px; background-color: rgba(0,0,0,0.05);
+    padding: 3px 9px; border-radius: 10px;
+}
+
+/* --- 5. 桌面式布局 (小组件 + App图标) --- */
+#desktop-layout {
+    display: grid; /* 使用Grid布局，轻松实现两列 */
+    grid-template-columns: 1fr 1.1fr; /* 左窄右宽的两列 */
+    gap: 20px;
+    width: 100%;
+    align-items: start;
+}
+#desktop-widget-column {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; /* 【核心修改】将 space-around 改为 space-between */
+    align-items: start;
+    width: 100%;
+}
+
+/* 右侧App图标容器 */
+#desktop-app-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 两列图标 */
+    gap: 25px;
+    align-content: start;
+}
+.desktop-app-icon {
+    display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; text-align: center;
+}
+.icon-bg-desktop {
+    width: 55px; height: 55px; border-radius: 14px; background-color: #f0f2f5; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s ease; overflow: hidden;
+}
+.icon-bg-desktop img { width: 100%; height: 100%; object-fit: cover; border-radius: 0; }
+.desktop-app-icon .label { color: #333; font-size: 13px; font-weight: 500; }
+.desktop-app-icon:active .icon-bg-desktop { transform: scale(0.9); }
+
+
+/* --- 6. 底部 Dock 栏 --- */
+#desktop-dock {
+    background-color: rgba(255, 255, 255, 0.15); /* 玻璃拟态背景 */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    width: fit-content; /* 宽度自适应内容 */
+    flex-shrink: 0;
+}
+
+/* --- 7. 【核心功能】为可编辑元素添加视觉反馈 --- */
+.editable-text, .editable-image {
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+/* 鼠标悬停时，显示一个半透明的虚线外框，并轻微变暗，提示用户这里可以点 */
+.editable-text:hover, .editable-image:hover {
+    outline: 2px dashed rgba(0, 0, 0, 0.4);
+    opacity: 0.85;
+    border-radius: 4px; /* 让外框也有一点圆角 */
+}
+
+/* --- 8. 【锁屏兼容】让锁屏和主屏幕可以堆叠 --- */
+#lock-screen, #home-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+#lock-screen {
+    z-index: 999; /* 确保锁屏在最上层 */
+}
+/* ▼▼▼ 这是新增的桌面小组件样式 ▼▼▼ */
+
+/* 单个小组件的总容器 */
+.custom-widget-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px; /* 各个元素之间的垂直间距 */
+}
+
+.widget-bubble {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    padding: 8px 12px;
+    border-radius: 20px; /* 【核心修改】增加圆角，实现胶囊感 */
+    font-size: 13px;
+    font-weight: 500;
+    /* 【核心修改】移除 min-width，让宽度自适应内容 */
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+
+/* 用伪元素给气泡加一个小尾巴，指向下面的圆形图片 */
+.widget-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -6px; /* 尾巴在气泡下方 */
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px 6px 0;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.9) transparent transparent transparent;
+}
+
+.widget-circle-uploader {
+    width: 65px; /* 从 80px 缩小 */
+    height: 65px; /* 从 80px 缩小 */
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    padding: 3px;
+    background-color: transparent; /* 【核心修改】将背景色改为透明 */ 
+    box-sizing: border-box;
+}
+
+
+/* 这是替换后的第二块 */
+.widget-circle-uploader img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%; /* 【核心】让图片也变成圆形，完美适应内边距 */
+}
+
+
+/* 下方的透明文字区域 */
+.widget-subtext {
+    background: transparent;
+    border: none;
+    color:  #333;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5); /* 加一点文字阴影更清晰 */
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* ▲▲▲ 新增样式结束 ▲▲▲ */
+/* ▼▼▼ 【V3最终美化版】主屏幕美化预设功能样式 ▼▼▼ */
+.preset-manager-container {
+    width: 100%;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+#phone-screen.dark-mode .preset-manager-container {
+    border-top-color: #3a3a3c;
+}
+.preset-manager-container .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.preset-manager-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 【核心】2x2 网格布局 */
+    gap: 12px; /* 按钮间距 */
+    width: 100%;
+}
+.preset-btn-capsule {
+    padding: 12px 15px; /* 增加垂直内边距，让按钮更高更可爱 */
+    border: none;
+    border-radius: 25px; /* 更大的圆角，胶囊感更强 */
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.08); /* 增加一点立体阴影 */
+}
+.preset-btn-capsule:active {
+    transform: scale(0.96);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.preset-btn-capsule:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+    background-color: #e9ecef !important; /* 禁用时统一用灰色 */
+    color: #adb5bd !important;
+    border-color: #dee2e6 !important;
+}
+#phone-screen.dark-mode .preset-btn-capsule:disabled {
+    background-color: #3a3a3c !important;
+    color: #545458 !important;
+}
+.preset-btn-apply {
+    background-color: var(--accent-color); /* 应用按钮使用主题色 */
+    color: white;
+    grid-column: 1 / -1; /* 【核心】让应用按钮独占一行，更突出 */
+}
+.preset-btn-save {
+    background-color: #4cd964; /* 保存用绿色，代表创建 */
+    color: white;
+}
+.preset-btn-secondary {
+    background-color: #f8f9fa;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+#phone-screen.dark-mode .preset-btn-secondary {
+    background-color: #3a3a3c;
+    border-color: #545458;
+}
+.preset-btn-delete {
+    background-color: #ffdde5;
+    color: #ff3b30;
+}
+#phone-screen.dark-mode .preset-btn-delete {
+    background-color: #5c2b2b;
+    color: #ff8a80;
+}
+/* ▲▲▲ 样式粘贴结束 ▲▲▲ */
+
+
+
+/* ▼▼▼ 【V6最终修复版】夜间模式终极适配 (已修复所有页面适配问题) ▼▼▼ */
+
+/* 核心：当 #phone-screen 拥有 .dark-mode 类时，激活以下所有样式 */
+
+/* 1. 全局重新定义颜色变量 */
+#phone-screen.dark-mode {
+  --secondary-bg: #1c1c1e;
+  --border-color: #38383a;
+  --text-primary: #ffffff;
+  --text-secondary: #8e8e93;
+  --status-bar-text-color: #ffffff;
+}
+
+/* 2. 【基础】为所有屏幕和主要容器设置基础深色背景 */
+#phone-screen.dark-mode,
+#phone-screen.dark-mode .screen,
+#phone-screen.dark-mode #chat-list,
+#phone-screen.dark-mode #world-book-list,
+#phone-screen.dark-mode .list-container,
+#phone-screen.dark-mode .form-container,
+#phone-screen.dark-mode #chat-messages {
+    background-color: #000000 !important;
+}
+
+/* 3. 【主屏幕】专属样式 (从被删除的代码中恢复并整合) */
+#phone-screen.dark-mode #home-screen {
+    background: #111827; /* 深蓝色背景 */
+}
+#phone-screen.dark-mode #desktop-dock {
+    background-color: rgba(55, 65, 81, 0.5); /* Dock栏深灰色玻璃效果 */
+}
+#phone-screen.dark-mode .desktop-app-icon .label,
+#phone-screen.dark-mode .widget-subtext {
+    color: #e5e7eb; /* 桌面文字变为浅灰色 */
+    text-shadow: 0 1px 2px rgba(0,0,0,0.7); /* 加强阴影 */
+}
+#phone-screen.dark-mode #profile-widget .profile-info {
+    background: linear-gradient(to bottom, rgba(28, 28, 30, 0.85) 20%, rgba(28, 28, 30, 0)); /* 信息卡片深灰色渐变 */
+    color: #f9fafb;
+}
+#phone-screen.dark-mode #profile-username,
+#phone-screen.dark-mode #profile-bio,
+#phone-screen.dark-mode #profile-location span {
+    color: #f9fafb; /* 信息卡片主文字白色 */
+}
+#phone-screen.dark-mode #profile-sub-username,
+#phone-screen.dark-mode #profile-location {
+    color: #9ca3af; /* 信息卡片次要文字灰色 */
+}
+#phone-screen.dark-mode #profile-location {
+    background-color: rgba(255,255,255,0.1); /* 地点背景变亮 */
+}
+#phone-screen.dark-mode .widget-bubble {
+    background-color: rgba(55, 65, 81, 0.9); /* 小组件气泡深灰色 */
+    color: #e5e7eb; /* 小组件文字浅灰色 */
+}
+#phone-screen.dark-mode .widget-bubble::after {
+    border-top-color: rgba(55, 65, 81, 0.9); /* 小尾巴颜色同步 */
+}
+
+/* 4. 【修复】适配所有页面的头部Header */
+#phone-screen.dark-mode .header,
+#phone-screen.dark-mode .qzone-header {
+    background-color: rgba(28, 28, 30, 0.85) !important;
+    border-bottom-color: var(--border-color) !important;
+    color: var(--text-primary) !important; 
+}
+
+/* 5. 【修复】适配所有通用组件 (弹窗、输入框等) */
+#phone-screen.dark-mode #chat-input-area,
+#phone-screen.dark-mode #chat-list-bottom-nav {
+    background-color: rgba(28, 28, 30, 0.85);
+    border-top-color: var(--border-color);
+}
+#phone-screen.dark-mode #chat-input {
+    background-color: var(--secondary-bg);
+    color: var(--text-primary);
+}
+#phone-screen.dark-mode .modal-content,
+#phone-screen.dark-mode #custom-modal {
+    background-color: #2c2c2e;
+}
+#phone-screen.dark-mode .modal-header, 
+#phone-screen.dark-mode .modal-footer,
+#phone-screen.dark-mode .custom-modal-footer {
+    border-color: var(--border-color);
+}
+#phone-screen.dark-mode .form-group input,
+#phone-screen.dark-mode .form-group select,
+#phone-screen.dark-mode .form-group textarea {
+    background-color: var(--secondary-bg);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+#phone-screen.dark-mode .list-item,
+#phone-screen.dark-mode .chat-list-item-swipe-container:not(:last-child) {
+    border-bottom-color: var(--border-color);
+}
+#phone-screen.dark-mode .list-item:hover,
+#phone-screen.dark-mode .chat-list-item:hover {
+    background-color: #2c2c2e;
+}
+
+/* 6. 【解决】字体预设 & 外观设置页面深度适配 */
+#phone-screen.dark-mode #font-settings-screen,
+#phone-screen.dark-mode #wallpaper-screen {
+    background-color: #000000;
+}
+#phone-screen.dark-mode .font-preset-slot,
+#phone-screen.dark-mode #font-preview,
+#phone-screen.dark-mode #wallpaper-preview {
+    background-color: var(--secondary-bg);
+    border-color: var(--border-color);
+}
+#phone-screen.dark-mode .preset-btn.secondary {
+    background-color: #3e3e42;
+    border-color: #545458;
+}
+
+/* 7. 【解决】“查手机”功能所有内部页面深度适配 */
+#phone-screen.dark-mode #character-phone-container {
+    background-color: #000000;
+}
+#phone-screen.dark-mode .character-phone-frame {
+    background-color: #111;
+}
+#phone-screen.dark-mode .character-phone-inner-screen,
+#phone-screen.dark-mode .character-phone-page {
+    background-color: #000000;
+}
+#phone-screen.dark-mode .character-phone-header {
+    background-color: rgba(28, 28, 30, 0.85) !important;
+    border-bottom: 1px solid #38383a !important;
+}
+#phone-screen.dark-mode #character-app-grid .label {
+    color: #e5e7eb;
+}
+#phone-screen.dark-mode .character-chat-list .chat-list-item:hover {
+    background-color: #1c1c1e;
+}
+#phone-screen.dark-mode #character-chat-history-messages {
+    background-color: #0e0e0e !important;
+}
+#phone-screen.dark-mode .character-chat-bubble.received {
+    background-color: #2c2c2e;
+}
+#phone-screen.dark-mode .character-data-item,
+#phone-screen.dark-mode .character-bank-transaction,
+#phone-screen.dark-mode .character-cart-item,
+#phone-screen.dark-mode .character-browser-item {
+    background-color: #1c1c1e;
+    border-color: #38383a;
+}
+#phone-screen.dark-mode .character-data-item .title,
+#phone-screen.dark-mode .character-data-item .content,
+#phone-screen.dark-mode .cart-item-price {
+    color: var(--text-primary);
+}
+#phone-screen.dark-mode .character-bank-balance-card {
+    background: linear-gradient(135deg, #3a3a3c, #1c1c1e);
+}
+#phone-screen.dark-mode #character-diary-list .character-data-item {
+    background-color: #1a1510;
+    border-color: #4a443b;
+    border-left-color: #8c7d6b;
+}
+#phone-screen.dark-mode #character-select-item .name {
+    color: #80CBC4 !important; /* 柔和的青色 */
+}
+
+/* 8. 【新增】修复聊天列表分组标题的背景色 */
+#phone-screen.dark-mode .chat-group-header {
+    background-color: #1c1c1e;
+}
+#phone-screen.dark-mode .chat-list-item-content.pinned {
+    background-color: #3a3a3c;
+}
+
+/* ▲▲▲ CSS 代码粘贴结束 ▲▲▲ */
+/* ▼▼▼ 步骤 1.1：将这整块【终极修复版】CSS粘贴到 <style> 的末尾 ▼▼▼ */
+
+/* 核心修复：使用 !important 强制提升优先级，覆盖掉所有捣乱的内联样式 */
+
+/* 1. 为所有需要适配的屏幕强制设置纯黑背景 */
+#phone-screen.dark-mode #wallpaper-screen,
+#phone-screen.dark-mode #font-settings-screen,
+#phone-screen.dark-mode #api-settings-screen,
+#phone-screen.dark-mode #character-selection-screen,
+#phone-screen.dark-mode #world-book-screen,
+#phone-screen.dark-mode #world-book-editor-screen,
+#phone-screen.dark-mode .form-container, /* 确保所有表单容器也适配 */
+#phone-screen.dark-mode .list-container { /* 确保所有列表容器也适配 */
+    background-color: #000000 !important;
+}
+
+/* 2. 为“查手机”内部的所有页面强制设置纯黑背景 */
+#phone-screen.dark-mode .character-phone-inner-screen,
+#phone-screen.dark-mode .character-phone-page {
+    background-color: #000000 !important;
+}
+#phone-screen.dark-mode #character-chat-history-messages {
+    background-color: #0e0e0e !important; /* 聊天记录用深灰色 */
+}
+
+/* 3. 修复页面内部组件的背景色 */
+#phone-screen.dark-mode #font-preview,
+#phone-screen.dark-mode #wallpaper-preview {
+    background-color: #1c1c1e !important;
+    border-color: #38383a !important;
+}
+
+/* 4. 修复“查手机”里对方的聊天气泡颜色 */
+#phone-screen.dark-mode .character-chat-bubble.received {
+    background-color: #2c2c2e !important;
+}
+/* ▼▼▼ 【最终修复版】提升所有弹窗的层级 ▼▼▼ */
+#music-source-selector-modal,
+#music-search-results-modal {
+    z-index: 250 !important; /* 这个值高于播放列表(210)，!important确保它拥有最高优先级 */
+}
+/* ▲▲▲ 粘贴结束 ▲▲▲ */
+/* ▼▼▼ 把这一整块全新的CSS，粘贴到 <style> 的末尾 ▼▼▼ */
+
+/* 【全新美化版】通用操作菜单按钮 */
+#preset-actions-modal .custom-modal-footer button {
+    width: 100%;
+    border: none; /* 移除边框 */
+    border-radius: 12px; /* 【核心】设置圆角 */
+    padding: 14px;
+    font-size: 16px; /* 字体稍微缩小一点，更精致 */
+    font-weight: 500;
+    margin-bottom: 8px; /* 按钮之间的垂直间距 */
+    background-color: #f0f0f0; /* 统一的浅灰色背景 */
+    color: var(--text-primary);
+    transition: background-color 0.2s, transform 0.1s; /* 添加动画 */
+}
+
+/* 鼠标悬停和点击效果 */
+#preset-actions-modal .custom-modal-footer button:hover {
+    background-color: #e0e0e0;
+}
+#preset-actions-modal .custom-modal-footer button:active {
+    transform: scale(0.98); /* 点击时轻微缩小 */
+}
+
+/* 单独美化“删除”按钮 */
+#preset-actions-modal .custom-modal-footer button.btn-danger {
+    background-color: #ffe5e5;
+    color: #ff3b30;
+}
+#preset-actions-modal .custom-modal-footer button.btn-danger:hover {
+    background-color: #ffcccc;
+}
+
+/* 美化“取消”按钮 */
+#preset-actions-modal .custom-modal-footer button:last-child {
+    background-color: #e9ecef;
+    margin-top: 4px; /* 和上面的按钮稍微拉开一点距离 */
+}
+#preset-actions-modal .custom-modal-footer button:last-child:hover {
+    background-color: #dcdfe3;
+}
+
+/* 移除按钮之间的分割线 */
+#preset-actions-modal .custom-modal-footer button {
+    border-bottom: none !important;
+}
+
+/* ▲▲▲ 粘贴结束 ▲▲▲ */
+/* ▼▼▼ 把这一整块全新的CSS，粘贴到 <style> 的末尾 ▼▼▼ */
+
+/* 【核心修正】提升通用操作菜单的层级，确保它能覆盖播放列表 */
+#preset-actions-modal {
+    z-index: 220; /* 这个值比播放列表(210)更高，就不会被挡住了 */
+}
+
+/* ▲▲▲ 粘贴结束 ▲▲▲ */
+/* ▼▼▼ 【全新】这是为“查手机”内容添加的删除按钮样式 ▼▼▼ */
+.character-data-item, .character-cart-item, .character-browser-item, .character-bank-transaction, .character-trajectory-item, .character-app-usage-item, .character-album-item {
+    position: relative; /* 让删除按钮可以相对于它定位 */
+    padding-right: 35px; /* 在右边给删除按钮留出位置 */
+}
+
+.item-delete-btn {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    background-color: #f0f0f0;
+    color: #888;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 24px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.item-delete-btn:hover {
+    background-color: #ff3b30;
+    color: white;
+}
+/* ▲▲▲ 新增样式结束 ▲▲▲ */
+/* ▼▼▼ 【全新】角色手机微信消息删除按钮样式 ▼▼▼ */
+.character-chat-bubble-container {
+    position: relative; /* 让删除按钮可以相对于它定位 */
+}
+
+.message-delete-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #555;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 22px;
+    text-align: center;
+    opacity: 0; /* 默认隐藏 */
+    transition: all 0.2s ease;
+}
+
+.character-chat-bubble-container:hover .message-delete-btn {
+    opacity: 1; /* 鼠标悬停时显示 */
+}
+
+.message-delete-btn:hover {
+    background-color: #ff3b30;
+    color: white;
+}
+
+/* 根据消息是左是右，调整删除按钮的位置 */
+.character-chat-bubble-container.sent .message-delete-btn {
+    left: -28px;
+}
+.character-chat-bubble-container.received .message-delete-btn {
+    right: -28px;
+}
+/* ▲▲▲ 新增样式结束 ▲▲▲ */
+
+/* ▲▲▲ CSS 粘贴结束 ▲▲▲ */
 
     </style>
     <!-- ▼▼▼ 在这里添加下面这行 ▼▼▼ -->
@@ -6214,85 +6711,77 @@ input:checked + .slider:before {
 <div id="lock-screen-background-blur" style="display: none;"></div>
 <!-- ▲▲▲ 粘贴结束 ▲▲▲ -->
             
-            <div id="home-screen" class="screen active">
-<!-- ▼▼▼ 【全新】滑动容器与分页结构 ▼▼▼ -->
-<div class="home-screen-slider">
-    <!-- 第一页 -->
-    <div class="home-screen-page">
-        <div id="clock-container">
-            <div id="main-time">12:00</div>
-            <div id="main-date">星期一, 1月1日</div>
-        </div>
-        <div class="app-grid">
-            <!-- 第一行：放2个图标 -->
-            <div class="app-row">
-                <div class="app-icon" onclick="showScreen('world-book-screen')">
-                    <div class="icon-bg">
-                        <img id="icon-img-world-book" src="https://i.postimg.cc/HWf1JKzn/IMG-6435.jpg" alt="世界书">
-                    </div>
-                    <span class="label">世界书</span>
-                </div>
-                <div class="app-icon" onclick="showScreen('chat-list-screen')">
-                    <div class="icon-bg">
-                        <img id="icon-img-qq" src="https://i.postimg.cc/MTC3Tkw8/IMG-6436.jpg" alt="QQ">
-                    </div>
-                    <span class="label">QQ</span>
-                </div>
-            </div>
-            <!-- 第二行：放3个图标 -->
-            <div class="app-row">
-                <div class="app-icon" onclick="showScreen('api-settings-screen')">
-                    <div class="icon-bg">
-                        <img id="icon-img-api-settings" src="https://i.postimg.cc/MK8rJ8t7/IMG-6438.jpg" alt="API设置">
-                    </div>
-                    <span class="label">API设置</span>
-                </div>
-                <div class="app-icon" onclick="showScreen('wallpaper-screen')">
-                    <div class="icon-bg">
-                        <img id="icon-img-wallpaper" src="https://i.postimg.cc/T1j03pQr/IMG-6440.jpg" alt="外观设置">
-                    </div>
-                    <span class="label">外观设置</span>
-                </div>
-                <div class="app-icon" onclick="showScreen('font-settings-screen')">
-                    <div class="icon-bg">
-                        <img id="icon-img-font" src="https://i.postimg.cc/pXxk1JXk/IMG-6442.jpg" alt="字体">
-                    </div>
-                    <span class="label">字体</span>
-                </div>
-            </div>
-        </div>
-    </div>
+<!-- ▼▼▼ 用下面这【一整块】全新的代码，替换掉你旧的 <div id="home-screen"...>...</div> ▼▼▼ -->
 
-<!-- ▼▼▼ 这是修改后的新结构 ▼▼▼ -->
-<div class="home-screen-page">
-    <!-- 1. 在这里添加了新类名 app-grid-standard -->
-    <!-- 2. 并且删除了里面的 app-row -->
-    <div class="app-grid app-grid-standard">
-        <div class="app-icon" data-app-id="check-phone" onclick="openCharacterSelectionScreen()">
-            <div class="icon-bg">
-                <img id="icon-img-check-phone" src="https://i.postimg.cc/RVwpwr0r/IMG-8348.jpg" alt="查手机">
+<div id="home-screen" class="screen active">
+    
+    <!-- 我们不再需要滑动容器了，直接放主要内容区 -->
+    <div id="main-content-area">
+        <div id="profile-widget">
+            <img id="profile-banner-img" src="https://i.postimg.cc/k495F4W5/profile-banner.jpg" class="editable-image">
+            <div class="profile-avatar-container">
+                <img id="profile-avatar-img" src="https://i.postimg.cc/qRqpK5kP/anime-avatar.jpg" class="editable-image">
             </div>
-            <span class="label">查手机</span>
+            <div class="profile-info">
+                <p id="profile-username" class="editable-text">你的昵称</p>
+                <p id="profile-sub-username" class="editable-text">@your_id</p>
+                <p id="profile-bio" class="editable-text">点击这里编辑你的个性签名</p>
+<!-- ▼▼▼ 步骤 2.1：用这行新代码替换旧的地点 <p> 标签 ▼▼▼ -->
+<p id="profile-location" class="editable-text" data-placeholder="点击编辑地点"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg><span>点击编辑地点</span></p>
+<!-- ▲▲▲ HTML 替换结束 ▲▲▲ -->
+            </div>
         </div>
-        
-        <!-- 你未来添加的新APP图标，也直接放在这里就行 -->
-        <!-- 
-        <div class="app-icon">
-            ...
+        <div id="desktop-layout">
+            <div id="desktop-widget-column">
+    <!-- ▼▼▼ 这是全新的小组件结构 ▼▼▼ -->
+    <div class="custom-widget-container">
+        <div id="widget-bubble-1" class="widget-bubble editable-text" contenteditable="true">点击编辑文字</div>
+        <div class="widget-circle-uploader">
+            <img id="widget-image-1" src="https://i.postimg.cc/qRqpK5kP/anime-avatar.jpg" class="editable-image" title="点击更换图片">
         </div>
-        -->
+        <div id="widget-subtext-1" class="widget-subtext editable-text" contenteditable="true">点击编辑文字</div>
     </div>
+    <div class="custom-widget-container">
+        <div id="widget-bubble-2" class="widget-bubble editable-text" contenteditable="true">点击编辑文字</div>
+        <div class="widget-circle-uploader">
+            <img id="widget-image-2" src="https://i.postimg.cc/k495F4W5/profile-banner.jpg" class="editable-image" title="点击更换图片">
+        </div>
+        <div id="widget-subtext-2" class="widget-subtext editable-text" contenteditable="true">点击编辑文字</div>
+    </div>
+    <!-- ▲▲▲ 替换结束 ▲▲▲ -->
+</div>
+
+            <!-- 核心修改：我们把所有4个App图标都放在这个容器里 -->
+            <div id="desktop-app-container">
+                <div class="desktop-app-icon" onclick="showScreen('chat-list-screen')"><div class="icon-bg-desktop"><img id="icon-img-qq" src="https://i.postimg.cc/MTC3Tkw8/IMG-6436.jpg" alt="QQ"></div><span class="label">QQ</span></div>
+                <div class="desktop-app-icon" onclick="showScreen('world-book-screen')"><div class="icon-bg-desktop"><img id="icon-img-world-book" src="https://i.postimg.cc/HWf1JKzn/IMG-6435.jpg" alt="世界书"></div><span class="label">世界书</span></div>
+<!-- ▼▼▼ 核心修改：移除 onclick，添加 id ▼▼▼ -->
+<div id="check-phone-btn" class="desktop-app-icon">
+    <div class="icon-bg-desktop"><img id="icon-img-check-phone" src="https://i.postimg.cc/RVwpwr0r/IMG-8348.jpg" alt="查手机"></div>
+    <span class="label">查手机</span>
 </div>
 <!-- ▲▲▲ 修改结束 ▲▲▲ -->
+                <div class="desktop-app-icon" onclick="showScreen('wallpaper-screen')">
+                    <div class="icon-bg-desktop"><img id="icon-img-wallpaper" src="https://i.postimg.cc/T1j03pQr/IMG-6440.jpg" alt="外观设置"></div>
+                    <span class="label">外观设置</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部 Dock 栏保持不变 -->
+    <div id="desktop-dock">
+        <div class="desktop-app-icon" onclick="showScreen('api-settings-screen')"><div class="icon-bg-desktop"><img id="icon-img-api-settings" src="https://i.postimg.cc/MK8rJ8t7/IMG-6438.jpg" alt="API设置"></div><span class="label">API设置</span></div>
+        <div class="desktop-app-icon" onclick="showScreen('font-settings-screen')"><div class="icon-bg-desktop"><img id="icon-img-font" src="https://i.postimg.cc/pXxk1JXk/IMG-6442.jpg" alt="字体"></div><span class="label">字体</span></div>
+    </div>
+    
+    <!-- 分页小圆点我们不再需要了，已经删掉 -->
 </div>
 
-<!-- 分页小圆点 -->
-<div class="pagination-dots">
-    <span class="dot active"></span>
-    <span class="dot"></span>
-</div>
-<!-- ▲▲▲ 新结构结束 ▲▲▲ -->
-            </div>
+<!-- ▲▲▲ HTML 替换结束 ▲▲▲ -->
+
+
+
           
 <div id="world-book-screen" class="screen">
     <div class="header">
@@ -6726,52 +7215,61 @@ input:checked + .slider:before {
     
     <!-- 音乐播放器 (保持不变) -->
 <div id="music-player-overlay">
-    <div class="music-player-window">
-        
-        <!-- 1. 顶部操作栏 -->
-        <div class="music-player-top-actions">
-            <div class="top-left-cluster">
-                <button id="music-return-btn">‹</button>
-                <button id="music-exit-btn">×</button>
-            </div>
-            <span id="music-playlist-btn">☰</span>
+<div class="music-player-window">
+    <!-- 1. 顶部头像区域 -->
+    <div id="music-avatars-container">
+        <img id="music-char-avatar" src="" alt="角色头像">
+        <svg id="heartbeat-line" viewBox="0 0 80 30">
+            <path class="heartbeat-path" d="M 5 15 Q 20 0 30 15 T 55 15 L 75 15"></path>
+            <path class="heartbeat-heart" d="M 0 -2 a 2 2 0 0 1 4 0 v 2 a 2 2 0 0 1 -4 0 z"></path>
+        </svg>
+        <img id="music-user-avatar" src="" alt="用户头像">
+    </div>
+    
+    <!-- ▼▼▼ 【核心修改】我们把这行文字移到了这里 ▼▼▼ -->
+    <div id="music-time-counter">已经一起听了0.0小时</div>
+
+    <!-- 2. 顶部操作按钮 -->
+    <div class="music-player-top-actions">
+        <div class="top-left-cluster">
+            <button id="music-return-btn">‹</button>
+            <button id="music-exit-btn">×</button>
         </div>
-        
-        <!-- 2. 歌曲信息 -->
-        <div id="music-time-counter">已经一起听了0.0小时</div>
-        <div id="music-player-song-title">请添加歌曲</div>
-        <div id="music-player-artist">...</div>
-        
-        <!-- 3. 【全新】歌词显示区域 -->
+        <span id="music-playlist-btn">☰</span>
+    </div>
+
+    <!-- 3. 封面和歌词的切换容器 -->
+    <div id="music-display-area">
+        <img id="music-album-cover" src="https://i.postimg.cc/pT2xKzPz/album-cover-placeholder.png" alt="歌曲封面">
         <div id="music-lyrics-container">
             <div id="music-lyrics-list">
-                <!-- 歌词将由JS动态生成在这里 -->
                 <div class="lyric-line">♪ 暂无歌词 ♪</div>
             </div>
         </div>
-        
-        <!-- 4. 【全新】播放控制区的包裹容器 -->
-        <div class="music-player-controls-wrapper">
-            <!-- a. 新的iOS风格进度条 -->
-            <div class="music-progress-bar-container">
-                <div id="music-current-time" class="time-display">0:00</div>
-                <div class="progress-bar">
-                    <div id="music-progress-fill" class="progress-bar-fill"></div>
-                </div>
-                <div id="music-total-time" class="time-display">0:00</div>
+    </div>
+
+    <!-- 4. 歌曲信息 -->
+    <div id="music-player-song-title">请添加歌曲</div>
+    <div id="music-player-artist">...</div>
+    
+    <!-- 5. 播放控制区 (保持不变) -->
+    <div class="music-player-controls-wrapper">
+        <div class="music-progress-bar-container">
+            <div id="music-current-time" class="time-display">0:00</div>
+            <div class="progress-bar">
+                <div id="music-progress-fill" class="progress-bar-fill"></div>
             </div>
-            
-            <!-- b. 播放控制按钮 -->
-            <div class="music-controls">
-                <button id="music-prev-btn">◀</button>
-                <button id="music-play-pause-btn" class="play-pause-btn">▶</button>
-                <button id="music-next-btn">▶</button>
-                <button id="music-mode-btn">顺序</button>
-    <!-- ▼▼▼ 在这里粘贴新按钮 ▼▼▼ -->
-    <button id="toggle-lyrics-bar-btn" title="桌面歌词">悬浮</button>
-    <!-- ▲▲▲ 粘贴结束 ▲▲▲ -->
-            </div>
+            <div id="music-total-time" class="time-display">0:00</div>
         </div>
+        <div class="music-controls">
+            <button id="music-prev-btn">◀</button>
+            <button id="music-play-pause-btn" class="play-pause-btn">▶</button>
+            <button id="music-next-btn">▶</button>
+            <button id="music-mode-btn">顺序</button>
+            <button id="toggle-lyrics-bar-btn" title="桌面歌词">悬浮</button>
+        </div>
+    </div>
+</div>
 
     </div>
 </div>
@@ -6827,8 +7325,8 @@ input:checked + .slider:before {
         <button class="form-button" onclick="document.getElementById('wallpaper-upload-input').click();">上传壁纸</button>
         <input type="file" id="wallpaper-upload-input" accept="image/*">
 
-<!-- ▼▼▼ 将【上面整块代码】，完整替换为下面这段【全新的代码】 ▼▼▼ -->
-<div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+<!-- ▼▼▼ 将【下面整块代码】，完整替换为下面这段【全新的代码】 ▼▼▼ -->
+<div class="form-group" style="display: none;">
     <label for="theme-toggle-switch" style="margin-bottom: 0;">夜间模式</label>
     <label class="toggle-switch">
         <input type="checkbox" id="theme-toggle-switch">
@@ -6870,7 +7368,30 @@ input:checked + .slider:before {
         <input type="file" id="import-theme-input" accept=".json" hidden>
     </div>
     <!-- === ▲▲▲ 新增UI结束 ▲▲▲ === -->
-        
+<!-- ▼▼▼ 【V3最终美化版】主屏幕美化预设功能UI ▼▼▼ -->
+<div class="preset-manager-container">
+    <div style="width:100%; text-align: left; margin-bottom: 15px;">
+        <label style="font-weight: 500; color: var(--text-secondary);">主屏幕预设</label>
+    </div>
+    <div class="form-group">
+        <select id="home-preset-selector" class="form-group select"></select>
+        <div class="preset-manager-controls">
+            <!-- 独占一行的应用按钮 -->
+            <button id="apply-home-preset-btn" class="preset-btn-capsule preset-btn-apply" disabled>应用</button>
+            
+            <!-- 2x2 网格按钮 -->
+            <button id="save-home-preset-btn" class="preset-btn-capsule preset-btn-save">保存</button>
+            <button id="rename-home-preset-btn" class="preset-btn-capsule preset-btn-secondary" disabled>重命名</button>
+            <button id="import-home-preset-btn" class="preset-btn-capsule preset-btn-secondary">导入</button>
+            <button id="export-home-preset-btn" class="preset-btn-capsule preset-btn-secondary" disabled>导出</button>
+            <button id="delete-home-preset-btn" class="preset-btn-capsule preset-btn-delete" disabled>删除</button>
+            
+            <input type="file" id="import-home-preset-input" accept=".json" hidden>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ UI替换结束 ▲▲▲ -->
+
         <!-- 【核心修改2】新增图标设置区域 -->
         <hr style="width: 80%; opacity: 0.3; margin: 30px 0;">
         <div style="width:100%; text-align: left; margin-bottom: 15px;">
@@ -6974,7 +7495,8 @@ input:checked + .slider:before {
                         </span>
                     </div>
                 </div>
-                <div id="character-app-grid" class="app-grid app-grid-standard" style="padding-top: 60px;"></div>
+                <!-- ▼▼▼ 核心修改：删除了 "app-grid" 这个class ▼▼▼ -->
+<div id="character-app-grid" class="app-grid-standard" style="padding-top: 60px;"></div>
             </div>
 
             <!-- 2b. 角色手机 - 聊天列表 -->
@@ -8145,16 +8667,32 @@ input:checked + .slider:before {
     </div>
 </div>
 <!-- ▲▲▲ 新HTML粘贴结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】这是“选择搜索源”的弹窗，请粘贴到body末尾 ▼▼▼ -->
+<div id="music-source-selector-modal" class="modal">
+    <div class="modal-content" style="height: auto;">
+        <div class="modal-header">
+            <span>选择搜索源</span>
+        </div>
+        <div class="modal-body" style="text-align: left; padding: 20px;">
+            <label style="display: block; margin-bottom: 15px; cursor: pointer;">
+                <input type="radio" name="search-source" value="all" checked> 全部来源 (网易云 + QQ音乐)
+            </label>
+            <label style="display: block; margin-bottom: 15px; cursor: pointer;">
+                <input type="radio" name="search-source" value="netease"> 仅网易云音乐
+            </label>
+            <label style="display: block; cursor: pointer;">
+                <input type="radio" name="search-source" value="tencent"> 仅QQ音乐
+            </label>
+        </div>
+        <div class="modal-footer">
+            <button class="cancel" id="cancel-source-select-btn">取消</button>
+            <button class="save" id="confirm-source-select-btn">开始搜索</button>
+        </div>
+    </div>
+</div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
 
 <script>
-
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?f10d2d63c3bf95c772971b5f16e21026";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
 
 
         const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models'
@@ -8441,28 +8979,50 @@ function checkAudioAvailability(url) {
     });
 }
 
+// ▼▼▼ 【V9.0 | 终极纯净版 - 移除代理】请用这块代码，完整替换旧的 searchNeteaseMusic 函数 ▼▼▼
 /**
- * 从网易云搜索歌曲列表
+ * 移除所有代理，直接请求你找到的 vkeys.cn API
  */
 async function searchNeteaseMusic(name, singer) {
     try {
         let searchTerm = name.replace(/\s/g, "");
-        if (singer) { searchTerm += `-${singer.replace(/\s/g, "")}`; }
-        const result = await Http_Get(`https://api.vkeys.cn/v2/music/netease?word=${encodeURIComponent(searchTerm)}`);
-        if (!result?.data?.length) return [];
+        if (singer) { searchTerm += ` ${singer.replace(/\s/g, "")}`; }
+
+        // 【核心修改】我们不再需要任何代理，直接把目标API作为最终请求地址！
+        const apiUrl = `https://api.vkeys.cn/v2/music/netease?word=${encodeURIComponent(searchTerm)}`;
+        
+        console.log("正在尝试直接请求:", apiUrl); // 添加一条日志，方便我们调试
+        
+        const response = await fetch(apiUrl);
+
+        if (!response.ok) {
+            throw new Error(`API request failed with status ${response.status}: ${response.statusText}`);
+        }
+        
+        const result = await response.json();
+
+        if (result.code !== 200 || !result.data || result.data.length === 0) {
+            console.log("vkeys API返回无结果:", result);
+            return [];
+        }
         
         return result.data.map(song => ({
-            name: song.name,
-            artist: song.ar.map(a => a.name).join(' / '),
+            name: song.song,
+            artist: song.singer,
             id: song.id,
-            cover: song.al?.picUrl || song.picUrl || 'https://i.postimg.cc/pT2xKzPz/album-cover-placeholder.png',
-            source: 'netease' // 标记来源
-        })).slice(0, 5); // 只取前5条结果
+            cover: song.cover || 'https://i.postimg.cc/pT2xKzP-album-cover-placeholder.png',
+            source: 'netease'
+        })).slice(0, 15);
+
     } catch (e) {
-        console.error("网易云搜索API失败:", e);
+        // 如果这次还失败，请把浏览器F12控制台里的红色错误信息完整地截图给我
+        console.error("【vkeys API 直连】搜索失败:", e);
+        await showCustomAlert("网易云接口直连失败", `如果浏览器控制台(F12)提示CORS错误，说明此API禁止直接访问。错误: ${e.message}`);
         return [];
     }
 }
+// ▲▲▲ 替换结束 ▲▲▲
+
 
 /**
  * 从QQ音乐搜索歌曲列表
@@ -8484,14 +9044,21 @@ async function searchTencentMusic(name) {
         return [];
     }
 }
+// ▼▼▼ 【V2.0 | 支持源选择】请用这个全新的函数，完整替换旧的 addSongFromSearch ▼▼▼
 /**
- * 【总入口】当用户点击“搜索”按钮时触发
+ * 【总入口 V2.0】当用户点击“搜索”按钮时触发
  */
 async function addSongFromSearch() {
+    // 步骤 1: 首先弹出选择框，让用户选择搜索源
+    const source = await showSearchSourceSelector();
+    // 如果用户点了取消，source会是null，我们直接退出函数
+    if (!source) return;
+
+    // 步骤 2: 弹出输入框让用户输入关键词 (这部分逻辑不变)
     const searchTerm = await showCustomPrompt("搜索歌曲", "请输入 歌名 或 歌名-歌手");
     if (!searchTerm || !searchTerm.trim()) return;
 
-    await showCustomAlert("请稍候...", "正在全网搜索歌曲资源...");
+    await showCustomAlert("请稍候...", "正在搜索歌曲资源...");
 
     let musicName = searchTerm.trim();
     let singerName = "";
@@ -8501,15 +9068,27 @@ async function addSongFromSearch() {
         singerName = parts.slice(1).join(' ').trim();
     }
 
-    const [neteaseResults, tencentResults] = await Promise.all([
-        searchNeteaseMusic(musicName, singerName),
-        searchTencentMusic(musicName)
-    ]);
+    // 步骤 3: 【核心修改】根据用户的选择，执行不同的搜索
+    let combinedResults = [];
 
-    const combinedResults = [...neteaseResults, ...tencentResults];
+    if (source === 'all') {
+        // 如果选择“全部”，则并行搜索两个平台
+        const [neteaseResults, tencentResults] = await Promise.all([
+            searchNeteaseMusic(musicName, singerName),
+            searchTencentMusic(musicName)
+        ]);
+        combinedResults = [...neteaseResults, ...tencentResults];
+    } else if (source === 'netease') {
+        // 如果只选“网易云”，就只调用网易云的搜索
+        combinedResults = await searchNeteaseMusic(musicName, singerName);
+    } else if (source === 'tencent') {
+        // 如果只选“QQ音乐”，就只调用QQ音乐的搜索
+        combinedResults = await searchTencentMusic(musicName);
+    }
 
+    // 步骤 4: 后续的显示逻辑保持不变
     if (combinedResults.length === 0) {
-        await showCustomAlert("无结果", "抱歉，未能找到相关歌曲。");
+        await showCustomAlert("无结果", "抱歉，在所选来源中未能找到相关歌曲。");
         return;
     }
 
@@ -8530,6 +9109,7 @@ async function addSongFromSearch() {
 
     modal.classList.add('visible');
 }
+// ▲▲▲ 替换结束 ▲▲▲
 
 /**
  * 【核心升级】处理用户点击搜索结果，增加备用音源查找和是否永久保存的逻辑
@@ -8637,6 +9217,46 @@ async function getLyricsForSong(songId, source) {
     }
     return "";
 }
+// ▼▼▼ 【全新】这个函数用来显示“选择搜索源”的弹窗 ▼▼▼
+/**
+ * 显示搜索源选择弹窗，并返回用户的选择
+ * @returns {Promise<string|null>} 返回 'all', 'netease', 'tencent', 或 null
+ */
+function showSearchSourceSelector() {
+    return new Promise(resolve => {
+        const modal = document.getElementById('music-source-selector-modal');
+        const confirmBtn = document.getElementById('confirm-source-select-btn');
+        const cancelBtn = document.getElementById('cancel-source-select-btn');
+
+        // 显示弹窗
+        modal.classList.add('visible');
+
+        // 定义确认按钮的点击事件
+        const onConfirm = () => {
+            const selectedSource = document.querySelector('input[name="search-source"]:checked').value;
+            cleanup();
+            resolve(selectedSource); // 返回用户的选择
+        };
+
+        // 定义取消按钮的点击事件
+        const onCancel = () => {
+            cleanup();
+            resolve(null); // 用户取消，返回 null
+        };
+
+        // 清理函数，用于移除事件监听并隐藏弹窗
+        const cleanup = () => {
+            modal.classList.remove('visible');
+            confirmBtn.removeEventListener('click', onConfirm);
+            cancelBtn.removeEventListener('click', onCancel);
+        };
+
+        // 绑定事件
+        confirmBtn.addEventListener('click', onConfirm);
+        cancelBtn.addEventListener('click', onCancel);
+    });
+}
+// ▲▲▲ 新增函数结束 ▲▲▲
 
 // ▲▲▲ 新增函数粘贴结束 ▲▲▲
 
@@ -8862,8 +9482,9 @@ const THEME_CSS_TEMPLATE = `
 #call-history-screen,
 #chat-search-screen,
 #browser-screen {
-  background-color: #FAFAFA !important;
+  /* 这里不再设置背景色，让它自然继承夜间模式的颜色 */
 }
+
 
 /* === 7. 回忆卡片美化 === */
 .memory-card {
@@ -9251,7 +9872,7 @@ function showCustomPrompt(title, placeholder, initialValue = '', type = 'text', 
         // 2. 数据库结构定义
         // ===================================================================
 
-db.version(29).stores({ 
+db.version(30).stores({ 
 chats: '&id, isGroup, groupId, isPinned, characterPhoneData',
     apiConfig: '&id', 
     globalSettings: '&id, activeThemeId', 
@@ -9272,7 +9893,8 @@ chats: '&id, isGroup, groupId, isPinned, characterPhoneData',
     themes: '++id, name, css',
     apiPresets: '++id, name, proxyUrl, apiKey',
     bubbleStylePresets: '++id, name, css',
-    fontPresets: '&id, name, url' // <-- 就是在这里添加了新的一行！
+    fontPresets: '&id, name, url', // <-- 就是在这里添加了新的一行！
+    homeScreenPresets: '++id, name'
 });
 
 // ===================================================================
@@ -9280,6 +9902,62 @@ chats: '&id, isGroup, groupId, isPinned, characterPhoneData',
 // ===================================================================
 
 // ▼▼▼ 从这里开始，粘贴所有新代码 ▼▼▼
+/**
+ * 【V2智能版】应用指定的主题，并智能刷新当前打开的任何界面
+ * @param {string} theme - 'light' 或 'dark'
+ */
+function applyTheme(theme) {
+    const phoneScreen = document.getElementById('phone-screen');
+    const toggleSwitch = document.getElementById('theme-toggle-switch');
+    
+    const isDark = theme === 'dark';
+    
+    // 核心操作：为手机屏幕添加或移除 .dark-mode 类
+    phoneScreen.classList.toggle('dark-mode', isDark);
+    
+    // 同步开关的状态
+    if (toggleSwitch) {
+        toggleSwitch.checked = isDark;
+    }
+    
+    // 保存用户的选择
+    localStorage.setItem('ephone-theme', theme);
+
+    // 【核心修复！】
+    // 不再只关心聊天界面，而是找出当前究竟是哪个界面处于激活状态
+    const activeScreen = document.querySelector('.screen.active');
+    if (!activeScreen) return; // 如果找不到，就退出
+
+    // 根据当前激活的界面ID，调用它专属的刷新函数
+    switch (activeScreen.id) {
+        case 'chat-interface-screen':
+            if (state.activeChatId) {
+                renderChatInterface(state.activeChatId);
+            }
+            break;
+        case 'wallpaper-screen':
+            // 外观设置页也需要重新渲染来应用新主题
+            renderWallpaperScreen();
+            break;
+        case 'font-settings-screen':
+            // 字体预设页同样需要
+            renderFontPresets();
+            break;
+        // 如果未来还有其他页面需要适配，在这里添加 case 即可
+    }
+}
+
+
+/**
+ * 当用户点击开关时，切换当前的主题
+ */
+function toggleTheme() {
+    const toggleSwitch = document.getElementById('theme-toggle-switch');
+    // 直接根据开关的选中状态来决定新主题
+    const newTheme = toggleSwitch.checked ? 'dark' : 'light';
+    applyTheme(newTheme);
+}
+
 // ▼▼▼ 【全新】字体预设功能核心函数 ▼▼▼
 
 /**
@@ -10533,19 +11211,27 @@ if (!chat.isGroup) {
     }, {});
     state.apiConfig = apiConfig || { id: 'main', proxyUrl: '', apiKey: '', model: '' };
 
+// ▼▼▼ 步骤 3.1：在 loadAllDataFromDB 函数中，找到并【替换】这行代码 ▼▼▼
+
 state.globalSettings = globalSettings || { 
     id: 'main', 
     wallpaper: 'linear-gradient(135deg, #89f7fe, #66a6ff)', 
-    lockscreenWallpaper: 'linear-gradient(135deg, #764ba2, #667eea)', // <-- 新增：默认锁屏壁纸
-    password: '', // <-- 新增：默认无密码
+    lockscreenWallpaper: 'linear-gradient(135deg, #764ba2, #667eea)',
+    password: '',
     fontUrl: '', 
     enableBackgroundActivity: false, 
     backgroundActivityInterval: 60,
     blockCooldownHours: 1,
-    backgroundActivityConfig: {}, // <-- 【【【在这里添加这一行新代码】】】
     appIcons: { ...DEFAULT_APP_ICONS },
-    ringtoneUrl: 'https://files.catbox.moe/3w7gla.mp3' // <-- 【核心新增】在这里添加默认铃声URL
+    ringtoneUrl: 'https://files.catbox.moe/3w7gla.mp3',
+    widgetData: {} // 【核心修改】在这里新增一个空对象，用来存放你的自定义内容
 };
+// 确保即使从旧数据库加载，这个属性也存在
+if (!state.globalSettings.widgetData) {
+    state.globalSettings.widgetData = {};
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
 
     // ▼▼▼ 在这里添加下面这行代码 ▼▼▼
     // 【核心新增】加载歌词栏设置，如果不存在则使用默认值
@@ -10583,10 +11269,78 @@ async function saveGlobalPlaylist() {
 
         function showNotification(chatId, messageContent) { clearTimeout(notificationTimeout); const chat = state.chats[chatId]; if (!chat) return; const bar = document.getElementById('notification-bar'); document.getElementById('notification-avatar').src = chat.settings.aiAvatar || chat.settings.groupAvatar || defaultAvatar; document.getElementById('notification-content').querySelector('.name').textContent = chat.name; document.getElementById('notification-content').querySelector('.message').textContent = messageContent; const newBar = bar.cloneNode(true); bar.parentNode.replaceChild(newBar, bar); newBar.addEventListener('click', () => { openChat(chatId); newBar.classList.remove('visible'); }); newBar.classList.add('visible'); notificationTimeout = setTimeout(() => { newBar.classList.remove('visible'); }, 4000); }
 
-        function updateClock() { const now = new Date(); const timeString = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }); const dateString = now.toLocaleDateString('zh-CN', { weekday: 'long', month: 'long', day: 'numeric' }); document.getElementById('main-time').textContent = timeString; document.getElementById('status-bar-time').textContent = timeString; document.getElementById('main-date').textContent = dateString; 
-    // 更新锁屏时钟 (新增)
-    updateLockClock();
+      // ▼▼▼ 步骤 1.1：用下面这【一整块】代码，完整替换掉旧的 updateClock 函数 ▼▼▼
+/* ▼▼▼ 步骤 1：将这一整块全新的功能函数，粘贴到您的JS代码的功能函数定义区 ▼▼▼ */
+
+/**
+ * 【全新添加】显示一个包含多个选项的操作菜单模态框
+ * 这是让图片编辑时能够选择“本地上传”或“URL”的关键函数！
+ * @param {string} title - 模态框的标题
+ * @param {Array<object>} options - 按钮选项数组, e.g., [{ text: '按钮文字', value: '返回值' }]
+ * @returns {Promise<string|null>} - 返回用户点击按钮的value，如果取消则返回null
+ */
+function showChoiceModal(title, options) {
+    return new Promise(resolve => {
+        // 复用你现有的自定义模态框
+        const modal = document.getElementById('preset-actions-modal');
+        const footer = modal.querySelector('.custom-modal-footer');
+        
+        // 清空旧按钮并动态创建新按钮
+        footer.innerHTML = ''; 
+
+        options.forEach(option => {
+            const button = document.createElement('button');
+            button.textContent = option.text;
+            button.onclick = () => {
+                modal.classList.remove('visible');
+                resolve(option.value); // 返回被点击按钮的值
+            };
+            footer.appendChild(button);
+        });
+
+        // 添加一个标准的取消按钮
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = '取消';
+        cancelButton.style.marginTop = '8px';
+        cancelButton.style.borderRadius = '8px';
+        cancelButton.style.backgroundColor = '#f0f0f0';
+        cancelButton.onclick = () => {
+            modal.classList.remove('visible');
+            resolve(null); // 用户取消，返回 null
+        };
+        footer.appendChild(cancelButton);
+
+        modal.classList.add('visible');
+    });
 }
+
+
+/**
+ * 【已修复】更新所有时钟（状态栏和锁屏）
+ */
+function updateClock() { 
+    const now = new Date(); 
+    const timeString = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }); 
+    const dateString = now.toLocaleDateString('zh-CN', { weekday: 'long', month: 'long', day: 'numeric' }); 
+    
+    // 更新状态栏时钟 (这个元素一直存在)
+    const statusBarTime = document.getElementById('status-bar-time');
+    if (statusBarTime) {
+        statusBarTime.textContent = timeString; 
+    }
+
+    // 更新锁屏时钟 (只有当锁屏元素存在时才更新，避免报错)
+    const lockTime = document.getElementById('lock-main-time');
+    const lockDate = document.getElementById('lock-main-date');
+    if (lockTime) {
+        lockTime.textContent = timeString;
+    }
+    if (lockDate) {
+        lockDate.textContent = dateString;
+    }
+}
+
+
 
 /**
  * 【终极健壮版】解析AI返回的、可能格式不规范的响应内容
@@ -11088,6 +11842,7 @@ function renderWallpaperScreen() {
     renderIconSettings();
 
 document.getElementById('ringtone-url-input').value = state.globalSettings.ringtoneUrl || '';
+loadHomeScreenPresetsToDropdown(); 
 }
 // ▲▲▲ 替换结束 ▲▲▲
         window.renderWallpaperScreenProxy = renderWallpaperScreen;
@@ -13402,10 +14157,105 @@ function returnToChat() {
         function updateListenTogetherIcon(chatId, forceReset = false) { const iconImg = document.querySelector('#listen-together-btn img'); if(!iconImg) return; if(forceReset || !musicState.isActive || musicState.activeChatId !== chatId) { iconImg.src = 'https://i.postimg.cc/8kYShvrJ/90-UI-2.png'; iconImg.className = ''; return; } iconImg.src = 'https://i.postimg.cc/D0pq6qS2/E30078-DC-8-B99-4-C01-AFDA-74728-DBF7-BEA.png'; iconImg.classList.add('rotating'); if (musicState.isPlaying) iconImg.classList.remove('paused'); else iconImg.classList.add('paused'); }
         window.updateListenTogetherIconProxy = updateListenTogetherIcon;
 
-        function updatePlayerUI() { updateListenTogetherIcon(musicState.activeChatId); updateElapsedTimeDisplay(); const titleEl = document.getElementById('music-player-song-title'); const artistEl = document.getElementById('music-player-artist'); const playPauseBtn = document.getElementById('music-play-pause-btn'); if (musicState.currentIndex > -1 && musicState.playlist.length > 0) { const track = musicState.playlist[musicState.currentIndex]; titleEl.textContent = track.name; artistEl.textContent = track.artist; } else { titleEl.textContent = '请添加歌曲'; artistEl.textContent = '...'; } playPauseBtn.textContent = musicState.isPlaying ? '❚❚' : '▶'; }
+        function updatePlayerUI() {
+            updateListenTogetherIcon(musicState.activeChatId);
+            updateElapsedTimeDisplay();
+            const titleEl = document.getElementById('music-player-song-title');
+            const artistEl = document.getElementById('music-player-artist');
+            const playPauseBtn = document.getElementById('music-play-pause-btn');
+            const chat = state.chats[musicState.activeChatId];
+            const charAvatarEl = document.getElementById('music-char-avatar');
+            const userAvatarEl = document.getElementById('music-user-avatar');
+            const albumCoverEl = document.getElementById('music-album-cover');
+            const avatarsContainer = document.getElementById('music-avatars-container');
+            const displayArea = document.getElementById('music-display-area');
+
+            // 1. 【核心修改】在这里判断是群聊还是单聊，并设置正确的头像
+            if (chat) {
+                // 如果是群聊
+                if (chat.isGroup) {
+                    // 左边的头像就用群头像
+                    charAvatarEl.src = chat.settings.groupAvatar || defaultGroupAvatar;
+                } else {
+                    // 否则（是单聊），就用角色的头像
+                    charAvatarEl.src = chat.settings.aiAvatar || defaultAvatar;
+                }
+                // 右边的用户头像保持不变
+                userAvatarEl.src = chat.settings.myAvatar || defaultAvatar;
+            }
+
+            // 2. 更新歌曲信息和封面 (不变)
+            if (musicState.currentIndex > -1 && musicState.playlist.length > 0) {
+                const track = musicState.playlist[musicState.currentIndex];
+                titleEl.textContent = track.name;
+                artistEl.textContent = track.artist;
+                albumCoverEl.src = track.cover || 'https://i.postimg.cc/pT2xKzPz/album-cover-placeholder.png';
+            } else {
+                titleEl.textContent = '请添加歌曲';
+                artistEl.textContent = '...';
+                albumCoverEl.src = 'https://i.postimg.cc/pT2xKzPz/album-cover-placeholder.png';
+            }
+
+            // 3. 控制播放/暂停按钮和头像闪烁 (不变)
+            playPauseBtn.textContent = musicState.isPlaying ? '❚❚' : '▶';
+            avatarsContainer.classList.toggle('flashing', musicState.isPlaying);
+
+            // 4. 控制唱片旋转和暂停 (不变)
+            albumCoverEl.classList.toggle('rotating', musicState.currentIndex > -1);
+            albumCoverEl.classList.toggle('paused', !musicState.isPlaying);
+
+            // 5. 默认显示歌曲封面 (不变)
+            if (displayArea) {
+                displayArea.classList.remove('show-lyrics');
+            }
+        }
+
 
         function updateElapsedTimeDisplay() { const hours = (musicState.totalElapsedTime / 3600).toFixed(1); document.getElementById('music-time-counter').textContent = `已经一起听了${hours}小时`; }
+// ▼▼▼ 把这【一整块新函数】粘贴到 updatePlaylistUI 函数的上方 ▼▼▼
+/**
+ * 【全新】处理用户上传或更新歌曲封面的逻辑
+ * @param {number} index - 被操作的歌曲在播放列表中的索引
+ */
+// ▼▼▼ 请用这【一整块新代码】替换旧的 handleCoverUpload 函数 ▼▼▼
+async function handleCoverUpload(index) {
+    if (index < 0 || index >= musicState.playlist.length) return;
 
+    // 1. 弹窗让用户选择来源（已移除图标）
+    const choice = await showChoiceModal("选择封面来源", [
+        { text: '使用网络URL', value: 'url' },
+        { text: '从本地上传', value: 'local' }
+    ]);
+
+    let newCoverUrl = null;
+
+    // 2. 根据选择执行不同操作
+    if (choice === 'url') {
+        const url = await showCustomPrompt("封面URL", "请输入图片文件的网络链接");
+        if (url && url.trim().startsWith('http')) {
+            newCoverUrl = url.trim();
+        } else if (url !== null) {
+            alert("请输入一个有效的图片URL！");
+        }
+    } else if (choice === 'local') {
+        newCoverUrl = await uploadImageLocally(); 
+    }
+
+    // 3. 如果成功获取到新的封面URL，就更新数据和UI
+    if (newCoverUrl) {
+        musicState.playlist[index].cover = newCoverUrl;
+        await saveGlobalPlaylist();
+        updatePlaylistUI();
+        if (musicState.currentIndex === index) {
+            updatePlayerUI();
+        }
+        alert('歌曲封面已更新！');
+    }
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+
+// ▼▼▼ 请用这【一整块新代码】替换旧的 updatePlaylistUI 函数 ▼▼▼
 function updatePlaylistUI() {
     const playlistBody = document.getElementById('playlist-body');
     playlistBody.innerHTML = '';
@@ -13417,12 +14267,14 @@ function updatePlaylistUI() {
         const item = document.createElement('div');
         item.className = 'playlist-item';
         if(index === musicState.currentIndex) item.classList.add('playing');
+        // 【核心修改】在“词”按钮旁边，新增了一个“封面”按钮
         item.innerHTML = `
             <div class="playlist-item-info">
                 <div class="title">${track.name}</div>
                 <div class="artist">${track.artist}</div>
             </div>
             <div class="playlist-item-actions">
+                <span class="playlist-action-btn cover-btn" data-index="${index}">封面</span>
                 <span class="playlist-action-btn lyrics-btn" data-index="${index}">词</span>
                 <span class="playlist-action-btn delete-track-btn" data-index="${index}">×</span>
             </div>
@@ -13431,6 +14283,8 @@ function updatePlaylistUI() {
         playlistBody.appendChild(item);
     });
 }
+// ▲▲▲ 替换结束 ▲▲▲
+
 async function loadSong(index) {
     if (index < 0 || index >= musicState.playlist.length) return;
     musicState.currentIndex = index;
@@ -13469,27 +14323,42 @@ async function loadSong(index) {
     };
 }
 
+// ▼▼▼ 请用下面这【一整块】全新的代码，替换掉你旧的 playSong 和 togglePlayPause 两个函数 ▼▼▼
+
 async function playSong(index) {
-    // 先调用我们的新函数来加载好一切
     await loadSong(index);
-    // 然后，直接播放！
-    audioPlayer.play();
+    try {
+        await audioPlayer.play();
+        // ▼▼▼ 新增这两行 ▼▼▼
+        musicState.isPlaying = true; // 播放成功后，直接设置状态为 true
+        updatePlayerUI();           // 并立即更新UI
+        // ▲▲▲ 新增结束 ▲▲▲
+    } catch (error) {
+        console.error("音频播放失败:", error);
+        musicState.isPlaying = false; // 如果播放失败，也要确保状态正确
+        updatePlayerUI();
+    }
 }
 
 
-
+/**
+ * 【全新智能版】处理播放/暂停的函数
+ */
 function togglePlayPause() {
     if (audioPlayer.paused) {
-        // 如果播放器是暂停的，并且已经有选中的歌曲了
         if (musicState.currentIndex > -1) {
-            // 就直接调用 playSong 来播放当前这首歌
             playSong(musicState.currentIndex);
         }
     } else {
-        // 如果正在播放，就暂停它
         audioPlayer.pause();
+        // ▼▼▼ 新增这两行 ▼▼▼
+        musicState.isPlaying = false;
+        updatePlayerUI();
+        // ▲▲▲ 新增结束 ▲▲▲
     }
 }
+
+// ▲▲▲ 替换结束 ▲▲▲
 
 
         function playNext() { if (musicState.playlist.length === 0) return; let nextIndex; switch(musicState.playMode) { case 'random': nextIndex = Math.floor(Math.random() * musicState.playlist.length); break; case 'single': playSong(musicState.currentIndex); return; case 'order': default: nextIndex = (musicState.currentIndex + 1) % musicState.playlist.length; break; } playSong(nextIndex); }
@@ -16668,6 +17537,103 @@ function closeAiAvatarLibraryModal() {
 }
 
 // ▲▲▲ 新函数粘贴结束 ▲▲▲
+/* ▼▼▼ 步骤 3.2：将这一整块全新的功能函数，粘贴到 init() 函数的上方 ▼▼▼ */
+
+/**
+ * 【全新】在页面加载时，应用已保存的小组件数据
+ */
+function applyWidgetData() {
+    if (!state.globalSettings.widgetData) return;
+    for (const elementId in state.globalSettings.widgetData) {
+        const element = document.getElementById(elementId);
+        const savedValue = state.globalSettings.widgetData[elementId];
+        if (element) {
+            if (element.tagName === 'IMG') {
+                element.src = savedValue;
+            } else {
+                element.textContent = savedValue;
+            }
+        }
+    }
+}
+
+/**
+ * 【全新辅助函数】打开文件选择器，并返回本地图片的Base64编码
+ * @returns {Promise<string|null>} - 返回图片的Base64 Data URL，如果用户取消则返回null
+ */
+function uploadImageLocally() {
+    return new Promise(resolve => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*'; // 只接受图片文件
+
+        input.onchange = e => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = readerEvent => {
+                    resolve(readerEvent.target.result); // 返回Base64字符串
+                };
+                reader.readAsDataURL(file);
+            } else {
+                resolve(null); // 用户关闭了文件选择框
+            }
+        };
+
+        input.click();
+    });
+}
+
+// ▼▼▼ 步骤 2.2：用这个已修复的版本，替换旧的 handleEditText 函数 ▼▼▼
+async function handleEditText(element) {
+    const elementId = element.id;
+    const placeholder = element.dataset.placeholder || "请输入新的内容：";
+    const textSpan = element.querySelector('span');
+    const isComplexElement = !!textSpan;
+    const targetElement = isComplexElement ? textSpan : element;
+    const currentValue = targetElement.textContent;
+    
+    const newValue = await showCustomPrompt("修改文字", "请输入新的内容：", currentValue === placeholder ? "" : currentValue);
+
+    if (newValue !== null) {
+        const trimmedValue = newValue.trim();
+        targetElement.textContent = trimmedValue ? trimmedValue : placeholder;
+        state.globalSettings.widgetData[elementId] = isComplexElement ? element.innerHTML : targetElement.textContent;
+        await db.globalSettings.put(state.globalSettings);
+    }
+}
+// ▲▲▲ JavaScript 替换结束 ▲▲▲
+
+
+// ▼▼▼ 请用这【一整块新代码】替换旧的 handleEditImage 函数 ▼▼▼
+async function handleEditImage(element) {
+    const elementId = element.id;
+
+    // 【核心修改】移除了按钮文字中的图标
+    const choice = await showChoiceModal("修改图片", [
+        { text: '从本地上传', value: 'local' },
+        { text: '使用网络URL', value: 'url' }
+    ]);
+
+    let newValue = null;
+
+    if (choice === 'local') {
+        newValue = await uploadImageLocally();
+    } else if (choice === 'url') {
+        newValue = await showCustomPrompt("修改图片", "请输入新的图片URL：", element.src, "url");
+    }
+
+    if (newValue && newValue.trim()) {
+        const trimmedValue = newValue.trim();
+        element.src = trimmedValue;
+        state.globalSettings.widgetData[elementId] = trimmedValue;
+        await db.globalSettings.put(state.globalSettings);
+    } else if (choice === 'url' && newValue !== null) {
+        alert("请输入一个有效的图片URL！");
+    }
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
 
 // ▼▼▼ 请将这两个【新函数】粘贴到JS功能函数定义区 ▼▼▼
 
@@ -18699,6 +19665,90 @@ function unlockAudioContext() {
     }
 }
 // ▲▲▲ 新函数粘贴结束 ▲▲▲
+// ▼▼▼ 【全新】“查手机”内容单条删除功能 ▼▼▼
+/**
+ * 处理角色手机内数据删除的通用函数
+ * @param {string} dataType - 要删除的数据类型, 比如 'memos', 'shoppingCart'
+ * @param {number} index - 要删除的数据在数组中的索引
+ */
+async function handleCharacterDataDeletion(dataType, index) {
+    if (!activeCharacterPhoneId) return;
+    const chat = state.chats[activeCharacterPhoneId];
+    
+    let dataArray;
+    // 处理像 bank.transactions 这样的嵌套数据
+    if (dataType.includes('.')) {
+        const keys = dataType.split('.');
+        dataArray = chat.characterPhoneData[keys[0]][keys[1]];
+    } else {
+        dataArray = chat.characterPhoneData[dataType];
+    }
+
+    if (!chat || !dataArray) return;
+
+    const itemToDelete = dataArray[index];
+    if (!itemToDelete) return;
+
+    const confirmed = await showCustomConfirm(
+        '确认删除',
+        '确定要删除这条记录吗？',
+        { confirmButtonClass: 'btn-danger' }
+    );
+
+    if (confirmed) {
+        dataArray.splice(index, 1);
+        await db.chats.put(chat);
+        
+        // 根据删除的类型，重新渲染对应的APP界面
+        switch(dataType) {
+            case 'memos': renderCharacterMemos(); break;
+            case 'shoppingCart': renderCharacterShoppingCart(); break;
+            case 'browserHistory': renderCharacterBrowser(); break;
+            case 'diary': renderCharacterDiary(); break;
+            case 'bank.transactions': renderCharacterBank(); break;
+            case 'trajectory': renderCharacterTrajectory(); break;
+            case 'appUsage': renderCharacterAppUsage(); break;
+            case 'photoAlbum': renderCharacterPhotoAlbum(); break;
+        }
+        alert('记录已删除。');
+    }
+}
+// ▲▲▲ 删除功能结束 ▲▲▲
+/**
+ * 【全新】处理角色手机内单条聊天消息的删除
+ * @param {string} contactName - 正在查看的联系人名称
+ * @param {number} index - 要删除的消息在历史记录中的索引
+ */
+async function handleCharacterChatMessageDeletion(contactName, index) {
+    if (!activeCharacterPhoneId) return;
+    const chat = state.chats[activeCharacterPhoneId];
+    if (!chat) return;
+
+    let historyArray;
+    // 判断是和“我”的聊天还是和NPC的聊天
+    if (contactName === (chat.characterPhoneData.chats['我']?.remarkName || '我')) {
+        historyArray = chat.history;
+    } else {
+        historyArray = chat.characterPhoneData.chats[contactName]?.history;
+    }
+
+    if (!historyArray || !historyArray[index]) return;
+
+    const confirmed = await showCustomConfirm(
+        '确认删除',
+        '确定要删除这条消息吗？',
+        { confirmButtonClass: 'btn-danger' }
+    );
+
+    if (confirmed) {
+        historyArray.splice(index, 1);
+        await db.chats.put(chat);
+        
+        // 重新渲染当前聊天界面
+        renderCharacterChatHistory(contactName);
+        alert('消息已删除。');
+    }
+}
 
 // ▼▼▼ 【全新】锁屏功能核心函数 ▼▼▼
 
@@ -19208,66 +20258,6 @@ async function getCountdownContext() {
     return context;
 }
 
-// ▼▼▼ 【全新】主屏幕滑动功能JS逻辑 ▼▼▼
-const homeScreen = document.getElementById('home-screen');
-const homeScreenSlider = document.querySelector('.home-screen-slider');
-const dots = document.querySelectorAll('.pagination-dots .dot');
-
-let currentPage = 0;
-let touchStartX = 0;
-let touchEndX = 0;
-let isDragging = false;
-
-// 更新小圆点的高亮状态
-function updateDots() {
-    dots.forEach((dot, index) => {
-        dot.classList.toggle('active', index === currentPage);
-    });
-}
-
-// 滑动到指定页面
-function slideToPage(pageIndex) {
-    currentPage = pageIndex;
-    const offset = - (currentPage * 100); // 往左移动100%
-    homeScreenSlider.style.transform = `translateX(${offset}%)`; // 因为容器是200%宽，所以移动50%
-    updateDots();
-}
-
-function handleTouchStart(e) {
-    isDragging = true;
-    touchStartX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-    homeScreenSlider.style.transition = 'none'; // 拖动时禁用动画，实现实时跟随
-}
-
-function handleTouchMove(e) {
-    if (!isDragging) return;
-    const currentX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
-    const diffX = currentX - touchStartX;
-    const baseOffset = - (currentPage * 100); // 当前页面的基础偏移量
-    homeScreenSlider.style.transform = `translateX(calc(${baseOffset}% + ${diffX}px))`;
-}
-
-function handleTouchEnd(e) {
-    if (!isDragging) return;
-    isDragging = false;
-    homeScreenSlider.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)'; // 恢复动画
-
-    touchEndX = e.type === 'touchend' ? e.changedTouches[0].clientX : e.clientX;
-    const diffX = touchEndX - touchStartX;
-    const threshold = 50; // 设置一个滑动阈值，防止误触
-
-    if (diffX < -threshold && currentPage < 1) {
-        // 向左滑动，切换到下一页
-        currentPage++;
-    } else if (diffX > threshold && currentPage > 0) {
-        // 向右滑动，切换到上一页
-        currentPage--;
-    }
-
-    slideToPage(currentPage);
-}
-
-// ▲▲▲ 新JS逻辑结束 ▲▲▲
 
 // ▼▼▼ 【全新】“查角色手机”功能的所有核心函数 ▼▼▼
 
@@ -19403,14 +20393,13 @@ async function generateCharacterPhoneData() {
     const chat = state.chats[activeCharacterPhoneId];
     if (!chat) return;
 
-    // 显示加载动画
     document.getElementById('generation-overlay').classList.add('visible');
 
     try {
-        // 1. 准备给AI的上下文
+        const userNickname = state.qzoneSettings.nickname || '我'; // 获取用户昵称
         const persona = chat.settings.aiPersona;
         const recentHistory = chat.history.slice(-10).map(msg => {
-            const sender = msg.role === 'user' ? '我' : chat.name;
+            const sender = msg.role === 'user' ? userNickname : chat.name;
             return `${sender}: ${msg.content}`;
         }).join('\n');
         
@@ -19422,8 +20411,6 @@ async function generateCharacterPhoneData() {
                     return book ? `[${book.name}]: ${book.content}` : '';
                 }).join('\n\n');
         }
-// ▼▼▼ 从这里开始替换 ▼▼▼
-        // 2. 构建超级Prompt (V8 NPC感知最终版)
         const npcLibrary = chat.npcLibrary || [];
         let npcContext = '';
         if (npcLibrary.length > 0) {
@@ -19436,14 +20423,14 @@ async function generateCharacterPhoneData() {
 
         const prompt = `
 # 任务
-你现在是角色 "${chat.name}"。请根据你的人设、世界观、NPC好友列表以及和我的最近聊天记录，模拟生成你手机中的各项数据。你需要一次性生成所有数据，并严格按照下面的JSON格式返回。
+你现在是角色 "${chat.name}"。请根据你的人设、世界观、NPC好友列表以及和${userNickname}的最近聊天记录，模拟生成你手机中的各项数据。你需要一次性生成所有数据，并严格按照下面的JSON格式返回。
 
 # 你的信息
 - 你的名字: ${chat.name}
 - 你的人设: ${persona}
 ${worldBookContext}
 
-# 和我的最近聊天记录摘要
+# 和${userNickname}的最近聊天记录摘要
 ${recentHistory}
 
 ${npcContext}
@@ -19452,7 +20439,7 @@ ${npcContext}
 {
   "chats": [
     {
-      "contactName": "【这里填写你给我（用户）的备注名】"
+      "contactName": "【这里填写你给${userNickname}的备注名】"
     },
     {
       "contactName": "【这里必须填写上面NPC列表中的一个名字，或一个虚构朋友名】",
@@ -19498,10 +20485,7 @@ ${npcContext}
 - 对话内容应该自然流畅，可以包含连续发言、表情包和表情符号等，以体现真实感。
 - 不要只生成一问一答的机械式对话。
 `;
-// ▲▲▲ 替换到这里结束 ▲▲▲
 
-
-        // 3. 发送API请求 (这里你需要替换成你自己的API调用逻辑)
         const { proxyUrl, apiKey, model } = state.apiConfig;
         let isGemini = proxyUrl === GEMINI_API_URL;
         let geminiConfig = toGeminiRequestData(model, apiKey, prompt, [{role: 'user', content: prompt}], isGemini);
@@ -19515,7 +20499,7 @@ ${npcContext}
                     model: model,
                     messages: [{role: 'user', content: prompt}],
                     temperature: 0.8,
-                    response_format: { type: "json_object" } // 请求JSON输出
+                    response_format: { type: "json_object" }
                 })
             });
 
@@ -19523,48 +20507,56 @@ ${npcContext}
         
         const data = await response.json();
         const aiResponseContent = (isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content)
-            .replace(/^```json\s*|```$/g, ''); // 清理Markdown代码块
+            .replace(/^```json\s*|```$/g, '');
 
         const newData = JSON.parse(aiResponseContent);
 
-        // 4. 【V5最终修复版】替换并合并所有APP的数据
         let phoneData = chat.characterPhoneData;
         phoneData.lastGenerated = Date.now();
         
-        // a. 【核心】清空旧的NPC聊天记录，但保留“我”的备注信息
-        const userRemarkData = phoneData.chats['我'];
-        phoneData.chats = { '我': userRemarkData || { avatar: '', history: [] } }; // 只保留“我”的壳
-
-        // b. 合并AI新生成的NPC聊天数据
         if (newData.chats) {
             newData.chats.forEach(newChat => {
-                // AI为“我”生成的数据，只更新备注名
                 if (!newChat.messages) {
-                    phoneData.chats['我'].remarkName = newChat.contactName;
+                    if (!phoneData.chats[userNickname]) {
+                        phoneData.chats[userNickname] = { avatar: '', history: [] };
+                    }
+                    phoneData.chats[userNickname].remarkName = newChat.contactName;
                 } 
-                // AI为NPC生成的数据，直接存入
                 else {
                     const contactName = newChat.contactName;
-                    phoneData.chats[contactName] = { 
-                        avatar: newChat.avatar, 
-                        history: newChat.messages 
-                    };
+                    if (phoneData.chats[contactName]) {
+                        phoneData.chats[contactName].history.push(...newChat.messages);
+                    } else {
+                        phoneData.chats[contactName] = { 
+                            avatar: newChat.avatar, 
+                            history: newChat.messages 
+                        };
+                    }
                 }
             });
         }
 
-        // c. 【核心】用“=”直接替换掉所有APP的旧数据数组
-        phoneData.shoppingCart = newData.shoppingCart || [];
-        phoneData.memos = newData.memos || [];
-        phoneData.browserHistory = newData.browserHistory || [];
-        phoneData.photoAlbum = newData.photoAlbum || [];
-        phoneData.trajectory = newData.trajectory || [];
-        phoneData.appUsage = newData.appUsage || [];
+        if(!phoneData.shoppingCart) phoneData.shoppingCart = [];
+        phoneData.shoppingCart.push(...(newData.shoppingCart || []));
+        if(!phoneData.memos) phoneData.memos = [];
+        phoneData.memos.push(...(newData.memos || []));
+        if(!phoneData.browserHistory) phoneData.browserHistory = [];
+        phoneData.browserHistory.push(...(newData.browserHistory || []));
+        if(!phoneData.photoAlbum) phoneData.photoAlbum = [];
+        phoneData.photoAlbum.push(...(newData.photoAlbum || []));
+        if(!phoneData.trajectory) phoneData.trajectory = [];
+        phoneData.trajectory.push(...(newData.trajectory || []));
+        if(!phoneData.appUsage) phoneData.appUsage = [];
+        phoneData.appUsage.push(...(newData.appUsage || []));
+        if (!phoneData.diary) phoneData.diary = [];
+        phoneData.diary.push(...(newData.diary || []));
 
-        // d. 【核心】同样，直接替换掉整个银行对象
-        phoneData.bank = newData.bank || { balance: 0, transactions: [] };
-        
-        // 5. 保存到数据库
+        if (newData.bank) {
+            if(!phoneData.bank) phoneData.bank = { balance: 0, transactions: [] };
+            phoneData.bank.balance = newData.bank.balance || phoneData.bank.balance;
+            phoneData.bank.transactions.push(...(newData.bank.transactions || []));
+        }
+
         await db.chats.put(chat);
         alert('数据已刷新！');
 
@@ -19572,10 +20564,10 @@ ${npcContext}
         console.error("生成角色手机数据失败:", error);
         alert(`生成失败: ${error.message}`);
     } finally {
-        // 隐藏加载动画
         document.getElementById('generation-overlay').classList.remove('visible');
     }
 }
+
 
 /**
  * 清空角色手机数据
@@ -19717,13 +20709,10 @@ function renderCharacterChatHistory(contactName) {
         const myAvatarSrc = characterChat.settings.myAvatar || defaultMyGroupAvatar;
         otherParticipantAvatarHtml = `<img src="${myAvatarSrc}" class="character-chat-avatar">`;
     } else {
-        // 【核心修改】在这里，我们不再生成文字头像，而是去NPC库里查找真实头像
         const npcData = (characterChat.npcLibrary || []).find(npc => npc.name === contactName);
         if (npcData && npcData.avatar) {
-            // 如果在NPC库里找到了，就用它的头像
             otherParticipantAvatarHtml = `<img src="${npcData.avatar}" class="character-chat-avatar">`;
         } else {
-            // 如果没找到（比如是AI临时虚构的），才使用原来的文字头像作为备用方案
             const npcNameInitial = contactName.slice(-1);
             const colorIndex = contactName.length % avatarColors.length;
             const bgColor = avatarColors[colorIndex];
@@ -19746,7 +20735,7 @@ function renderCharacterChatHistory(contactName) {
     }
     
     const characterName = characterChat.name;
-    historyToShow.forEach(msg => {
+    historyToShow.forEach((msg, index) => {
         if (msg.isHidden) return;
 
         const container = document.createElement('div');
@@ -19764,10 +20753,12 @@ function renderCharacterChatHistory(contactName) {
             contentHtml = msg.content;
         }
         const bubbleHtml = `<div class="character-chat-bubble">${contentHtml}</div>`;
-
+        
+        // 【核心修改】在这里加入了删除按钮
         container.innerHTML = `
             ${avatarHtml}
             ${bubbleHtml}
+            <button class="item-delete-btn message-delete-btn" data-contact-name="${finalContactName}" data-index="${index}">×</button>
         `;
         
         messagesEl.appendChild(container);
@@ -19775,11 +20766,8 @@ function renderCharacterChatHistory(contactName) {
 
     messagesEl.scrollTop = messagesEl.scrollHeight;
 }
-// ▲▲▲ 替换到这里结束 ▲▲▲
 
-/**
- * 【V2美化版】渲染角色手机 - 购物车
- */
+
 function renderCharacterShoppingCart() {
     const listEl = document.getElementById('character-shopping-cart-list');
     const items = state.chats[activeCharacterPhoneId].characterPhoneData.shoppingCart;
@@ -19788,7 +20776,7 @@ function renderCharacterShoppingCart() {
         listEl.innerHTML = '<p style="text-align:center; color: #8a8a8a; margin-top: 50px;">购物车是空的</p>';
         return;
     }
-    items.forEach(item => {
+    items.forEach((item, index) => {
         const itemEl = document.createElement('div');
         itemEl.className = 'character-cart-item';
         itemEl.innerHTML = `
@@ -19800,25 +20788,31 @@ function renderCharacterShoppingCart() {
                 <div class="store">${item.store}</div>
             </div>
             <div class="cart-item-price">¥ ${item.price.toFixed(2)}</div>
+            <button class="item-delete-btn" data-type="shoppingCart" data-index="${index}">×</button>
         `;
         listEl.appendChild(itemEl);
     });
 }
-
 function renderCharacterMemos() {
     const listEl = document.getElementById('character-memos-list');
     const items = state.chats[activeCharacterPhoneId].characterPhoneData.memos;
     listEl.innerHTML = '';
-    items.forEach(item => {
+    if (!items || items.length === 0) {
+        listEl.innerHTML = '<p style="text-align:center; color: #8a8a8a; margin-top: 50px;">备忘录是空的</p>';
+        return;
+    }
+    items.forEach((item, index) => {
         const itemEl = document.createElement('div');
         itemEl.className = 'character-data-item';
         itemEl.innerHTML = `
             <div class="title">${item.title}</div>
             <div class="content">${item.content}</div>
+            <button class="item-delete-btn" data-type="memos" data-index="${index}">×</button>
         `;
         listEl.appendChild(itemEl);
     });
 }
+
 
 // ▲▲▲ 新功能函数结束 ▲▲▲
 
@@ -19840,9 +20834,6 @@ function showCharacterPhonePage(pageId) {
 
 // ▼▼▼ 【全新】角色手机新增APP渲染函数 ▼▼▼
 
-/**
- * 【V3美化版】渲染角色手机 - 浏览器历史
- */
 function renderCharacterBrowser() {
     const listEl = document.getElementById('character-browser-list');
     const items = state.chats[activeCharacterPhoneId].characterPhoneData.browserHistory;
@@ -19851,14 +20842,16 @@ function renderCharacterBrowser() {
         listEl.innerHTML = '<p style="text-align:center; color: #8a8a8a; margin-top: 50px;">浏览器历史为空</p>';
         return;
     }
-    items.forEach(item => {
+    items.forEach((item, index) => {
         const itemEl = document.createElement('div');
         itemEl.className = 'character-browser-item';
         itemEl.innerHTML = `
             <span class="browser-item-icon">🌐</span>
             <div class="title">${item.query}</div>
+            <button class="item-delete-btn" data-type="browserHistory" data-index="${index}">×</button>
         `;
-        itemEl.addEventListener('click', () => {
+        itemEl.addEventListener('click', (e) => {
+            if (e.target.classList.contains('item-delete-btn')) return;
             document.getElementById('character-browser-detail-title').textContent = item.query;
             document.getElementById('character-browser-detail-content').innerHTML = (item.result || "AI未生成详细内容。").replace(/\n/g, '<br>');
             showCharacterPhonePage('character-browser-detail-screen');
@@ -19867,9 +20860,7 @@ function renderCharacterBrowser() {
     });
 }
 
-/**
- * 【V2网格版】渲染角色手机 - 相册
- */
+
 function renderCharacterPhotoAlbum() {
     const gridEl = document.getElementById('character-album-grid');
     const items = state.chats[activeCharacterPhoneId].characterPhoneData.photoAlbum;
@@ -19878,19 +20869,23 @@ function renderCharacterPhotoAlbum() {
         gridEl.innerHTML = '<p style="grid-column: 1 / -1; text-align:center; color: #8a8a8a; margin-top: 50px;">相册里没有照片</p>';
         return;
     }
-    items.forEach(item => {
+    items.forEach((item, index) => {
         const itemEl = document.createElement('div');
         itemEl.className = 'character-album-item';
-        // 使用固定的文字图占位符
-        itemEl.innerHTML = `<img src="https://i.postimg.cc/KYr2qRCK/1.jpg" alt="文字图">`;
-        // 点击时显示AI生成的详细描述
-        itemEl.addEventListener('click', () => {
-            // 因为publicText已经移除，标题直接设为“图片内容”
+        itemEl.style.position = 'relative'; 
+        itemEl.innerHTML = `
+            <img src="https://i.postimg.cc/KYr2qRCK/1.jpg" alt="文字图">
+            <button class="item-delete-btn" data-type="photoAlbum" data-index="${index}" style="top: 10px; right: 10px; z-index: 1;">×</button>
+        `;
+        itemEl.addEventListener('click', (e) => {
+            if (e.target.classList.contains('item-delete-btn')) return;
             showCustomAlert("图片内容", item.hiddenContent);
         });
         gridEl.appendChild(itemEl);
     });
 }
+
+
 
 /**
  * 【V2美化版】渲染角色手机 - 银行
@@ -19912,8 +20907,8 @@ function renderCharacterBank() {
         detailsEl.innerHTML += '<p style="text-align:center; color: #8a8a8a; margin-top: 30px;">暂无交易明细</p>';
         return;
     }
-    // 让最新的交易在最上面
-    [...bankData.transactions].reverse().forEach(item => {
+    [...bankData.transactions].reverse().forEach((item, index) => {
+        const originalIndex = bankData.transactions.length - 1 - index;
         const isIncome = item.type === '收入';
         const itemEl = document.createElement('div');
         itemEl.className = 'character-bank-transaction';
@@ -19930,9 +20925,12 @@ function renderCharacterBank() {
                     <div class="meta" style="border:none; padding:0; margin-top:4px;"><span>${item.type}</span></div>
                 </div>
             </div>
-            <span class="transaction-amount ${isIncome ? 'income' : 'expense'}">
-                ${isIncome ? '+' : '-'} ${item.amount.toFixed(2)}
-            </span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="transaction-amount ${isIncome ? 'income' : 'expense'}">
+                    ${isIncome ? '+' : '-'} ${item.amount.toFixed(2)}
+                </span>
+                <button class="item-delete-btn" data-type="bank.transactions" data-index="${originalIndex}">×</button>
+            </div>
         `;
         detailsEl.appendChild(itemEl);
     });
@@ -19944,14 +20942,14 @@ function renderCharacterBank() {
 function renderCharacterTrajectory() {
     const listEl = document.getElementById('character-trajectory-list');
     const items = state.chats[activeCharacterPhoneId].characterPhoneData.trajectory;
-    listEl.innerHTML = ''; // 清空容器
-    listEl.classList.add('character-trajectory-list'); // 确保容器有正确的class
+    listEl.innerHTML = '';
+    listEl.classList.add('character-trajectory-list');
 
     if (!items || items.length === 0) {
         listEl.innerHTML = '<p style="text-align:center; color: #8a8a8a; margin-top: 50px;">暂无足迹</p>';
         return;
     }
-    items.forEach(item => {
+    items.forEach((item, index) => {
         const itemEl = document.createElement('div');
         itemEl.className = 'character-trajectory-item';
         itemEl.innerHTML = `
@@ -19962,6 +20960,7 @@ function renderCharacterTrajectory() {
                     <span style="margin-left: 10px;">🕒 ${item.time}</span>
                 </div>
             </div>
+            <button class="item-delete-btn" data-type="trajectory" data-index="${index}">×</button>
         `;
         listEl.appendChild(itemEl);
     });
@@ -19978,22 +20977,20 @@ function renderCharacterAppUsage() {
         listEl.innerHTML = '<p style="text-align:center; color: #8a8a8a; margin-top: 50px;">暂无使用记录</p>';
         return;
     }
-
-    // 1. 计算总时长，用于确定进度条比例
     const durationsInMinutes = items.map(item => parseDurationToMinutes(item.duration));
     const maxDuration = Math.max(...durationsInMinutes);
-
-    // 2. 渲染每一项
     items.forEach((item, index) => {
         const itemEl = document.createElement('div');
         itemEl.className = 'character-app-usage-item';
         const durationInMinutes = durationsInMinutes[index];
         const barWidth = maxDuration > 0 ? (durationInMinutes / maxDuration) * 100 : 0;
-
         itemEl.innerHTML = `
             <div class="app-usage-header">
                 <span class="name">${item.appName}</span>
-                <span class="duration">${item.duration}</span>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="duration">${item.duration}</span>
+                    <button class="item-delete-btn" data-type="appUsage" data-index="${index}">×</button>
+                </div>
             </div>
             <div class="app-usage-bar-container">
                 <div class="app-usage-bar" style="width: ${barWidth}%;"></div>
@@ -20003,10 +21000,9 @@ function renderCharacterAppUsage() {
     });
 }
 
-// ▲▲▲ 新增渲染函数结束 ▲▲▲
 
 /**
- * 【日记 V3-带删除和美化】渲染角色的日记列表
+ * 【日记 V4-最终修复版】渲染角色的日记列表
  */
 function renderCharacterDiary() {
     const listEl = document.getElementById('character-diary-list');
@@ -20017,53 +21013,22 @@ function renderCharacterDiary() {
         return;
     }
     
-    // 我们需要用索引来找到并删除日记，所以这里用 forEach 的第二个参数
     [...items].reverse().forEach((item, index) => {
-        // 因为我们反转了数组来显示，所以需要计算出它在原始数组中的真实索引
         const originalIndex = items.length - 1 - index;
-
         const itemEl = document.createElement('div');
         itemEl.className = 'character-data-item';
-        
         const contentHtml = renderMarkdown(item.content);
-            
         itemEl.innerHTML = `
             <div class="content">${contentHtml}</div>
             <div class="meta">
                 <span>${new Date(item.timestamp).toLocaleString()}</span>
             </div>
-            <!-- 添加一个隐藏的删除按钮 -->
-            <button class="diary-delete-btn" title="删除这篇日记">×</button>
+            <button class="item-delete-btn" data-type="diary" data-index="${originalIndex}">×</button>
         `;
-
-        // 【核心】为整张日记卡片添加长按事件
-        addLongPressListener(itemEl, () => {
-            const deleteBtn = itemEl.querySelector('.diary-delete-btn');
-            // 长按时，让删除按钮显示出来
-            deleteBtn.style.opacity = '1';
-        });
-
-        // 为删除按钮本身添加点击事件
-        itemEl.querySelector('.diary-delete-btn').addEventListener('click', async (e) => {
-            e.stopPropagation(); // 阻止事件冒泡
-            const confirmed = await showCustomConfirm(
-                '删除日记',
-                '确定要永久删除这篇日记吗？',
-                { confirmButtonClass: 'btn-danger' }
-            );
-            if (confirmed) {
-                // 从数据中移除
-                state.chats[activeCharacterPhoneId].characterPhoneData.diary.splice(originalIndex, 1);
-                // 保存到数据库
-                await db.chats.put(state.chats[activeCharacterPhoneId]);
-                // 重新渲染列表
-                renderCharacterDiary();
-            }
-        });
-        
         listEl.appendChild(itemEl);
     });
 }
+
 
 /**
  * 【日记】独立刷新，生成新的日记条目
@@ -20266,10 +21231,230 @@ async function handleVideoCallReroll() {
     await triggerAiInCallAction();
 }
 // ▲▲▲ 新函数粘贴结束 ▲▲▲
+// ▼▼▼ 请将这【一整块新函数】粘贴到JS功能函数定义区 ▼▼▼
+
+/**
+ * 应用指定的主题（'light' 或 'dark'）
+ * @param {string} theme - 要应用的主题名称
+ */
+function applyTheme(theme) {
+    const phoneScreen = document.getElementById('phone-screen');
+    const toggleSwitch = document.getElementById('theme-toggle-switch');
+    
+    const isDark = theme === 'dark';
+    
+    // 核心操作：添加或移除 .dark-mode 类
+    phoneScreen.classList.toggle('dark-mode', isDark);
+    
+    // 如果开关存在，就同步它的状态
+    if (toggleSwitch) {
+        toggleSwitch.checked = isDark;
+    }
+    
+    // 将用户的选择保存到本地存储，以便下次打开时记住
+    localStorage.setItem('ephone-theme', theme);
+
+    // 【重要】因为聊天背景色依赖模式，切换后需要重新渲染
+    if (state.activeChatId) {
+        renderChatInterface(state.activeChatId);
+    }
+}
+
+/**
+ * 当用户点击开关时，切换当前的主题
+ */
+function toggleTheme() {
+    const toggleSwitch = document.getElementById('theme-toggle-switch');
+    // 直接根据开关的选中状态来决定新主题
+    const newTheme = toggleSwitch.checked ? 'dark' : 'light';
+    applyTheme(newTheme);
+}
+
+// ▲▲▲ 新函数粘贴结束 ▲▲▲
 
         // ===================================================================
         // 4. 初始化函数 init()
         // ===================================================================
+        /* ▼▼▼ 把这一整块全新的功能函数，粘贴到 init() 函数的上方 ▼▼▼ */
+
+/* ▼▼▼ 把这一整块全新的功能函数，粘贴到 init() 函数的上方 ▼▼▼ */
+        async function init() {
+            // ▼▼▼ 在 init() 函数的【最开头】，粘贴下面这两行代码 ▼▼▼
+            const savedTheme = localStorage.getItem('ephone-theme') || 'light'; // 默认为日间模式
+            applyTheme(savedTheme);
+            // ▲▲▲ 粘贴结束 ▲▲▲
+            // ...你原来的其他 init() 代码...
+        }
+
+/* ▼▼▼ 【V2修正版】主屏幕美化预设核心功能函数 ▼▼▼ */
+
+let activeHomePresetId = null; // 用于追踪当前选中的预设ID
+
+/**
+ * 启用或禁用预设管理按钮
+ */
+function toggleHomePresetButtons(isEnabled) {
+    document.getElementById('apply-home-preset-btn').disabled = !isEnabled;
+    document.getElementById('rename-home-preset-btn').disabled = !isEnabled;
+    document.getElementById('delete-home-preset-btn').disabled = !isEnabled;
+    document.getElementById('export-home-preset-btn').disabled = !isEnabled;
+}
+
+/**
+ * 加载预设到下拉框
+ */
+async function loadHomeScreenPresetsToDropdown() {
+    const selector = document.getElementById('home-preset-selector');
+    selector.innerHTML = '<option value="">-- 请选择一个预设 --</option>';
+    const presets = await db.homeScreenPresets.toArray();
+    presets.forEach(preset => {
+        const option = document.createElement('option');
+        option.value = preset.id;
+        option.textContent = preset.name;
+        selector.appendChild(option);
+    });
+    activeHomePresetId = null; // 重置选择
+    toggleHomePresetButtons(false); // 默认禁用按钮
+}
+
+/**
+ * 【新】当用户从下拉框选择一个预设时
+ */
+function handleHomePresetSelection() {
+    const selector = document.getElementById('home-preset-selector');
+    activeHomePresetId = selector.value ? parseInt(selector.value) : null;
+    // 只有当用户确实选择了一个预设时，才启用相关按钮
+    toggleHomePresetButtons(!!activeHomePresetId);
+}
+
+/**
+ * 【新】应用当前选中的预设
+ */
+async function applySelectedHomeScreenPreset() {
+    if (!activeHomePresetId) {
+        alert("请先从下拉框中选择一个要应用的预设。");
+        return;
+    }
+    const preset = await db.homeScreenPresets.get(activeHomePresetId);
+    if (preset && preset.data) {
+        state.globalSettings.widgetData = preset.data;
+        await db.globalSettings.put(state.globalSettings);
+        applyWidgetData(); // 应用数据
+                // ▼▼▼ 在这里添加下面这整块新代码 ▼▼▼
+        // 【核心新增】检查预设里是否存了图标数据
+        if (preset.data.appIcons) {
+            // 如果有，就用预设里的图标数据覆盖掉当前的全局设置
+            state.globalSettings.appIcons = { ...preset.data.appIcons };
+            await db.globalSettings.put(state.globalSettings);
+            // 立刻应用新的图标到主屏幕上
+            applyAppIcons();
+        }
+        // ▲▲▲ 新代码添加结束 ▲▲▲
+        alert(`已成功应用预设: "${preset.name}"！`);
+        showScreen('home-screen');
+    }
+}
+
+/**
+ * 保存当前的主屏幕设置为一个新的预设
+ */
+async function saveCurrentHomeScreenAsPreset() {
+    const presetName = await showCustomPrompt("保存预设", "请为这个主屏幕美化方案起个名字：");
+    if (!presetName || !presetName.trim()) {
+        if (presetName !== null) alert("名字不能为空！");
+        return;
+    }
+    const presetData = {
+        'profile-banner-img': document.getElementById('profile-banner-img').src,
+        'profile-avatar-img': document.getElementById('profile-avatar-img').src,
+        'profile-username': document.getElementById('profile-username').textContent,
+        'profile-sub-username': document.getElementById('profile-sub-username').textContent,
+        'profile-bio': document.getElementById('profile-bio').textContent,
+        'profile-location': document.getElementById('profile-location').innerHTML,
+        'widget-bubble-1': document.getElementById('widget-bubble-1').textContent,
+        'widget-image-1': document.getElementById('widget-image-1').src,
+        'widget-subtext-1': document.getElementById('widget-subtext-1').textContent,
+        'widget-bubble-2': document.getElementById('widget-bubble-2').textContent,
+        'widget-image-2': document.getElementById('widget-image-2').src,
+        'widget-subtext-2': document.getElementById('widget-subtext-2').textContent,
+        'appIcons': { ...state.globalSettings.appIcons } 
+    };
+    await db.homeScreenPresets.add({ name: presetName.trim(), data: presetData });
+    await loadHomeScreenPresetsToDropdown();
+    alert(`预设 "${presetName.trim()}" 已保存！`);
+}
+
+/**
+ * 重命名选中的预设
+ */
+async function renameSelectedHomeScreenPreset() {
+    if (!activeHomePresetId) return;
+    const currentPreset = await db.homeScreenPresets.get(activeHomePresetId);
+    const newName = await showCustomPrompt("重命名", "请输入新的名称：", currentPreset.name);
+    if (newName && newName.trim()) {
+        await db.homeScreenPresets.update(activeHomePresetId, { name: newName.trim() });
+        await loadHomeScreenPresetsToDropdown();
+        document.getElementById('home-preset-selector').value = activeHomePresetId;
+        alert("重命名成功！");
+    }
+}
+
+/**
+ * 删除选中的预设
+ */
+async function deleteSelectedHomeScreenPreset() {
+    if (!activeHomePresetId) return;
+    const currentPreset = await db.homeScreenPresets.get(activeHomePresetId);
+    const confirmed = await showCustomConfirm("确认删除", `确定要删除预设 "${currentPreset.name}" 吗？`, { confirmButtonClass: 'btn-danger' });
+    if (confirmed) {
+        await db.homeScreenPresets.delete(activeHomePresetId);
+        await loadHomeScreenPresetsToDropdown(); // 这会自动重置选择并禁用按钮
+        alert("预设已删除。");
+    }
+}
+
+/**
+ * 【全新】导出选中的预设
+ */
+async function exportHomeScreenPreset() {
+    if (!activeHomePresetId) return;
+    const preset = await db.homeScreenPresets.get(activeHomePresetId);
+    const blob = new Blob([JSON.stringify(preset, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${preset.name}-HomeScreen.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+/**
+ * 【全新】导入预设文件
+ */
+function importHomeScreenPreset(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+            // 简单验证一下文件内容是不是我们需要的格式
+            if (data.name && data.data) {
+                await db.homeScreenPresets.add({ name: `${data.name} (导入)`, data: data.data });
+                await loadHomeScreenPresetsToDropdown();
+                alert(`预设 "${data.name}" 导入成功！`);
+            } else {
+                alert("导入失败：文件格式不正确。");
+            }
+        } catch (error) {
+            alert(`导入失败：文件解析错误。${error.message}`);
+        }
+    };
+    reader.readAsText(file);
+}
+/* ▲▲▲ 新功能函数粘贴结束 ▲▲▲ */
+
+
+
         async function init() {
 
     // ▼▼▼ 在 init() 函数的【最开头】，粘贴下面这两行代码 ▼▼▼
@@ -20302,6 +21487,7 @@ async function handleVideoCallReroll() {
             window.renderWorldBookScreenProxy = renderWorldBookScreen;
 
             await loadAllDataFromDB();
+            applyWidgetData();
 
             // 初始化未读动态计数
             const storedCount = parseInt(localStorage.getItem('unreadPostsCount')) || 0;
@@ -20338,6 +21524,43 @@ applyAppIcons();
             // ==========================================================
             // --- 各种事件监听器 ---
             // ==========================================================
+            // ▼▼▼ 【全新】“查角色手机”功能事件监听器 ▼▼▼
+
+// 1. 绑定主屏幕上的“查手机”APP图标
+//    【核心修复】我们现在用 JS 来绑定事件，而不是用 HTML 的 onclick
+document.getElementById('check-phone-btn').addEventListener('click', openCharacterSelectionScreen);
+
+// 2. 角色选择列表的点击事件 (事件委托)
+document.getElementById('character-selection-list').addEventListener('click', (e) => {
+    const item = e.target.closest('.character-select-item');
+    if (item && item.dataset.chatId) {
+        openCharacterPhone(item.dataset.chatId);
+    }
+});
+
+// 3. 角色手机顶部的“刷新”和“清空”按钮
+document.getElementById('generate-character-data-btn').addEventListener('click', generateCharacterPhoneData);
+document.getElementById('clear-character-data-btn').addEventListener('click', clearCharacterPhoneData);
+
+// ▲▲▲ 事件监听器添加结束 ▲▲▲
+// ▼▼▼ 【V3最终美化版】主屏幕预设功能事件绑定 ▼▼▼
+document.getElementById('home-preset-selector').addEventListener('change', handleHomePresetSelection);
+document.getElementById('apply-home-preset-btn').addEventListener('click', applySelectedHomeScreenPreset);
+// 【核心修改】这里按钮的ID变了
+document.getElementById('save-home-preset-btn').addEventListener('click', saveCurrentHomeScreenAsPreset); 
+document.getElementById('rename-home-preset-btn').addEventListener('click', renameSelectedHomeScreenPreset);
+document.getElementById('delete-home-preset-btn').addEventListener('click', deleteSelectedHomeScreenPreset);
+document.getElementById('export-home-preset-btn').addEventListener('click', exportHomeScreenPreset);
+document.getElementById('import-home-preset-btn').addEventListener('click', () => document.getElementById('import-home-preset-input').click());
+document.getElementById('import-home-preset-input').addEventListener('change', (e) => {
+    importHomeScreenPreset(e.target.files[0]);
+    e.target.value = null;
+});
+
+            document.getElementById('theme-toggle-switch').addEventListener('change', toggleTheme);
+  
+
+
  // ▼▼▼ 这是我们新加的导入功能事件监听 ▼▼▼
         document.getElementById('import-character-card-btn').addEventListener('click', () => {
             // 点击我们的新按钮时，就去触发那个隐藏的文件选择框
@@ -20370,7 +21593,15 @@ document.getElementById('phone-screen').addEventListener('click', unlockAudioCon
     // ▲▲▲ 修改结束 ▲▲▲
 
 exitSelectionMode(); state.activeChatId = null; showScreen('chat-list-screen'); });
-            
+            // ▼▼▼ 在 init() 的事件监听器区域末尾，粘贴这段新代码 ▼▼▼
+            // 为歌曲封面/歌词区域绑定点击切换事件
+            document.getElementById('music-display-area').addEventListener('click', () => {
+                const displayArea = document.getElementById('music-display-area');
+                // 直接切换 .show-lyrics 这个类，CSS会自动处理显示/隐藏
+                displayArea.classList.toggle('show-lyrics');
+            });
+            // ▲▲▲ 新代码粘贴结束 ▲▲▲
+
                         document.getElementById('add-chat-btn').addEventListener('click', async () => { 
                 const name = await showCustomPrompt('创建新聊天', '请输入Ta的名字'); 
                 if (name && name.trim()) { 
@@ -20466,8 +21697,6 @@ document.getElementById('search-results-list').addEventListener('click', (e) => 
 // ▲▲▲ 新增事件绑定结束 ▲▲▲
 
             audioPlayer.addEventListener('ended', playNext);
-            audioPlayer.addEventListener('pause', () => { if(musicState.isActive) { musicState.isPlaying = false; updatePlayerUI(); } });
-            audioPlayer.addEventListener('play', () => { if(musicState.isActive) { musicState.isPlaying = true; updatePlayerUI(); } });
 
             const chatInput = document.getElementById('chat-input');
             // ▼▼▼ 找到 id="send-btn" 的 click 事件监听器 ▼▼▼
@@ -22549,26 +23778,43 @@ document.getElementById('close-ai-avatar-library-btn').addEventListener('click',
 // ▲▲▲ 新增结束 ▲▲▲
 
 // ▼▼▼ 在 init() 的事件监听区域，粘贴这段【新代码】▼▼▼
-document.getElementById('icon-settings-grid').addEventListener('click', async (e) => {
-    if (e.target.classList.contains('change-icon-btn')) {
-        const item = e.target.closest('.icon-setting-item');
-        const iconId = item.dataset.iconId;
-        if (!iconId) return;
+            // ▼▼▼ 【请求4】App图标上传功能升级 (请用这整块代码替换旧的icon-settings-grid监听器) ▼▼▼
+            document.getElementById('icon-settings-grid').addEventListener('click', async (e) => {
+                if (e.target.classList.contains('change-icon-btn')) {
+                    const item = e.target.closest('.icon-setting-item');
+                    const iconId = item.dataset.iconId;
+                    if (!iconId) return;
 
-        const currentUrl = state.globalSettings.appIcons[iconId];
-        const newUrl = await showCustomPrompt(`更换“${item.querySelector('.icon-preview').alt}”图标`, '请输入新的图片URL', currentUrl, 'url');
+                    // 1. 弹出选择模态框
+                    const choice = await showChoiceModal("更换图标", [
+                        { text: '📁 从本地上传', value: 'local' },
+                        { text: '🌐 使用网络URL', value: 'url' }
+                    ]);
 
-        if (newUrl && newUrl.trim().startsWith('http')) {
-            // 仅在内存中更新，等待用户点击“保存”
-            state.globalSettings.appIcons[iconId] = newUrl.trim();
-            // 实时更新设置页面的预览图
-            item.querySelector('.icon-preview').src = newUrl.trim();
-        } else if (newUrl !== null) {
-            alert("请输入一个有效的URL！");
-        }
-    }
-});
-// ▲▲▲ 新代码粘贴结束 ▲▲▲
+                    let newUrl = null;
+
+                    // 2. 根据用户的选择执行不同操作
+                    if (choice === 'local') {
+                        newUrl = await uploadImageLocally(); // 调用我们之前写好的本地上传辅助函数
+                    } else if (choice === 'url') {
+                        const currentUrl = state.globalSettings.appIcons[iconId];
+                        newUrl = await showCustomPrompt(`更换“${item.querySelector('.icon-preview').alt}”图标`, '请输入新的图片URL', currentUrl, 'url');
+                    }
+
+                    // 3. 处理最终结果
+                    if (newUrl && newUrl.trim()) {
+                        const trimmedUrl = newUrl.trim();
+                        // 仅在内存中更新，等待用户点击“保存”
+                        state.globalSettings.appIcons[iconId] = trimmedUrl;
+                        // 实时更新设置页面的预览图
+                        item.querySelector('.icon-preview').src = trimmedUrl;
+                    } else if (newUrl !== null) {
+                        alert("请输入一个有效的URL或选择一个文件！");
+                    }
+                }
+            });
+            // ▲▲▲ 替换结束 ▲▲▲
+
 
 // ▼▼▼ 在 init() 函数的末尾，粘贴这段【全新的事件监听器】 ▼▼▼
 
@@ -22845,36 +24091,76 @@ document.getElementById('playlist-body').addEventListener('click', async (e) => 
         }
         return;
     }
-    if (target.classList.contains('lyrics-btn')) {
-        const index = parseInt(target.dataset.index);
-        if (isNaN(index)) return;
-        const lrcContent = await new Promise(resolve => {
-            const lrcInput = document.getElementById('lrc-upload-input');
-            const handler = (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (re) => resolve(re.target.result);
-                    reader.readAsText(file);
-                } else {
-                    resolve(null);
+    // ▼▼▼ 在 lyrics-btn 的判断逻辑【上方】，添加这段新代码 ▼▼▼
+            if (target.classList.contains('cover-btn')) {
+                const index = parseInt(target.dataset.index);
+                if (!isNaN(index)) {
+                    handleCoverUpload(index);
                 }
-                lrcInput.removeEventListener('change', handler);
-                lrcInput.value = '';
-            };
-            lrcInput.addEventListener('change', handler);
-            lrcInput.click();
-        });
-        if (lrcContent !== null) {
-            musicState.playlist[index].lrcContent = lrcContent;
-            await saveGlobalPlaylist();
-            alert('歌词导入成功！');
-            if (musicState.currentIndex === index) {
-                musicState.parsedLyrics = parseLRC(lrcContent);
-                renderLyrics();
+                return; // 处理完就退出，避免触发其他逻辑
             }
-        }
-    }
+// ▲▲▲ 添加结束 ▲▲▲
+
+            // ▼▼▼ 请用这【一整块新代码】替换旧的 lyrics-btn 点击逻辑 ▼▼▼
+            if (target.classList.contains('lyrics-btn')) {
+                const index = parseInt(target.dataset.index);
+                if (isNaN(index)) return;
+
+                // 1. 弹窗询问用户选择（已移除图标）
+                const choice = await showChoiceModal("选择歌词来源", [
+                    { text: '使用网络URL', value: 'url' },
+                    { text: '从本地上传', value: 'local' }
+                ]);
+
+                let lrcContent = null;
+
+                // 2. 根据选择执行不同操作
+                if (choice === 'url') {
+                    const url = await showCustomPrompt("歌词URL", "请输入.lrc歌词文件的网络链接");
+                    if (url && url.trim()) {
+                        try {
+                            const response = await fetch(url.trim());
+                            if (response.ok) {
+                                lrcContent = await response.text();
+                            } else {
+                                alert('无法获取歌词文件，请检查URL是否正确。');
+                            }
+                        } catch (error) {
+                            alert('获取歌词失败: ' + error.message);
+                        }
+                    }
+                } else if (choice === 'local') {
+                    lrcContent = await new Promise(resolve => {
+                        const lrcInput = document.getElementById('lrc-upload-input');
+                        const handler = (event) => {
+                            const file = event.target.files[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = (re) => resolve(re.target.result);
+                                reader.readAsText(file);
+                            } else {
+                                resolve(null);
+                            }
+                            lrcInput.removeEventListener('change', handler);
+                            lrcInput.value = '';
+                        };
+                        lrcInput.addEventListener('change', handler);
+                        lrcInput.click();
+                    });
+                }
+
+                // 3. 如果成功获取到歌词，就保存并更新
+                if (lrcContent !== null) {
+                    musicState.playlist[index].lrcContent = lrcContent;
+                    await saveGlobalPlaylist();
+                    alert('歌词导入成功！');
+                    if (musicState.currentIndex === index) {
+                        musicState.parsedLyrics = parseLRC(lrcContent);
+                        renderLyrics();
+                    }
+                }
+            }
+            // ▲▲▲ 替换结束 ▲▲▲
 });
 
 document.querySelector('.progress-bar').addEventListener('click', (e) => {
@@ -23398,18 +24684,6 @@ applyLyricsSettings();
 
 // ▲▲▲ 新代码粘贴结束 ▲▲▲
 
-            // ▼▼▼ 在 init() 函数的事件监听器区域末尾添加 ▼▼▼
-            // 绑定主屏幕滑动事件
-            homeScreen.addEventListener('touchstart', handleTouchStart, { passive: true });
-            homeScreen.addEventListener('touchmove', handleTouchMove, { passive: true });
-            homeScreen.addEventListener('touchend', handleTouchEnd);
-            // 兼容桌面端鼠标拖动
-            homeScreen.addEventListener('mousedown', handleTouchStart);
-            homeScreen.addEventListener('mousemove', handleTouchMove);
-            homeScreen.addEventListener('mouseup', handleTouchEnd);
-            homeScreen.addEventListener('mouseleave', handleTouchEnd); // 防止鼠标拖出屏幕
-            // ▲▲▲ 新代码粘贴结束 ▲▲▲
-
             // ▼▼▼ 【全新】“查角色手机”功能事件监听器 ▼▼▼
 
             // 1. 绑定主屏幕上的“查手机”APP图标
@@ -23465,6 +24739,30 @@ applyLyricsSettings();
             });
             document.getElementById('generate-diary-entry-btn').addEventListener('click', generateNewDiaryEntry);
             // ▲▲▲ 新代码粘贴结束 ▲▲▲
+// ▼▼▼ 【全新】“查手机”内容单条删除功能事件绑定 ▼▼▼
+document.getElementById('character-phone-container').addEventListener('click', (e) => {
+    const deleteBtn = e.target.closest('.item-delete-btn');
+    if (deleteBtn) {
+        // 【新增】处理微信消息删除
+        if (deleteBtn.classList.contains('message-delete-btn')) {
+            const contactName = deleteBtn.dataset.contactName;
+            const index = parseInt(deleteBtn.dataset.index);
+            if (contactName && !isNaN(index)) {
+                handleCharacterChatMessageDeletion(contactName, index);
+            }
+        } 
+        // 处理其他列表删除
+        else {
+            const dataType = deleteBtn.dataset.type;
+            const index = parseInt(deleteBtn.dataset.index);
+            if (dataType && !isNaN(index)) {
+                handleCharacterDataDeletion(dataType, index);
+            }
+        }
+    }
+});
+// ▲▲▲ 删除功能事件绑定结束 ▲▲▲
+
 // ▼▼▼ 【全新】NPC库管理功能事件绑定 ▼▼▼
 
 // 聊天设置里的“管理NPC库”按钮
@@ -23545,7 +24843,193 @@ document.querySelector('#background-activity-details').addEventListener('click',
         alert(`已为 ${selectedCheckboxes.length} 个角色将后台活动频率设为 "${freqText}"`);
     }
 });
+// 使用事件委托，为所有可编辑元素统一绑定点击事件
+document.getElementById('home-screen').addEventListener('click', (e) => {
+    const target = e.target;
+    // 检查点击的是否是可编辑的文字
+    if (target.classList.contains('editable-text')) {
+        handleEditText(target);
+    }
+    // 检查点击的是否是可编辑的图片
+    if (target.classList.contains('editable-image')) {
+        handleEditImage(target);
+    }
+});
+// ▼▼▼ 步骤 2.2：在 init() 函数的最末尾，粘贴这整块全新的滑动逻辑 ▼▼▼
 
+const homeScreenSlider = document.querySelector('.home-screen-slider');
+const dots = document.querySelectorAll('.pagination-dots .dot');
+if (homeScreenSlider && dots.length > 0) {
+    let currentPage = 0;
+    let touchStartX = 0;
+    let isDragging = false;
+
+    function updateDots() {
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentPage);
+        });
+    }
+
+    function slideToPage(pageIndex) {
+        currentPage = pageIndex;
+        const offset = - (currentPage * 100);
+        homeScreenSlider.style.transform = `translateX(${offset}%)`;
+        updateDots();
+    }
+    
+    function getEventX(e) {
+        return e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+    }
+
+    function handleTouchStart(e) {
+        isDragging = true;
+        touchStartX = getEventX(e);
+        homeScreenSlider.style.transition = 'none';
+    }
+
+    function handleTouchMove(e) {
+        if (!isDragging) return;
+        const currentX = getEventX(e);
+        const diffX = currentX - touchStartX;
+        const baseOffset = - (currentPage * 100);
+        homeScreenSlider.style.transform = `translateX(calc(${baseOffset}% + ${diffX}px))`;
+    }
+
+    function handleTouchEnd(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        homeScreenSlider.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        
+        const touchEndX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
+        const diffX = touchEndX - touchStartX;
+        const threshold = 50;
+
+        if (diffX < -threshold && currentPage < dots.length - 1) {
+            currentPage++;
+        } else if (diffX > threshold && currentPage > 0) {
+            currentPage--;
+        }
+        slideToPage(currentPage);
+    }
+    
+    const homeScreenContainer = document.getElementById('home-screen');
+    homeScreenContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
+    homeScreenContainer.addEventListener('touchmove', handleTouchMove, { passive: true });
+    homeScreenContainer.addEventListener('touchend', handleTouchEnd);
+    homeScreenContainer.addEventListener('mousedown', handleTouchStart);
+    document.addEventListener('mousemove', handleTouchMove);
+    document.addEventListener('mouseup', handleTouchEnd);
+}
+
+// ▲▲▲ 滑动逻辑粘贴结束 ▲▲▲
+// ▼▼▼ 【全新】“查手机”内容单条删除功能 ▼▼▼
+/**
+ * 处理角色手机内数据删除的通用函数
+ * @param {string} dataType - 要删除的数据类型, 比如 'memos', 'shoppingCart'
+ * @param {number} index - 要删除的数据在数组中的索引
+ */
+async function handleCharacterDataDeletion(dataType, index) {
+    if (!activeCharacterPhoneId) return;
+    const chat = state.chats[activeCharacterPhoneId];
+    
+    let dataArray;
+    // 【核心修改】处理像 bank.transactions 这样的嵌套数据
+    if (dataType.includes('.')) {
+        const keys = dataType.split('.');
+        dataArray = chat.characterPhoneData[keys[0]][keys[1]];
+    } else {
+        dataArray = chat.characterPhoneData[dataType];
+    }
+
+    if (!chat || !dataArray) return;
+
+    const itemToDelete = dataArray[index];
+    if (!itemToDelete) return;
+
+    const confirmed = await showCustomConfirm(
+        '确认删除',
+        '确定要删除这条记录吗？',
+        { confirmButtonClass: 'btn-danger' }
+    );
+
+    if (confirmed) {
+        dataArray.splice(index, 1);
+        await db.chats.put(chat);
+        
+        // 根据删除的类型，重新渲染对应的APP界面
+        switch(dataType) {
+            case 'memos': renderCharacterMemos(); break;
+            case 'shoppingCart': renderCharacterShoppingCart(); break;
+            case 'browserHistory': renderCharacterBrowser(); break;
+            case 'diary': renderCharacterDiary(); break;
+            case 'bank.transactions': renderCharacterBank(); break; // 新增
+            case 'trajectory': renderCharacterTrajectory(); break;   // 新增
+            case 'appUsage': renderCharacterAppUsage(); break;       // 新增
+            case 'photoAlbum': renderCharacterPhotoAlbum(); break;   // 新增
+        }
+        alert('记录已删除。');
+    }
+}
+// 使用事件委托来处理所有删除按钮的点击
+document.getElementById('character-phone-container').addEventListener('click', (e) => {
+    if (e.target.classList.contains('item-delete-btn')) {
+        const dataType = e.target.dataset.type;
+        const index = parseInt(e.target.dataset.index);
+        if (dataType && !isNaN(index)) {
+            handleCharacterDataDeletion(dataType, index);
+        }
+    }
+});
+// ▲▲▲ 删除功能结束 ▲▲▲
+// ▼▼▼ 【全新】“查手机”内容单条删除功能 ▼▼▼
+/**
+ * 处理角色手机内数据删除的通用函数
+ * @param {string} dataType - 要删除的数据类型, 比如 'memos', 'shoppingCart'
+ * @param {number} index - 要删除的数据在数组中的索引
+ */
+async function handleCharacterDataDeletion(dataType, index) {
+    if (!activeCharacterPhoneId) return;
+    const chat = state.chats[activeCharacterPhoneId];
+    
+    let dataArray;
+    // 处理像 bank.transactions 这样的嵌套数据
+    if (dataType.includes('.')) {
+        const keys = dataType.split('.');
+        dataArray = chat.characterPhoneData[keys[0]][keys[1]];
+    } else {
+        dataArray = chat.characterPhoneData[dataType];
+    }
+
+    if (!chat || !dataArray) return;
+
+    const itemToDelete = dataArray[index];
+    if (!itemToDelete) return;
+
+    const confirmed = await showCustomConfirm(
+        '确认删除',
+        '确定要删除这条记录吗？',
+        { confirmButtonClass: 'btn-danger' }
+    );
+
+    if (confirmed) {
+        dataArray.splice(index, 1);
+        await db.chats.put(chat);
+        
+        // 根据删除的类型，重新渲染对应的APP界面
+        switch(dataType) {
+            case 'memos': renderCharacterMemos(); break;
+            case 'shoppingCart': renderCharacterShoppingCart(); break;
+            case 'browserHistory': renderCharacterBrowser(); break;
+            case 'diary': renderCharacterDiary(); break;
+            case 'bank.transactions': renderCharacterBank(); break;
+            case 'trajectory': renderCharacterTrajectory(); break;
+            case 'appUsage': renderCharacterAppUsage(); break;
+            case 'photoAlbum': renderCharacterPhotoAlbum(); break;
+        }
+        alert('记录已删除。');
+    }
+}
+// ▲▲▲ 删除功能结束 ▲▲▲
 
 
 

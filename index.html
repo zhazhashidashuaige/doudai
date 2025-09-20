@@ -6,10 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
 <!-- 1. (核心) 为苹果设备设置主屏幕图标 -->
-<link rel="apple-touch-icon" href="https://i.postimg.cc/Kj8JnRcp/267611-CC01-F8-A3-B4910-A2-C2-FFDE479-DC.jpg">
-<link rel="apple-touch-icon" sizes="152x152" href="https://i.postimg.cc/Kj8JnRcp/267611-CC01-F8-A3-B4910-A2-C2-FFDE479-DC.jpg">
-<link rel="apple-touch-icon" sizes="180x180" href="https://i.postimg.cc/Kj8JnRcp/267611-CC01-F8-A3-B4910-A2-C2-FFDE479-DC.jpg">
-<link rel="apple-touch-icon" sizes="167x167" href="https://i.postimg.cc/Kj8JnRcp/267611-CC01-F8-A3-B4910-A2-C2-FFDE479-DC.jpg">
+<link rel="apple-touch-icon" href="https://i.postimg.cc/LsDj0HsL/99985605cd73e222fa4ad523333b0706.jpg">
+<link rel="apple-touch-icon" sizes="152x152" href="https://i.postimg.cc/LsDj0HsL/99985605cd73e222fa4ad523333b0706.jpg">
+<link rel="apple-touch-icon" sizes="180x180" href="https://i.postimg.cc/LsDj0HsL/99985605cd73e222fa4ad523333b0706.jpg">
+<link rel="apple-touch-icon" sizes="167x167" href="https://i.postimg.cc/LsDj0HsL/99985605cd73e222fa4ad523333b0706.jpg">
 
 <!-- 2. (核心) 链接到manifest文件 -->
 <link rel="manifest" href="manifest.json">
@@ -27,7 +27,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 
 <!-- 7. (备用) 标准浏览器页签图标 -->
-<link rel="icon" type="image/png" href="https://i.postimg.cc/Kj8JnRcp/267611-CC01-F8-A3-B4910-A2-C2-FFDE479-DC.jpg">
+<link rel="icon" type="image/png" href="https://i.postimg.cc/LsDj0HsL/99985605cd73e222fa4ad523333b0706.jpg">
 <!-- ▲▲▲ 替换结束 ▲▲▲ -->
 
 
@@ -4366,113 +4366,6 @@ body {
 }
 /* ▲▲▲ 新CSS粘贴结束 ▲▲▲ */
 
-/* ▼▼▼ 【全新】聊天记录搜索功能样式 ▼▼▼ */
-
-/* 搜索结果条目样式 */
-.search-result-item {
-    padding: 12px 15px;
-    border-bottom: 1px solid var(--border-color);
-    cursor: pointer;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-}
-.search-result-item:hover {
-    background-color: #f5f5f5;
-}
-#phone-screen.dark-mode .search-result-item:hover {
-    background-color: #2c2c2e;
-}
-
-.search-result-item .avatar {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
-.search-result-item .result-content {
-    flex-grow: 1;
-    overflow: hidden;
-}
-
-.search-result-item .result-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 4px;
-}
-
-.search-result-item .result-sender {
-    font-weight: 600;
-    font-size: 15px;
-}
-
-.search-result-item .result-timestamp {
-    font-size: 12px;
-    color: var(--text-secondary);
-}
-
-.search-result-item .result-message-snippet {
-    font-size: 14px;
-    color: var(--text-primary);
-    line-height: 1.5;
-    word-break: break-word;
-}
-
-/* 搜索结果中的高亮关键词 */
-.search-result-item .highlight {
-    background-color: #ffd700;
-    color: #000;
-    font-weight: bold;
-    border-radius: 3px;
-    padding: 1px 3px;
-}
-#phone-screen.dark-mode .search-result-item .highlight {
-    background-color: #ffc107;
-}
-
-
-/* ▼▼▼ 【全新】聊天记录高亮功能样式 (文字高亮版) ▼▼▼ */
-
-/* 1. 定义一个新的动画，这次我们同时改变背景色和文字颜色 */
-@keyframes jump-highlight-text {
-    0% {
-        background-color: transparent; /* 动画开始时，文字背景是透明的 */
-        color: inherit; /* 文字颜色继承它本来的颜色 */
-    }
-    50% {
-        background-color: #ffd700; /* 在动画中间，文字背景变为高亮的黄色 */
-        color: #000000 !important; /* 同时，强制把文字颜色变为黑色，确保在黄底上清晰可见 */
-    }
-    100% {
-        background-color: transparent; /* 动画结束，文字背景恢复透明 */
-        color: inherit; /* 文字颜色也恢复原样 */
-    }
-}
-
-/* 2. 将这个新动画应用到消息气泡的 .content 区域 */
-/*    这样它就只会影响文字区域，而不会影响整个气泡 */
-.jump-highlight-animation .content {
-    animation: jump-highlight-text 1.5s ease-in-out;
-    border-radius: 5px; /* (可选)给高亮区域一点点圆角，更好看 */
-}
-
-/* ▲▲▲ 新样式粘贴结束 ▲▲▲ */
-
-/* ▼▼▼ 【全新】搜索界面美化样式 ▼▼▼ */
-#chat-search-screen {
-    background-color: #f0f2f5; /* 和其他内容页统一的背景色 */
-}
-#search-controls {
-    background-color: var(--secondary-bg); /* 让控制区背景能适配夜间模式 */
-}
-#phone-screen.dark-mode #chat-search-screen {
-    background-color: #000000;
-}
-/* ▲▲▲ 新样式粘贴结束 ▲▲▲ */
-
 /* ▼▼▼ 【全新】锁屏与密码界面样式 ▼▼▼ */
 
 /* 1. 锁屏界面的总容器 */
@@ -6921,36 +6814,49 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 /* ▲▲▲ 新增样式结束 ▲▲▲ */
-/* ▼▼▼ 这是步骤1需要粘贴的新样式 ▼▼▼ */
+/* ▼▼▼ 【聊天搜索功能修复】请用这块代码，替换掉你 style 标签末尾那两段重复的“王炸修复版”代码 ▼▼▼ */
 
-/* 让每一条评论都变成可点击的 */
-.comment-item {
-    cursor: pointer; /* 鼠标悬停时显示为小手形状 */
-    transition: background-color 0.2s; /* 添加一个平滑的背景色过渡动画 */
-    border-radius: 4px; /* 给一点点圆角，更好看 */
-    padding: 2px 5px; /* 增加一点内边距，让点击区域更大 */
-    margin: 0 -5px; /* 把上面的内边距抵消掉，保持对齐 */
-}
-.comment-item:hover {
-    background-color: #f0f2f5; /* 鼠标放上去时，给一个淡淡的背景色 */
-}
-#phone-screen.dark-mode .comment-item:hover {
-    background-color: #2c2c2e; /* 夜间模式下的悬停颜色 */
+/* --- 第1步：修正搜索页面的主内容区 --- */
+/*
+  问题：你的 .form-container 是一个flex容器，它里面的搜索结果区(#search-results-list)也想撑满剩余空间。
+  但因为 .form-container 本身的高度是“算出来的”(flex-grow:1)，而不是一个固定的值，
+  浏览器就“懵了”，不知道该给 #search-results-list 多少高度，干脆就给了个0。
+  
+  解决：我们给这个容器加一些明确的指令，让它能正确地管理自己的孩子。
+*/
+#chat-search-screen .form-container {
+    /* 强制它成为一个Flex容器，让内部元素垂直排列 */
+    display: flex !important;      
+    flex-direction: column !important;
+    
+    /* 强制它占据父元素中除了头部Header外的所有剩余空间 */
+    flex-grow: 1 !important;
+    
+    /* 【关键修复点 1】防止Flex布局在计算高度时出错，这是个很常见的修复技巧。*/
+    min-height: 0 !important;          
+    
+    /* 【关键修复点 2】我们不希望这个容器自己滚动，而是让里面的“结果列表”滚动。*/
+    overflow: hidden !important;      
 }
 
-/* “回复”这两个字的样式 */
-.comment-item .reply-text {
-    color: var(--text-secondary);
-    margin: 0 4px; /* 和两边的名字拉开一点距离 */
+
+/* --- 第2步：让搜索结果列表可以正确地撑开并滚动 --- */
+/*
+  问题：现在它的父容器已经修正好了，轮到它自己了。
+  解决：我们告诉它要撑满父容器给它的所有空间，并且如果内容太多，就自己出滚动条。
+*/
+#search-results-list {
+    /* 占据父容器(.form-container)内的所有剩余空间 */
+    flex-grow: 1;
+    
+    /* 当内容超出时，自动显示垂直滚动条 */
+    overflow-y: auto;
+    
+    /* 【关键修复点 3】和上面一样，这也是为了确保它能在flex容器里正确地“长大” */
+    min-height: 0;
 }
 
-/* 被回复者的名字样式 */
-.comment-item .reply-target-name {
-    font-weight: 600;
-    color: var(--accent-color);
-    cursor: pointer;
-    margin-right: 5px;
-}
+/* ▲▲▲ 修复结束 ▲▲▲ */
 
 /* ▲▲▲ 步骤1粘贴结束 ▲▲▲ */
     </style>
@@ -8106,41 +8012,40 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     </div>
 </div>
 <!-- ▲▲▲ 新HTML粘贴结束 ▲▲▲ -->
-
-<!-- ▼▼▼ 【全新】聊天记录搜索界面 ▼▼▼ -->
+<!-- ▼▼▼ 【全新】这是聊天记录搜索界面，请粘贴到 call-history-screen 的 div 之后 ▼▼▼ -->
 <div id="chat-search-screen" class="screen">
-    <!-- 1. 界面头部 -->
     <div class="header">
         <span class="back-btn" id="search-back-btn">‹</span>
         <span>查找聊天记录</span>
-        <span style="width: 30px;"></span> <!-- 占位符，保持标题居中 -->
+        <span style="width: 30px;"></span> <!-- 占位符 -->
     </div>
+    <div class="form-container" style="padding-bottom: 0;">
+        <!-- 搜索条件输入区 -->
+        <div class="form-group">
+            <label for="keyword-search-input">关键词</label>
+            <input type="text" id="keyword-search-input" placeholder="输入要查找的关键词...">
+        </div>
+        <div class="form-group">
+            <label for="sender-search-select">人物</label>
+            <select id="sender-search-select">
+                <!-- 选项将由JS动态生成 -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="date-search-input">日期</label>
+            <input type="date" id="date-search-input">
+        </div>
+        <button class="form-button" id="perform-search-btn">开始查找</button>
+        
+        <!-- 搜索结果显示区 -->
+        <div id="search-results-list" class="list-container" style="margin-top: 15px; padding: 0;">
 
-    <!-- 2. 搜索控制区域 -->
-<div id="search-controls" style="padding: 15px; border-bottom: 1px solid var(--border-color);">
-    <div class="form-group">
-        <label for="keyword-search-input">关键词</label>
-        <input type="search" id="keyword-search-input" placeholder="输入关键词搜索..." style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);">
-    </div>
-    <!-- 核心修改：移除了包裹它们的flex div，让它们自然地垂直排列 -->
-    <div class="form-group">
-        <label for="sender-search-select">人物</label>
-        <select id="sender-search-select" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);">
-            <!-- 成员选项将由JS动态生成 -->
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="date-search-input">日期</label>
-        <input type="date" id="date-search-input" style="width: 95%; padding: 8px; border-radius: 8px; border: 1px solid var(--border-color);">
+            <!-- 搜索结果将由JS动态生成在这里 -->
+        </div>
     </div>
 </div>
+<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
 
-    <!-- 3. 搜索结果列表 -->
-    <div id="search-results-list" class="list-container" style="overflow-y: auto; padding-top: 10px;">
-        <!-- 搜索结果将由JS动态生成在这里 -->
-    </div>
-</div>
-<!-- ▲▲▲ 新界面HTML结束 ▲▲▲ -->
 
             <!-- ▼▼▼ 请将下面这整块【全新的HTML代码】粘贴到这里 ▼▼▼ -->
             <div id="lock-screen" class="screen">
@@ -8331,9 +8236,7 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             </div>
 <hr style="margin: 25px 0; border: none; border-top: 1px solid #eee;">
 <button class="form-button form-button-secondary" id="block-chat-btn" style="background-color: #ff3b30; color: white; border-color: #ff3b30;">拉黑对方</button>
-<!-- ▼▼▼ 把这段新代码粘贴到“清空聊天记录”按钮的上方 ▼▼▼ -->
-<button class="form-button form-button-secondary" id="find-history-btn">查找聊天记录</button>
-<!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
+<button class="form-button form-button-secondary" id="search-chat-btn">查找聊天记录</button>
 <button class="form-button form-button-secondary" id="clear-chat-btn">清空聊天记录</button></div><div class="modal-footer"><button class="cancel" id="cancel-chat-settings-btn">取消</button><button class="save" id="save-chat-settings-btn">保存</button></div></div></div>
     
     <div id="persona-library-modal" class="modal"><div class="modal-content"><div class="modal-header"><span>我的人设库</span><button id="add-persona-preset-btn" class="action-button">添加</button></div><div class="modal-body"><div id="persona-library-grid"></div></div><div class="modal-footer"><button class="cancel" id="close-persona-library-btn">关闭</button></div></div></div>
@@ -9291,6 +9194,7 @@ let waimaiTimers = {}; // 用于存储外卖倒计时
 
 let activeMessageTimestamp = null;
 let currentReplyContext = null; // <--- 新增这行，用来存储当前正在引用的消息信息
+let currentSearchKeyword = ''; // 用于在搜索结果中高亮关键词
 let activePostId = null; // <-- 新增：用于存储当前操作的动态ID
 // ▼▼▼ 【全新】BGM 搜索功能核心代码 ▼▼▼
 
@@ -19706,235 +19610,6 @@ function createDateStampElement(timestamp) {
 
     return wrapper;
 }
-
-// ▼▼▼ 【全新】将这三个函数粘贴到JS功能函数定义区 ▼▼▼
-
-// ▼▼▼ 请用这【一整块代码】，完整替换掉你旧的 openChatSearchScreen, performChatSearch, renderSearchResults, 和 jumpToMessage 四个函数 ▼▼▼
-
-/**
- * 【最终修复版】打开并准备聊天记录搜索界面
- */
-function openChatSearchScreen() {
-    const chat = state.chats[state.activeChatId];
-    if (!chat) return;
-
-    document.getElementById('keyword-search-input').value = '';
-    document.getElementById('sender-search-select').innerHTML = '';
-    document.getElementById('date-search-input').value = '';
-    document.getElementById('search-results-list').innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">输入条件开始搜索</p>';
-
-    const senderSelect = document.getElementById('sender-search-select');
-    senderSelect.innerHTML = '<option value="">所有人</option>';
-
-    const myNickname = chat.isGroup ? (chat.settings.myNickname || '我') : '我';
-    const myOption = document.createElement('option');
-    myOption.value = myNickname;
-    myOption.textContent = myNickname;
-    senderSelect.appendChild(myOption);
-
-    if (chat.isGroup) {
-        chat.members.forEach(member => {
-            const memberOption = document.createElement('option');
-            memberOption.value = member.originalName;
-            memberOption.textContent = member.groupNickname;
-            senderSelect.appendChild(memberOption);
-        });
-    } else {
-        const aiOption = document.createElement('option');
-        aiOption.value = chat.name;
-        aiOption.textContent = chat.name;
-        senderSelect.appendChild(aiOption);
-    }
-    
-    document.getElementById('chat-settings-modal').classList.remove('visible');
-    showScreen('chat-search-screen');
-}
-
-/**
- * 【终极修复 + 诊断版】执行聊天记录搜索的核心函数
- */
-function performChatSearch() {
-    console.log("performChatSearch 函数已触发！"); // <--- 诊断日志1：检查函数是否被调用
-
-    const chat = state.chats[state.activeChatId];
-    if (!chat) {
-        console.error("搜索失败：找不到当前聊天对象。");
-        return;
-    }
-
-    const keyword = document.getElementById('keyword-search-input').value.trim().toLowerCase();
-    const sender = document.getElementById('sender-search-select').value;
-    const date = document.getElementById('date-search-input').value;
-
-    console.log(`搜索条件: 关键字='${keyword}', 发送者='${sender}', 日期='${date}'`); // <--- 诊断日志2：检查获取的条件
-
-    if (!keyword && !sender && !date) {
-        document.getElementById('search-results-list').innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">输入条件开始搜索</p>';
-        return;
-    }
-    
-    let results = chat.history.filter(msg => !msg.isHidden);
-
-    if (keyword) {
-        results = results.filter(msg => {
-            let searchableText = '';
-            // 确保所有类型的消息都能被搜索到
-            switch (msg.type) {
-                case 'voice_message': case 'ai_image': case 'user_photo':
-                    searchableText = String(msg.content || ''); break;
-                case 'transfer':
-                    searchableText = `${msg.note || ''} ${msg.amount}`; break;
-                case 'red_packet':
-                    searchableText = `${msg.greeting || ''} ${msg.totalAmount}`; break;
-                case 'poll':
-                    searchableText = `${msg.question} ${msg.options.join(' ')}`; break;
-                case 'share_link':
-                    searchableText = `${msg.title || ''} ${msg.description || ''} ${msg.source_name || ''} ${msg.content || ''}`; break;
-                case 'waimai_request':
-                    searchableText = `${msg.productInfo || ''} ${msg.amount}`; break;
-                case 'quote_reply':
-                    searchableText = `${msg.quote?.content || ''} ${msg.content || ''}`; break;
-                default:
-                    if (typeof msg.content === 'string') searchableText = msg.content;
-                    else if (msg.meaning) searchableText = msg.meaning;
-                    break;
-            }
-            return searchableText.toLowerCase().includes(keyword);
-        });
-    }
-
-    if (sender) {
-        const myNickname = chat.isGroup ? (chat.settings.myNickname || '我') : '我';
-        results = results.filter(msg => {
-            if (msg.role === 'user') {
-                return sender === myNickname;
-            } else { // AI or system message
-                if (chat.isGroup) {
-                    return msg.senderName && msg.senderName === sender;
-                } else {
-                    return sender === chat.name;
-                }
-            }
-        });
-    }
-
-    if (date) {
-        const targetDate = new Date(date);
-        const targetYear = targetDate.getFullYear();
-        const targetMonth = targetDate.getMonth();
-        const targetDay = targetDate.getDate();
-
-        results = results.filter(msg => {
-            const msgDate = new Date(msg.timestamp);
-            return msgDate.getFullYear() === targetYear &&
-                   msgDate.getMonth() === targetMonth &&
-                   msgDate.getDate() === targetDay;
-        });
-    }
-
-    console.log(`过滤后找到 ${results.length} 条结果。`, results); // <--- 诊断日志3：检查过滤后的结果
-    renderSearchResults(results, keyword, chat);
-}
-
-/**
- * 【最终修复版】渲染搜索结果列表
- */
-function renderSearchResults(results, keyword, chat) {
-    const listEl = document.getElementById('search-results-list');
-    listEl.innerHTML = '';
-
-    if (results.length === 0) {
-        listEl.innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">未找到相关记录</p>';
-        return;
-    }
-
-    results.reverse().forEach(msg => {
-        let senderName, avatarSrc;
-        const myNickname = chat.isGroup ? (chat.settings.myNickname || '我') : '我';
-        if (msg.role === 'user') {
-            senderName = myNickname;
-            avatarSrc = chat.settings.myAvatar || defaultAvatar;
-        } else {
-            if (chat.isGroup) {
-                const member = chat.members.find(m => m.originalName === msg.senderName);
-                senderName = member ? member.groupNickname : msg.senderName;
-                avatarSrc = member ? member.avatar : defaultGroupMemberAvatar;
-            } else {
-                senderName = chat.name;
-                avatarSrc = chat.settings.aiAvatar || defaultAvatar;
-            }
-        }
-
-        let snippet = (String(msg.content) || '[非文本消息]').substring(0, 100);
-        if (keyword) {
-            const regex = new RegExp(keyword.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'gi');
-            snippet = snippet.replace(regex, (match) => `<span class="highlight">${match}</span>`);
-        }
-
-        const item = document.createElement('div');
-        item.className = 'search-result-item';
-        item.dataset.timestamp = msg.timestamp;
-        item.innerHTML = `
-            <img src="${avatarSrc}" class="avatar">
-            <div class="result-content">
-                <div class="result-header">
-                    <span class="result-sender">${senderName}</span>
-                    <span class="result-timestamp">${formatDateStamp(msg.timestamp)}</span>
-                </div>
-                <div class="result-message-snippet">${snippet}...</div>
-            </div>
-        `;
-        listEl.appendChild(item);
-    });
-}
-
-/**
- * 【最终修复版】跳转到聊天界面中的指定消息
- */
-async function jumpToMessage(timestamp) {
-    const chat = state.chats[state.activeChatId];
-    if (!chat) return;
-
-    showScreen('chat-interface-screen');
-
-    const messagesContainer = document.getElementById('chat-messages');
-    messagesContainer.innerHTML = ''; 
-    
-    let lastMessageTimestamp = null;
-    chat.history.forEach(msg => {
-        if (msg.isHidden) return;
-        
-        if (isNewDay(msg.timestamp, lastMessageTimestamp)) {
-            const dateStampEl = createDateStampElement(msg.timestamp);
-            messagesContainer.appendChild(dateStampEl);
-        }
-        
-        appendMessage(msg, chat, true); 
-        lastMessageTimestamp = msg.timestamp;
-    });
-
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    const targetMessage = document.querySelector(`.message-bubble[data-timestamp="${timestamp}"]`)?.closest('.message-wrapper');
-
-    if (targetMessage) {
-        targetMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-        const bubble = targetMessage.querySelector('.message-bubble');
-        if (bubble) {
-            bubble.classList.add('jump-highlight-animation');
-            bubble.addEventListener('animationend', () => {
-                bubble.classList.remove('jump-highlight-animation');
-            }, { once: true });
-        }
-    } else {
-        alert("无法定位到该消息，可能已被删除。");
-    }
-}
-
-// ▲▲▲ 替换结束 ▲▲▲
-
-
 // ▼▼▼ 在你的JS功能函数定义区，粘贴下面这一整块新代码 ▼▼▼
 
 // --- 美化功能的核心变量 ---
@@ -21169,6 +20844,80 @@ function renderCharacterAppGrid() {
 }
 
 /**
+ * 【V4美化版】渲染角色手机主界面的APP图标
+ */
+function renderCharacterAppGrid() {
+    const gridEl = document.getElementById('character-app-grid');
+    gridEl.innerHTML = '';
+
+    const apps = [
+        { 
+            id: 'chat', name: '微信', screen: 'character-chat-list-screen',
+            svg: `<svg viewBox="0 0 24 24" fill="#4CAF50"><path d="M12 2C6.48 2 2 6.48 2 12c0 2.94 1.28 5.58 3.34 7.42c-.22 1.4-.89 3.1-1.25 3.82c-.36.72.48 1.39 1.05.94c.82-.67 2.43-1.88 3.3-2.58C9.44 21.78 10.68 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm3.5 10.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5s1.5.67 1.5 1.5s-.67 1.5-1.5 1.5zm-7 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5s1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg>`
+        },
+        { 
+            id: 'cart', name: '购物车', screen: 'character-shopping-cart-screen',
+            svg: `<svg viewBox="0 0 24 24" fill="#F44336"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2s-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2s2-.9 2-2s-.9-2-2-2zm-15-14h3.27l.94 2H20c.69 0 1.25.56 1.25 1.25c0 .09-.02.18-.04.27l-3.58 6.49c-.25.44-.73.74-1.26.74H8.52l-.94-2H4.27V4H2V2h3.27z"/></svg>`
+        },
+        { 
+            id: 'memos', name: '备忘录', screen: 'character-memos-screen',
+            svg: `<svg viewBox="0 0 24 24" fill="#FFC107"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>`
+        },
+        {
+            id: 'browser', name: '浏览器', screen: 'character-browser-screen',
+            // 【核心修改】替换为新的指南针SVG
+            svg: `<svg viewBox="0 0 24 24" fill="#2196F3"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1.5-12.5l3 7.5 7.5-3-7.5-3z"/></svg>`
+        },
+        {
+            id: 'album', name: '相册', screen: 'character-album-screen',
+            svg: `<svg viewBox="0 0 24 24" fill="#8BC34A"><path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z"/></svg>`
+        },
+        {
+            id: 'bank', name: '钱包', screen: 'character-bank-screen',
+            // 【核心修改】替换为新的钱包SVG
+            svg: `<svg viewBox="0 0 24 24" fill="#E91E63"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>`
+        },
+        {
+            id: 'trajectory', name: '足迹', screen: 'character-trajectory-screen',
+            svg: `<svg viewBox="0 0 24 24" fill="#795548"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5s-1.12 2.5-2.5 2.5z"/></svg>`
+        },
+        {
+            id: 'app_usage', name: '使用记录', screen: 'character-app-usage-screen',
+            svg: `<svg viewBox="0 0 24 24" fill="#607D8B"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8s8 3.58 8 8s-3.58 8-8 8zm.5-13H11v6l5.25 3.15l.75-1.23l-4.5-2.67z"/></svg>`
+        },
+        {
+            id: 'diary', name: '日记', screen: 'character-diary-screen',
+            svg: `<svg viewBox="0 0 24 24" fill="#009688"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83l3.75 3.75 1.83-1.83z"/></svg>`
+        },
+    ];
+
+    apps.forEach(app => {
+        const iconEl = document.createElement('div');
+        iconEl.className = 'app-icon';
+        iconEl.innerHTML = `
+            <div class="icon-bg" style="display: flex; justify-content: center; align-items: center; padding: 12px;">
+                ${app.svg}
+            </div>
+            <span class="label">${app.name}</span>
+        `;
+        iconEl.addEventListener('click', () => {
+            switch(app.id) {
+                case 'chat': renderCharacterChatList(); break;
+                case 'cart': renderCharacterShoppingCart(); break;
+                case 'memos': renderCharacterMemos(); break;
+                case 'browser': renderCharacterBrowser(); break;
+                case 'album': renderCharacterPhotoAlbum(); break;
+                case 'bank': renderCharacterBank(); break;
+                case 'trajectory': renderCharacterTrajectory(); break;
+                case 'app_usage': renderCharacterAppUsage(); break;
+            }
+            showCharacterPhonePage(app.screen); 
+        });
+        gridEl.appendChild(iconEl);
+    });
+}
+
+/**
  * 【AI核心】生成角色手机数据
  */
 async function generateCharacterPhoneData() {
@@ -21204,14 +20953,9 @@ async function generateCharacterPhoneData() {
             npcContext = '# 你的专属NPC好友列表\n(你没有专属NPC，请虚构一些普通朋友)';
         }
 
-const prompt = `
+        const prompt = `
 # 任务
 你现在是角色 "${chat.name}"。请根据你的人设、世界观、NPC好友列表以及和${userNickname}的最近聊天记录，模拟生成你手机中的各项数据。你需要一次性生成所有数据，并严格按照下面的JSON格式返回。
-
-# 【【【绝对禁止事项：这是必须遵守的安全红线】】】
-1.  在生成JSON数据，特别是chats字段时，**绝对不允许**创建另一个用户（${userNickname}）的虚拟形象或让他/她出现在你与其他NPC的对话中。
-2.  chats字段中，与NPC或朋友的聊天记录，其sender或content**绝对不能**包含${userNickname}的名字或代称。
-3.  所有你生成的聊天对话，都必须严格限制在【你(${chat.name})】和【另一位NPC/朋友】这**两个人之间**。**严禁**出现任何形式的第三者，尤其是${userNickname}。
 
 # 你的信息
 - 你的名字: ${chat.name}
@@ -21227,17 +20971,15 @@ ${npcContext}
 {
   "chats": [
     {
-      // 这是你和真实用户 ${userNickname} 的聊天窗口占位，不需要生成具体消息
       "contactName": "【这里填写你给${userNickname}的备注名】"
     },
     {
-      // 这是你和NPC/朋友的聊天窗口，必须生成消息
       "contactName": "【这里必须填写上面NPC列表中的一个名字，或一个虚构朋友名】",
       "messages": [
-        {"sender": "【联系人名，严禁填写'${userNickname}'】", "content": "消息内容1..."},
+        {"sender": "【联系人名】", "content": "消息内容1..."},
         {"sender": "${chat.name}", "content": "你的回复1..."},
-        {"sender": "【联系人名，严禁填写'${userNickname}'】", "content": "消息内容2..."},
-        {"sender": "【联系人名，严禁填写'${userNickname}'】", "content": "消息内容3..."},
+        {"sender": "【联系人名】", "content": "消息内容2..."},
+        {"sender": "【联系人名】", "content": "消息内容3..."},
         {"sender": "${chat.name}", "content": "你的回复2..."}
       ]
     }
@@ -21269,14 +21011,12 @@ ${npcContext}
 }
 
 # 【【【重要指令：关于聊天记录生成】】】
-- 你必须严格遵守本提示词最上方的【绝对禁止事项】。
 - 如果“你的专属NPC好友列表”不为空，你【必须】为列表中的【每一个NPC】都生成一段与你（${chat.name}）的对话。
-- 如果列表为空，你可以虚构2-3个普通朋友并生成对话。
-- 你必须为每个联系人生成一段【至少包含5条消息】的对话。
+- 如果列表为空，你可以像以前一样虚构2-3个普通朋友并生成对话。
+- 你必须为每个虚构联系人生成一段【至少包含5条消息】的对话。
 - 对话内容应该自然流畅，可以包含连续发言、表情包和表情符号等，以体现真实感。
 - 不要只生成一问一答的机械式对话。
 `;
-
 
         const { proxyUrl, apiKey, model } = state.apiConfig;
         let isGemini = proxyUrl === GEMINI_API_URL;
@@ -21301,7 +21041,7 @@ ${npcContext}
         const aiResponseContent = (isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content)
             .replace(/^```json\s*|```$/g, '');
 
-        const newData = parseAiResponse(aiResponseContent);
+        const newData = JSON.parse(aiResponseContent);
 
         let phoneData = chat.characterPhoneData;
         phoneData.lastGenerated = Date.now();
@@ -21384,8 +21124,6 @@ async function clearCharacterPhoneData() {
         alert('数据已清空。');
     }
 }
-
-// --- 以下是各个APP界面的渲染函数 ---
 
 /**
  * 【V6最终修正版】渲染角色手机的聊天列表 (修复NPC头像颜色不一致问题)
@@ -21920,6 +21658,7 @@ ${recentHistory}
 
 // ▲▲▲ 新增函数结束 ▲▲▲
 
+
 // ▼▼▼ 【全新】万能Markdown渲染函数 (带安全过滤和遮挡效果) ▼▼▼
 
 /**
@@ -22182,6 +21921,210 @@ async function addDefaultDarkModeThemeIfNeeded() {
         console.error("检查或创建内置夜间模式时出错:", error);
     }
 }
+// ▼▼▼ 【全新】聊天记录搜索功能核心函数 ▼▼▼
+
+/**
+ * 打开并准备聊天记录搜索界面
+ */
+function openChatSearchScreen() {
+    const chat = state.chats[state.activeChatId];
+    if (!chat) return;
+
+    // 清空旧的搜索条件和结果
+    document.getElementById('keyword-search-input').value = '';
+    document.getElementById('sender-search-select').innerHTML = '';
+    document.getElementById('date-search-input').value = '';
+    document.getElementById('search-results-list').innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">输入条件开始搜索</p>';
+
+    // 动态填充“人物”下拉菜单
+    const senderSelect = document.getElementById('sender-search-select');
+    senderSelect.innerHTML = '<option value="">所有人</option>'; // 默认选项
+
+    const myNickname = chat.isGroup ? (chat.settings.myNickname || '我') : '我';
+    const myOption = document.createElement('option');
+    myOption.value = myNickname;
+    myOption.textContent = myNickname;
+    senderSelect.appendChild(myOption);
+
+    if (chat.isGroup) {
+        chat.members.forEach(member => {
+            const memberOption = document.createElement('option');
+            memberOption.value = member.originalName; // 使用本名进行精确匹配
+            memberOption.textContent = member.groupNickname; // 显示群昵称给用户看
+            senderSelect.appendChild(memberOption);
+        });
+    } else {
+        const aiOption = document.createElement('option');
+        aiOption.value = chat.name;
+        aiOption.textContent = chat.name;
+        senderSelect.appendChild(aiOption);
+    }
+    
+    // 关闭聊天设置弹窗，并显示搜索界面
+    document.getElementById('chat-settings-modal').classList.remove('visible');
+    showScreen('chat-search-screen');
+}
+
+/**
+ * 执行搜索操作
+ */
+/**
+ * 【功能完整版】执行搜索操作
+ */
+function performChatSearch() {
+    const chat = state.chats[state.activeChatId];
+    if (!chat) {
+        // 如果找不到聊天对象，给用户一个明确的提示
+        alert('无法执行搜索，因为没有找到当前聊天。');
+        return;
+    }
+
+    // 1. 获取所有搜索条件
+    const keyword = document.getElementById('keyword-search-input').value.trim();
+    const senderValue = document.getElementById('sender-search-select').value;
+    const dateValue = document.getElementById('date-search-input').value;
+
+    // 将关键词保存到全局变量，以便在渲染结果时用于高亮
+    currentSearchKeyword = keyword;
+
+    if (!keyword && !senderValue && !dateValue) {
+        alert('请至少输入一个搜索条件！');
+        return;
+    }
+
+    // 2. 筛选聊天记录
+    console.log(`开始搜索: 关键词='${keyword}', 发言人='${senderValue}', 日期='${dateValue}'`);
+    
+    const results = chat.history.filter(msg => {
+        // 过滤掉系统消息和对用户隐藏的消息
+        if (msg.isHidden || msg.role === 'system' || msg.type === 'recalled_message') {
+            return false;
+        }
+
+        // a. 筛选日期
+        if (dateValue) {
+            const msgDate = new Date(msg.timestamp).toISOString().split('T')[0];
+            if (msgDate !== dateValue) {
+                return false;
+            }
+        }
+
+        // b. 筛选发言人
+        if (senderValue) {
+            const myNickname = chat.isGroup ? (chat.settings.myNickname || '我') : '我';
+            let msgSenderName = '';
+            
+            if (msg.role === 'user') {
+                msgSenderName = myNickname;
+            } else { // AI或群成员的消息
+                // 这里我们使用 originalName 来精确匹配，因为群昵称可能会变
+                msgSenderName = chat.isGroup ? msg.senderName : chat.name;
+            }
+            if (msgSenderName !== senderValue) {
+                return false;
+            }
+        }
+
+        // c. 筛选关键词
+        if (keyword) {
+            let contentText = '';
+            // 将所有可能包含文本的内容都转换成字符串进行搜索
+            if (typeof msg.content === 'string') {
+                contentText = msg.content;
+            } else if (typeof msg.content === 'object' && msg.content !== null) {
+                // 对于复杂对象，我们可以简单地将它们转为JSON字符串来搜索
+                contentText = JSON.stringify(msg.content);
+            }
+            
+            if (!contentText.toLowerCase().includes(keyword.toLowerCase())) {
+                return false;
+            }
+        }
+
+        return true; // 所有条件都满足
+    });
+    
+    console.log(`搜索到 ${results.length} 条结果`);
+
+    // 3. 渲染结果
+    renderSearchResults(results);
+}
+
+
+/**
+ * 【最终版】渲染搜索结果列表
+ * @param {Array} results - 筛选出的消息数组
+ */
+function renderSearchResults(results) {
+    const listEl = document.getElementById('search-results-list');
+    listEl.innerHTML = '';
+    listEl.scrollTop = 0; // 每次都滚回顶部
+
+    if (results.length === 0) {
+        listEl.innerHTML = '<li class="search-no-result">未找到匹配的聊天记录。</li>';
+        return;
+    }
+
+    const chat = state.chats[state.activeChatId];
+    const myNickname = chat.isGroup ? (chat.settings.myNickname || '我') : '我';
+
+    // 使用文档片段一次性插入，性能更好
+    const fragment = document.createDocumentFragment();
+
+    results.forEach(msg => {
+        const item = document.createElement('div');
+        item.className = 'search-result-item';
+        item.dataset.timestamp = msg.timestamp; // 添加时间戳，用于跳转
+
+        let senderName = '';
+        if (msg.role === 'user') {
+            senderName = myNickname;
+        } else {
+            senderName = chat.isGroup ? msg.senderName : chat.name;
+        }
+
+        const msgDate = new Date(msg.timestamp);
+        const dateString = `${msgDate.getFullYear()}-${String(msgDate.getMonth() + 1).padStart(2, '0')}-${String(msgDate.getDate()).padStart(2, '0')} ${String(msgDate.getHours()).padStart(2, '0')}:${String(msgDate.getMinutes()).padStart(2, '0')}`;
+
+        let contentText = '';
+        if (typeof msg.content === 'string') {
+            contentText = msg.content;
+        } else if (msg.type === 'image' && msg.content.text) {
+            contentText = `[图片] ${msg.content.text}`;
+        } else if (msg.type === 'file') {
+            contentText = `[文件] ${msg.content.fileName}`;
+        } else {
+            contentText = '[复杂消息内容]';
+        }
+        
+        const escapedContent = contentText.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+        let highlightedContent = escapedContent;
+        if (currentSearchKeyword && currentSearchKeyword.length > 0) {
+            // 使用辅助函数来安全地创建正则表达式
+            const regex = new RegExp(`(${escapeRegExp(currentSearchKeyword)})`, 'gi');
+            highlightedContent = escapedContent.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        item.innerHTML = `
+            <div class="result-header">
+                <span class="result-sender">${senderName}</span>
+                <span class="result-time">${dateString}</span>
+            </div>
+            <div class="result-content">${highlightedContent}</div>
+            <div class="result-jump">跳转到原文</div>
+        `;
+        fragment.appendChild(item);
+    });
+
+    listEl.appendChild(fragment);
+}
+
+// 确保这个辅助函数也存在于你的代码中，放在 renderSearchResults 的紧下方
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 
 /* ▼▼▼ 把这一整块全新的功能函数，粘贴到 init() 函数的上方 ▼▼▼ */
         async function init() {
@@ -22474,6 +22417,25 @@ document.getElementById('import-home-preset-input').addEventListener('change', (
             document.getElementById('theme-toggle-switch').addEventListener('change', toggleTheme);
   
 
+// ▼▼▼ 【全新】聊天记录搜索功能事件绑定 ▼▼▼
+document.getElementById('search-chat-btn').addEventListener('click', openChatSearchScreen);
+
+document.getElementById('search-back-btn').addEventListener('click', () => {
+    // 返回时，重新打开聊天设置弹窗
+    showScreen('chat-interface-screen');
+    document.getElementById('chat-settings-btn').click();
+});
+
+document.getElementById('perform-search-btn').addEventListener('click', performChatSearch);
+
+// 使用事件委托来处理所有搜索结果的点击
+document.getElementById('search-results-list').addEventListener('click', (e) => {
+    const item = e.target.closest('.search-result-item');
+    if (item && item.dataset.timestamp) {
+        jumpToMessage(parseInt(item.dataset.timestamp));
+    }
+});
+// ▲▲▲ 新事件绑定结束 ▲▲▲
 
  // ▼▼▼ 这是我们新加的导入功能事件监听 ▼▼▼
         document.getElementById('import-character-card-btn').addEventListener('click', () => {
@@ -23204,32 +23166,7 @@ chat.settings.userVideoImage = document.getElementById('user-video-image-preview
     renderChatList();
 });
             document.getElementById('clear-chat-btn').addEventListener('click', async () => { if (!state.activeChatId) return; const chat = state.chats[state.activeChatId]; const confirmed = await showCustomConfirm('清空聊天记录', '此操作将永久删除此聊天的所有消息，无法恢复。确定要清空吗？', { confirmButtonClass: 'btn-danger' }); if (confirmed) { chat.history = []; await db.chats.put(chat); renderChatInterface(state.activeChatId); renderChatList(); chatSettingsModal.classList.remove('visible'); } });
-            // ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼
-// 绑定“查找聊天记录”按钮
-document.getElementById('chat-settings-modal').addEventListener('click', (e) => {
-    if (e.target.id === 'find-history-btn') {
-        openChatSearchScreen();
-    }
-});
-// ▲▲▲ 新代码粘贴结束 ▲▲▲
-// ▼▼▼ 请把【这一整块】代码，粘贴到 setupFileUpload 的正上方 ▼▼▼
-
-// 为所有搜索控件绑定事件监听
-document.getElementById('keyword-search-input').addEventListener('input', performChatSearch);
-document.getElementById('sender-search-select').addEventListener('change', performChatSearch);
-document.getElementById('date-search-input').addEventListener('change', performChatSearch);
-
-// 为搜索结果列表绑定点击事件（事件委托）
-document.getElementById('search-results-list').addEventListener('click', (e) => {
-    const item = e.target.closest('.search-result-item');
-    if (item && item.dataset.timestamp) {
-        const timestamp = parseInt(item.dataset.timestamp);
-        jumpToMessage(timestamp);
-    }
-});
-
-// ▲▲▲ 粘贴结束 ▲▲▲
-
+            
             const setupFileUpload = (inputId, callback) => { document.getElementById(inputId).addEventListener('change', async (event) => { const file = event.target.files[0]; if (file) { const dataUrl = await new Promise((res, rej) => { const reader = new FileReader(); reader.onload = () => res(reader.result); reader.onerror = () => rej(reader.error); reader.readAsDataURL(file); }); callback(dataUrl); event.target.value = null; } }); };
             setupFileUpload('ai-avatar-input', (base64) => document.getElementById('ai-avatar-preview').src = base64);
             setupFileUpload('my-avatar-input', (base64) => document.getElementById('my-avatar-preview').src = base64);
@@ -25372,43 +25309,6 @@ chatListEl.addEventListener('click', async (e) => {
     }
 });
 // ▲▲▲ 新事件监听粘贴结束 ▲▲▲
-
-// ▼▼▼ 在 init() 的事件监听器区域末尾添加 ▼▼▼
-
-// 绑定“查找聊天记录”按钮
-document.getElementById('chat-settings-modal').addEventListener('click', (e) => {
-    if (e.target.id === 'find-history-btn') {
-        openChatSearchScreen();
-    }
-});
-
-// 绑定搜索页面的返回按钮
-document.getElementById('search-back-btn').addEventListener('click', () => {
-    // 返回到聊天设置弹窗
-    showScreen('chat-interface-screen'); 
-    document.getElementById('chat-settings-modal').classList.add('visible');
-});
-
-// ▲▲▲ 新代码粘贴结束 ▲▲▲
-
-// ▼▼▼ 在 init() 的事件监听器区域末尾添加 ▼▼▼
-
-// 为所有搜索输入框绑定事件，任何一个变化都会触发搜索
-document.getElementById('keyword-search-input').addEventListener('input', performChatSearch);
-document.getElementById('sender-search-select').addEventListener('change', performChatSearch);
-document.getElementById('date-search-input').addEventListener('change', performChatSearch);
-
-// 为搜索结果列表绑定点击事件（事件委托）
-document.getElementById('search-results-list').addEventListener('click', (e) => {
-    const item = e.target.closest('.search-result-item');
-    if (item && item.dataset.timestamp) {
-        const timestamp = parseInt(item.dataset.timestamp);
-        jumpToMessage(timestamp);
-    }
-});
-
-// ▲▲▲ 新代码粘贴结束 ▲▲▲
-
     // ▼▼▼ 在 init() 的事件监听器区域末尾，粘贴下面这一整块新代码 ▼▼▼
 
     // --- 美化功能事件绑定 ---
@@ -26039,263 +25939,6 @@ startGroupSimulation(); // 启动群聊专属的后台时钟
         }
     });
     // ▲▲▲ 步骤3.3粘贴结束 ▲▲▲
-// ▼▼▼ 请用这【一整块代码】，完整替换掉你旧的 openChatSearchScreen, performChatSearch, renderSearchResults, 和 jumpToMessage 四个函数 ▼▼▼
-
-// ▼▼▼ 请用这【一整块代码】，完整替换掉你旧的 openChatSearchScreen, performChatSearch, renderSearchResults, 和 jumpToMessage 四个函数 ▼▼▼
-
-/**
- * 【最终修复版】打开并准备聊天记录搜索界面
- */
-function openChatSearchScreen() {
-    const chat = state.chats[state.activeChatId];
-    if (!chat) return;
-
-    // 清空旧的搜索条件和结果
-    document.getElementById('keyword-search-input').value = '';
-    document.getElementById('sender-search-select').innerHTML = '';
-    document.getElementById('date-search-input').value = '';
-    document.getElementById('search-results-list').innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">输入条件开始搜索</p>';
-
-    // 动态填充“人物”下拉菜单
-    const senderSelect = document.getElementById('sender-search-select');
-    senderSelect.innerHTML = '<option value="">所有人</option>'; // 默认选项
-
-    const myNickname = chat.isGroup ? (chat.settings.myNickname || '我') : '我';
-    const myOption = document.createElement('option');
-    myOption.value = myNickname;
-    myOption.textContent = myNickname;
-    senderSelect.appendChild(myOption);
-
-    if (chat.isGroup) {
-        chat.members.forEach(member => {
-            const memberOption = document.createElement('option');
-            memberOption.value = member.originalName; // 使用本名进行精确匹配
-            memberOption.textContent = member.groupNickname; // 显示群昵称给用户看
-            senderSelect.appendChild(memberOption);
-        });
-    } else {
-        const aiOption = document.createElement('option');
-        aiOption.value = chat.name;
-        aiOption.textContent = chat.name;
-        senderSelect.appendChild(aiOption);
-    }
-    
-    // 关闭聊天设置弹窗，并显示搜索界面
-    document.getElementById('chat-settings-modal').classList.remove('visible');
-    showScreen('chat-search-screen');
-}
-
-/**
- * 【终极修复版】执行聊天记录搜索的核心函数
- */
-function performChatSearch() {
-    const chat = state.chats[state.activeChatId];
-    if (!chat) return;
-
-    const keyword = document.getElementById('keyword-search-input').value.trim().toLowerCase();
-    const sender = document.getElementById('sender-search-select').value;
-    const date = document.getElementById('date-search-input').value;
-
-    if (!keyword && !sender && !date) {
-        document.getElementById('search-results-list').innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">输入条件开始搜索</p>';
-        return;
-    }
-    
-    // 核心修复1：首先过滤掉所有对用户不可见的系统消息
-    let results = chat.history.filter(msg => !msg.isHidden);
-
-    // 按关键词过滤
-    if (keyword) {
-        results = results.filter(msg => {
-            // 核心修复2：更智能地从各种消息类型中提取可搜索的文本
-            let searchableText = '';
-            switch (msg.type) {
-                case 'voice_message':
-                case 'ai_image':
-                case 'user_photo':
-                    searchableText = String(msg.content || '');
-                    break;
-                case 'transfer':
-                    searchableText = `${msg.note || ''} ${msg.amount}`;
-                    break;
-                case 'red_packet':
-                    searchableText = `${msg.greeting || ''} ${msg.totalAmount}`;
-                    break;
-                case 'poll':
-                    searchableText = `${msg.question} ${msg.options.join(' ')}`;
-                    break;
-                case 'share_link':
-                    searchableText = `${msg.title || ''} ${msg.description || ''} ${msg.source_name || ''} ${msg.content || ''}`;
-                    break;
-                case 'waimai_request':
-                    searchableText = `${msg.productInfo || ''} ${msg.amount}`;
-                    break;
-                case 'quote_reply':
-                    // 同时搜索引用的内容和回复的内容
-                    searchableText = `${msg.quote?.content || ''} ${msg.content || ''}`;
-                    break;
-                default:
-                    // 适用于普通文本、表情含义等
-                    if (typeof msg.content === 'string') {
-                        searchableText = msg.content;
-                    } else if (msg.meaning) {
-                        searchableText = msg.meaning;
-                    }
-                    break;
-            }
-            return searchableText.toLowerCase().includes(keyword);
-        });
-    }
-
-    // 按人物过滤
-    if (sender) {
-        const myNickname = chat.isGroup ? (chat.settings.myNickname || '我') : '我';
-        results = results.filter(msg => {
-            if (msg.role === 'user') {
-                return sender === myNickname;
-            } else { // 这条消息是AI发的
-                if (chat.isGroup) {
-                    return msg.senderName && msg.senderName === sender;
-                } else {
-                    return sender === chat.name;
-                }
-            }
-        });
-    }
-
-    // 按日期过滤
-    if (date) {
-        const targetDate = new Date(date);
-        const targetYear = targetDate.getFullYear();
-        const targetMonth = targetDate.getMonth();
-        const targetDay = targetDate.getDate();
-
-        results = results.filter(msg => {
-            const msgDate = new Date(msg.timestamp);
-            return msgDate.getFullYear() === targetYear &&
-                   msgDate.getMonth() === targetMonth &&
-                   msgDate.getDate() === targetDay;
-        });
-    }
-
-    renderSearchResults(results, keyword, chat);
-}
-
-/**
- * 【最终修复版】渲染搜索结果列表
- */
-function renderSearchResults(results, keyword, chat) {
-    const listEl = document.getElementById('search-results-list');
-    listEl.innerHTML = '';
-
-    if (results.length === 0) {
-        listEl.innerHTML = '<p style="text-align:center; color: var(--text-secondary); padding: 50px 0;">未找到相关记录</p>';
-        return;
-    }
-
-    results.reverse().forEach(msg => {
-        let senderName, avatarSrc;
-        const myNickname = chat.isGroup ? (chat.settings.myNickname || '我') : '我';
-        if (msg.role === 'user') {
-            senderName = myNickname;
-            avatarSrc = chat.settings.myAvatar || defaultAvatar;
-        } else {
-            if (chat.isGroup) {
-                const member = chat.members.find(m => m.originalName === msg.senderName);
-                senderName = member ? member.groupNickname : msg.senderName;
-                avatarSrc = member ? member.avatar : defaultGroupMemberAvatar;
-            } else {
-                senderName = chat.name;
-                avatarSrc = chat.settings.aiAvatar || defaultAvatar;
-            }
-        }
-
-        let snippet = (String(msg.content) || '[非文本消息]').substring(0, 100);
-        if (keyword) {
-            const regex = new RegExp(keyword.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'gi');
-            snippet = snippet.replace(regex, (match) => `<span class="highlight">${match}</span>`);
-        }
-
-        const item = document.createElement('div');
-        item.className = 'search-result-item';
-        item.dataset.timestamp = msg.timestamp;
-        item.innerHTML = `
-            <img src="${avatarSrc}" class="avatar">
-            <div class="result-content">
-                <div class="result-header">
-                    <span class="result-sender">${senderName}</span>
-                    <span class="result-timestamp">${formatDateStamp(msg.timestamp)}</span>
-                </div>
-                <div class="result-message-snippet">${snippet}...</div>
-            </div>
-        `;
-        listEl.appendChild(item);
-    });
-}
-
-/**
- * 【最终修复版】跳转到聊天界面中的指定消息
- */
-async function jumpToMessage(timestamp) {
-    const chat = state.chats[state.activeChatId];
-    if (!chat) return;
-
-    showScreen('chat-interface-screen');
-
-    const messagesContainer = document.getElementById('chat-messages');
-    messagesContainer.innerHTML = ''; 
-    
-    let lastMessageTimestamp = null;
-    chat.history.forEach(msg => {
-        if (msg.isHidden) return;
-        
-        if (isNewDay(msg.timestamp, lastMessageTimestamp)) {
-            const dateStampEl = createDateStampElement(msg.timestamp);
-            messagesContainer.appendChild(dateStampEl);
-        }
-        
-        appendMessage(msg, chat, true); 
-        lastMessageTimestamp = msg.timestamp;
-    });
-
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    const targetMessage = document.querySelector(`.message-bubble[data-timestamp="${timestamp}"]`)?.closest('.message-wrapper');
-
-    if (targetMessage) {
-        targetMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-        const bubble = targetMessage.querySelector('.message-bubble');
-        if (bubble) {
-            bubble.classList.add('jump-highlight-animation');
-            bubble.addEventListener('animationend', () => {
-                bubble.classList.remove('jump-highlight-animation');
-            }, { once: true });
-        }
-    } else {
-        alert("无法定位到该消息，可能已被删除。");
-    }
-}
-
-// ▲▲▲ 替换结束 ▲▲▲
-
-// ▼▼▼ 在 init() 的事件监听器区域末尾添加 ▼▼▼
-
-// 为所有搜索输入框绑定事件，任何一个变化都会触发搜索
-document.getElementById('keyword-search-input').addEventListener('input', performChatSearch);
-document.getElementById('sender-search-select').addEventListener('change', performChatSearch);
-document.getElementById('date-search-input').addEventListener('change', performChatSearch);
-
-// 为搜索结果列表绑定点击事件（事件委托）
-document.getElementById('search-results-list').addEventListener('click', (e) => {
-    const item = e.target.closest('.search-result-item');
-    if (item && item.dataset.timestamp) {
-        const timestamp = parseInt(item.dataset.timestamp);
-        jumpToMessage(timestamp);
-    }
-});
-
-// ▲▲▲ 新代码粘贴结束 ▲▲▲
 
 
 // ===================================================================

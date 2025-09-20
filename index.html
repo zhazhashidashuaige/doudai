@@ -6939,6 +6939,32 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     padding-top: 10px; /* 列表顶部的内边距 */
 }
 /* ▲▲▲ 修复结束 ▲▲▲ */
+/* ▼▼▼ 把这段新样式粘贴到 <style> 的末尾 ▼▼▼ */
+
+/* 统一样式，让图标和文字按钮对齐 */
+#music-playlist-panel .playlist-header .panel-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ▼▼▼ 用这块新代码替换旧的垃圾桶样式 ▼▼▼ */
+
+/* 设置垃圾桶图标的默认样式 */
+#delete-expired-songs-btn svg {
+    color: inherit; /* 核心修改1: 平时颜色继承父元素，和"本地"等文字颜色一样，保持低调 */
+    transition: color 0.2s, transform 0.2s; /* 添加transform过渡效果 */
+    transform: translateY(3px); /* 核心修改2: 让图标整体下移3像素，视觉上更对齐 */
+}
+
+/* 设置鼠标悬停/点击时的样式 */
+#delete-expired-songs-btn:hover svg,
+#delete-expired-songs-btn:active svg {
+    color: #ff3b30; /* 核心修改3: 鼠标放上去或点击时，才变为醒目的红色 */
+}
+
+/* ▲▲▲ 替换结束 ▲▲▲ */
+
 
 /* ▲▲▲ 步骤1粘贴结束 ▲▲▲ */
     </style>
@@ -7539,18 +7565,28 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     </div>
 </div>
     
-    <div id="music-playlist-panel">
-        <div class="playlist-header">
+<!-- ▼▼▼ 请用这【一整块】全新的代码，替换掉你旧的 id="music-playlist-panel" 及其所有内部内容 ▼▼▼ -->
+<div id="music-playlist-panel">
+<!-- ▼▼▼ 用这整块代码替换 ▼▼▼ -->
+<div class="playlist-header">
     <span class="panel-btn" id="close-playlist-btn">返回</span>
     <span>播放列表</span>
     <div>
+        <!-- ▼▼▼ 我们把垃圾桶图标移到了'本地'的左边 ▼▼▼ -->
+        <span class="panel-btn" id="delete-expired-songs-btn" title="清理失效的搜索歌曲">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </span>
         <span class="panel-btn" id="add-song-local-btn">本地</span>
         <span class="panel-btn" id="add-song-url-btn">URL</span>
-        <!-- ▼▼▼ 在这里粘贴下面这行新代码 ▼▼▼ -->
         <span class="panel-btn" id="add-song-search-btn">搜索</span>
-        <!-- ▲▲▲ 添加结束 ▲▲▲ -->
     </div>
 </div>
+<!-- ▲▲▲ 替换结束 ▲▲▲ -->
+
+
         <div class="playlist-body" id="playlist-body"></div>
     </div>
     <input type="file" id="local-song-upload-input" accept="audio/*" multiple style="display: none;">
@@ -9477,39 +9513,42 @@ async function handleSearchResultClick(songData) {
         return;
     }
     
-    // =================================================================
-    // ▼▼▼【【【这就是你要求的“永久保存”选择功能！】】】▼▼▼
-    // =================================================================
-    const shouldSavePermanently = await showCustomConfirm(
-        '添加到播放列表',
-        `是否将《${songData.name}》永久保存在播放列表中？\n\n选择“取消”则只在本次会话中播放。`,
-        { confirmText: '永久保存' } // 自定义按钮文字
-    );
-    // =================================================================
-    // ▲▲▲【【【功能实现结束】】】▲▲▲
-    // =================================================================
-    
+// ▼▼▼ 从这里开始粘贴新代码 ▼▼▼
+const confirmed = await showCustomConfirm(
+    '温馨提示', // 这是弹窗的标题
+    '搜索的歌曲24h后会过期，重要的歌曲记得用url或者本地上传哦🐇', // 这是你指定的提示内容
+    { confirmText: '确定' } // 按钮会显示“确定”和“取消”，这里的“取消”就等同于“返回”
+);
+
+// 如果用户点击了“取消”（返回），就直接结束，不添加歌曲
+if (!confirmed) {
+    return;
+}
+// ▲▲▲ 粘贴结束 ▲▲▲   
     // 获取歌词
     const lrcContent = await getLyricsForSong(playableResult.id, finalSource) || "";
 
-    // 构造最终的歌曲对象
-    const newSong = {
-        name: songData.name,
-        artist: songData.artist,
-        src: playableResult.url,
-        cover: songData.cover,
-        isLocal: false,
-        lrcContent: lrcContent,
-        // 【核心】根据用户的选择，设置 isTemporary 标志
-        isTemporary: !shouldSavePermanently 
-    };
+// ▼▼▼ 用这块新代码替换 ▼▼▼
+const newSong = {
+    name: songData.name,
+    artist: songData.artist,
+    src: playableResult.url,
+    cover: songData.cover,
+    isLocal: false,
+    lrcContent: lrcContent,
+    isTemporary: true,
+    // 核心新增：记录这首歌被添加的精确时间
+    addedTimestamp: Date.now() 
+};
+// ▲▲▲ 替换结束 ▲▲▲
 
-    musicState.playlist.push(newSong);
 
-    // 【重要】只有在用户选择永久保存时，才调用 saveGlobalPlaylist()
-    if (shouldSavePermanently) {
-        await saveGlobalPlaylist();
-    }
+
+musicState.playlist.push(newSong);
+
+// 注意：我们已经删除了 saveGlobalPlaylist() 的调用，因为临时歌曲不需要被永久保存
+// ▲▲▲ 替换结束 ▲▲▲
+
     
     updatePlaylistUI();
 
@@ -11798,6 +11837,74 @@ function showChoiceModal(title, options) {
         modal.classList.add('visible');
     });
 }
+// ▼▼▼ 把这一整块全新的函数，粘贴到你的JS代码里 ▼▼▼
+/**
+ * 一键删除所有临时的、通过搜索添加的歌曲
+ */
+async function deleteExpiredSearchedSongs() {
+    // 1. 筛选出所有被标记为 isTemporary 的歌曲
+    // ▼▼▼ 只用下面这块代码替换上面那一行 ▼▼▼
+const twentyFourHoursAgo = Date.now() - (24 * 60 * 60 * 1000);
+const songsToDelete = musicState.playlist.filter(track => 
+    // 条件1：必须是临时歌曲
+    track.isTemporary &&
+    // 条件2：这首歌的添加时间早于24小时前
+    // (为了兼容你之前添加的、没有时间戳的临时歌曲，我们把它们也视为过期)
+    (!track.addedTimestamp || track.addedTimestamp < twentyFourHoursAgo)
+);
+// ▲▲▲ 替换结束 ▲▲▲
+
+
+    if (songsToDelete.length === 0) {
+        await showCustomAlert('提示', '播放列表中没有需要清理的搜索歌曲。');
+        return;
+    }
+
+    // 2. 弹窗让用户确认
+    const confirmed = await showCustomConfirm(
+        '确认清理',
+        `确定要删除 ${songsToDelete.length} 首24h后会失效的搜索歌曲吗？`,
+        { confirmButtonClass: 'btn-danger' }
+    );
+
+    if (!confirmed) return;
+
+    // 3. 执行删除逻辑
+    // 记录下当前正在播放的歌曲
+    const currentTrack = musicState.currentIndex > -1 ? musicState.playlist[musicState.currentIndex] : null;
+
+    // 创建一个新的播放列表，只包含那些不是临时的歌曲
+    musicState.playlist = musicState.playlist.filter(track => !track.isTemporary);
+
+    // 4. 处理当前播放状态
+    const newIndex = currentTrack ? musicState.playlist.findIndex(t => t.src === currentTrack.src && t.name === currentTrack.name) : -1;
+
+    if (newIndex === -1) { // 如果当前播放的歌曲被删了
+        if (musicState.isPlaying) {
+            audioPlayer.pause();
+            audioPlayer.src = '';
+        }
+        musicState.isPlaying = false;
+        // 如果列表里还有歌，就从第一首开始播放
+        if (musicState.playlist.length > 0) {
+            playSong(0); 
+        } else {
+            // 如果列表空了，就重置播放器
+            musicState.currentIndex = -1;
+            updatePlayerUI();
+        }
+    } else {
+        // 如果当前播放的歌曲没被删，就更新它的新位置
+        musicState.currentIndex = newIndex;
+        updatePlayerUI();
+    }
+    
+    // 5. 保存永久播放列表并更新UI
+    await saveGlobalPlaylist(); // 这会把过滤后的、只剩永久歌曲的列表保存到数据库
+    updatePlaylistUI(); // 刷新播放列表界面
+    await showCustomAlert('清理完成', `${songsToDelete.length} 首歌曲已从列表中移除。`);
+}
+// ▲▲▲ 粘贴结束 ▲▲▲
 
 
 /**
@@ -22498,6 +22605,9 @@ document.getElementById('chat-search-results-list').addEventListener('click', (e
     }
 });
 // ▲▲▲ 新事件绑定结束 ▲▲▲
+// ▼▼▼ 在 init() 函数的事件监听器区域末尾，粘贴下面这行新代码 ▼▼▼
+document.getElementById('delete-expired-songs-btn').addEventListener('click', deleteExpiredSearchedSongs);
+// ▲▲▲ 粘贴结束 ▲▲▲
 
  // ▼▼▼ 这是我们新加的导入功能事件监听 ▼▼▼
         document.getElementById('import-character-card-btn').addEventListener('click', () => {

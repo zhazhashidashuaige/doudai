@@ -183,7 +183,28 @@ body {
 /* ▲▲▲ 替换结束 ▲▲▲ */
 
         .screen.active { opacity: 1; visibility: visible; z-index: 1; }
-        .header { position: relative; z-index: 15; flex-shrink: 0; padding: 15px 20px; padding-top: 45px; background-color: rgba(247, 247, 247, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 600; }
+       .header {
+    position: relative;
+    z-index: 15;
+    flex-shrink: 0;
+    padding: 15px 20px;
+    padding-top: 45px;
+    background-color: rgba(247, 247, 247, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 600;
+    
+    /* ▼▼▼ 新增下面这两行 ▼▼▼ */
+    height: 92px;               /* ★ 新增：强制设置一个统一的高度 */
+    box-sizing: border-box;     /* ★ 新增：确保高度计算包含内边距 */
+    /* ▲▲▲ 新增结束 ▲▲▲ */
+}
+
         .header .header-actions { display: flex; align-items: center; gap: 15px; }
         .header .back-btn, .header .action-btn { font-size: 24px; cursor: pointer; width: 30px; text-align: center; color: var(--accent-color); display: flex; align-items: center; justify-content: center; }
 
@@ -2716,10 +2737,12 @@ body {
     align-items: center; /* 水平居中 */
     gap: 2px; /* 标题和状态之间的微小间距 */
     
-    /* 为了让它能在flex布局中正确居中 */
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    /* 
+      核心修改：
+      移除了 position: absolute, left, 和 transform 属性。
+      这样它就能参与父容器的高度计算，把顶栏撑开。
+      因为父级 .header 已经是flex布局，它会自动居中。
+    */
     max-width: 60%;
 }
 

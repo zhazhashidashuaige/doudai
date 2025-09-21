@@ -183,28 +183,7 @@ body {
 /* ▲▲▲ 替换结束 ▲▲▲ */
 
         .screen.active { opacity: 1; visibility: visible; z-index: 1; }
-      .header {
-    position: relative;
-    z-index: 15;
-    flex-shrink: 0;
-    padding: 15px 20px;
-    padding-top: 45px;
-    background-color: rgba(247, 247, 247, 0.8);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 18px;
-    font-weight: 600;
-    
-    /* ▼▼▼ 新增下面这两行 ▼▼▼ */
-    height: 92px;               /* ★ 新增：强制设置一个统一的高度 */
-    box-sizing: border-box;     /* ★ 新增：确保高度计算包含内边距 */
-    /* ▲▲▲ 新增结束 ▲▲▲ */
-}
-
+        .header { position: relative; z-index: 15; flex-shrink: 0; padding: 15px 20px; padding-top: 45px; background-color: rgba(247, 247, 247, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 600; }
         .header .header-actions { display: flex; align-items: center; gap: 15px; }
         .header .back-btn, .header .action-btn { font-size: 24px; cursor: pointer; width: 30px; text-align: center; color: var(--accent-color); display: flex; align-items: center; justify-content: center; }
 
@@ -2737,12 +2716,10 @@ body {
     align-items: center; /* 水平居中 */
     gap: 2px; /* 标题和状态之间的微小间距 */
     
-    /* 
-      核心修改：
-      移除了 position: absolute, left, 和 transform 属性。
-      这样它就能参与父容器的高度计算，把顶栏撑开。
-      因为父级 .header 已经是flex布局，它会自动居中。
-    */
+    /* 为了让它能在flex布局中正确居中 */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     max-width: 60%;
 }
 
@@ -7517,50 +7494,51 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 <!-- ▼▼▼ 请用这【一整块】全新的代码，完整替换掉您文件中旧的 #chat-interface-screen 及其所有内容 ▼▼▼ -->
 <div id="chat-interface-screen" class="screen">
 
-    <!-- 【最终修正版】Header，已将状态栏和搜索功能正确整合 -->
-    <div class="header">
-        <!-- 默认控件：包含标题、状态栏和常规按钮 -->
-        <div class="default-controls">
-            <span class="back-btn" id="back-to-list-btn">‹</span>
-            
- <!-- ▼▼▼ 【心声功能-已修改】标题和状态的容器 ▼▼▼ -->
-<div id="chat-header-title-wrapper">
-    <!-- 新增一个容器，把标题和心形按钮包起来 -->
-    <div id="chat-header-main-line">
-        <span id="chat-header-title">聊天对象</span>
-        <div id="char-heart-btn" style="display: none; cursor: pointer;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ff4d6d" stroke="#ffc3d0" stroke-width="1.5">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
+<!-- 请用这段新代码完整替换掉上面的旧代码 -->
+<div class="header">
+    <!-- 默认控件：包含标题、状态栏和常规按钮 -->
+    <div class="default-controls">
+        <span class="back-btn" id="back-to-list-btn">‹</span>
+        
+        <!-- ▼▼▼ 【心声功能-已修改】标题和状态的容器 ▼▼▼ -->
+        <div id="chat-header-title-wrapper">
+            <!-- 标题和心形按钮的容器 -->
+            <div id="chat-header-main-line">
+                <span id="chat-header-title">聊天对象</span>
+                <!-- 心声按钮已经从这里移走 -->
+            </div>
+            <!-- 状态栏现在是独立的了 -->
+            <div id="chat-header-status">
+                <span class="status-dot"></span>
+                <span class="status-text">在线</span>
+            </div>
+        </div>
+        <!-- ▲▲▲ 修改结束 ▲▲▲ -->
+
+        <div class="header-actions">
+            <!-- 【新位置】心声按钮被移到了这里 -->
+            <span class="action-btn" id="char-heart-btn" title="心声" style="display: none; cursor: pointer;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ff4d6d" stroke="#ffc3d0" stroke-width="1.5">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </span>
+            <span class="action-btn" id="listen-together-btn" title="一起听"><img src="https://i.postimg.cc/dV8sdNcx/210-20250618115221.png" alt="一起听"></span>
+            <span class="action-btn" id="chat-settings-btn" title="聊天设置"><img src="https://i.postimg.cc/bvPq64cv/CCA834-BA-5-A90-408-D-94-FA-7-EE156-B6-A765.png" alt="设置"></span>
         </div>
     </div>
-    <!-- 状态栏现在是独立的了 -->
-    <div id="chat-header-status">
-        <span class="status-dot"></span>
-        <span class="status-text">在线</span>
+
+    <!-- 多选模式控件 (保持不变) -->
+    <div class="selection-controls">
+        <span id="selection-cancel-btn">取消</span>
+        <span id="selection-count"></span>
+        <div class="header-actions">
+           <span id="selection-favorite-btn" class="action-btn">收藏</span>
+           <span id="selection-share-btn" class="action-btn">分享</span> 
+           <span id="selection-delete-btn" class="action-btn" style="color: #ff3b30;">删除</span>
+        </div>
     </div>
 </div>
-<!-- ▲▲▲ 修改结束 ▲▲▲ -->
-
-
-
-            <div class="header-actions">
-                <span class="action-btn" id="listen-together-btn" title="一起听"><img src="https://i.postimg.cc/dV8sdNcx/210-20250618115221.png" alt="一起听"></span>
-                <span class="action-btn" id="chat-settings-btn" title="聊天设置"><img src="https://i.postimg.cc/bvPq64cv/CCA834-BA-5-A90-408-D-94-FA-7-EE156-B6-A765.png" alt="设置"></span>
-            </div>
-        </div>
-
-        <!-- 多选模式控件 (保持不变) -->
-        <div class="selection-controls">
-            <span id="selection-cancel-btn">取消</span>
-            <span id="selection-count"></span>
-            <div class="header-actions">
-               <span id="selection-favorite-btn" class="action-btn">收藏</span>
-       <span id="selection-share-btn" class="action-btn">分享</span> 
-               <span id="selection-delete-btn" class="action-btn" style="color: #ff3b30;">删除</span>
-            </div>
-        </div>
-    </div>
+<!-- 替换结束 -->
     
     <!-- 聊天消息区域 (保持不变) -->
     <div id="chat-messages"><div id="typing-indicator">对方正在输入...</div></div>
@@ -17588,7 +17566,7 @@ function hideIncomingCallModal() {
     stopRingtone(); // <-- 在这里添加这一行
 }
 
-// ▼▼▼ 用这个【全新的、已添加严格规则的函数】，完整替换掉你旧的 triggerAiInCallAction 函数 ▼▼▼
+// ▼▼▼ 【这是修正后的版本】请用这一整块代码，完整替换你旧的 triggerAiInCallAction 函数 ▼▼▼
 async function triggerAiInCallAction(userInput = null) {
     if (!videoCallState.isActive) return;
 
@@ -17629,42 +17607,19 @@ async function triggerAiInCallAction(userInput = null) {
         videoCallState.callHistory.push({ role: 'user', content: userInput });
     }
 
-// ▼▼▼ 用下面这【一整块 if/else】，替换掉旧的 inCallPrompt 定义 ▼▼▼
     let inCallPrompt;
     if (videoCallState.isGroupCall) {
-        const participantNames = videoCallState.participants.map(p => p.originalName); // 使用本名
+        // ★★★ 核心修复1：在这里，我们提前定义好 participantNames ★★★
+        const participantNames = videoCallState.participants.map(p => p.originalName); 
         if(videoCallState.isUserParticipating) {
             participantNames.unshift(userNickname);
         }
-inCallPrompt = `
-# 你的任务
-你是一个群聊AI，负责扮演所有【除了用户以外】的AI角色。你们正在进行一场群聊视频通话。
-你的任务是根据每个角色的性格，生成他们在通话中会说的【第一人称对话】。
+        // ★★★ 修复结束 ★★★
 
-# 核心规则
-1.  **【【【格式铁律】】】**: 你的回复【必须】是一个JSON数组，每个对象代表一个角色的发言，格式为：\`{"name": "【角色的本名】", "speech": "【在这里加入带动作的对话】"}\`。
-2.  **【【【表现力铁律】】】**: 在 "speech" 字段中，你【必须】为角色的对话加入【动作、表情或心理活动】，并用【】符号包裹。这非常重要！
-3.  **示例**: \`{"name": "张三", "speech": "【挠了挠头】啊？我刚刚走神了，你们说到哪了？"}\`
-4.  **身份铁律**: 用户的身份是【${userNickname}】。你【绝对不能】生成 \`name\` 字段为 **"${userNickname}"** 的发言。
-5.  **角色扮演**: 严格遵守每个角色的设定，用他们的口吻说话。
-
-# 当前情景
-你们正在一个群视频通话中。
-**通话前的聊天摘要**:
-${videoCallState.preCallContext}
-**当前参与者**: ${participantNames.join('、 ')}。
-${worldBookContent}
-现在，请根据【通话前摘要】和下面的【通话实时记录】，继续进行对话。
-`;
-    } else { 
-        let openingContext = videoCallState.initiator === 'user'
-            ? `你刚刚接听了用户的视频通话请求。`
-            : `用户刚刚接听了你主动发起的视频通话。`;
-        // ★★★ 核心修改：单聊的系统提示词 ★★★
         inCallPrompt = `
 # 你的任务
 你是一个群聊AI，负责扮演所有【除了用户以外】的AI角色。你们正在进行一场群聊视频通话。
-你的任务是根据每个角色的性格，生成他们在通话中会说的【第一人称对话】。
+你的任务是根据每个角色的性格，生成他们在通话中会说的【第一人称对话】，注意是在视频通话，绝对不能以为是在现实！每次回复的字数多些，50字以上。
 
 # 核心规则
 1.  **【【【语言铁律】】】**: 无论角色人设是什么国籍或说什么语言，在本次视频通话中，所有角色【必须】全程使用【中文】进行交流。
@@ -17682,12 +17637,37 @@ ${videoCallState.preCallContext}
 ${worldBookContent}
 现在，请根据【通话前摘要】和下面的【通话实时记录】，继续进行对话。
 `;
+    } else {
+        // ★★★ 核心修复2：为单人通话提供一个完全独立的、正确的Prompt ★★★
+        let openingContext = videoCallState.initiator === 'user'
+            ? `你刚刚接听了用户的视频通话请求。`
+            : `用户刚刚接听了你主动发起的视频通话。`;
+            
+        inCallPrompt = `
+# 你的任务
+你正在扮演角色 "${chat.name}"。你正在和用户 (${userNickname}) 进行一对一视频通话。
+${openingContext}
+你的任务是根据你的人设和我们的聊天情景，生成你在通话中会说的【第一人称对话】。
+
+# 核心规则
+1.  **【【【格式铁律】】】**: 你的回复【必须且只能】是一段纯文本字符串，代表你的发言。绝对不要输出JSON格式。
+2.  **【【【表现力铁律】】】**: 在你的对话中，你【必须】加入【动作、表情或心理活动】，并用【】符号包裹。
+3.  **示例**: "【歪了歪头，好奇地看着你】真的吗？快跟我说说看！"
+4.  **禁止出戏**: 绝不能透露你是AI或模型。
+
+# 当前情景
+**通话前的聊天摘要**:
+${videoCallState.preCallContext}
+${worldBookContent}
+现在，请根据【通话前摘要】和下面的【通话实时记录】，继续进行对话。
+`;
+        // ★★★ 修复结束 ★★★
     }
-// ▲▲▲ 替换结束 ▲▲▲
+    
     const messagesForApi = [
-        { role: 'system', content: inCallPrompt },
         ...videoCallState.callHistory.map(h => ({ role: h.role, content: h.content }))
     ];
+
     if (videoCallState.callHistory.length === 0) {
         const firstLineTrigger = videoCallState.initiator === 'user' ? `*你按下了接听键...*` : `*对方按下了接听键...*`;
         messagesForApi.push({ role: 'user', content: firstLineTrigger });
@@ -17699,16 +17679,13 @@ ${worldBookContent}
         const response = isGemini ? await fetch(geminiConfig.url, geminiConfig.data) : await fetch(`${proxyUrl}/v1/chat/completions`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`},
-            body: JSON.stringify({ model: model, messages: messagesForApi, temperature: 0.8 })
+            body: JSON.stringify({ model: model, messages: [{ role: 'system', content: inCallPrompt }, ...messagesForApi], temperature: 0.8 })
         });
         if (!response.ok) throw new Error((await response.json()).error.message);
 
         const data = await response.json();
         const aiResponse = isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content;
-        // ▼▼▼ 在获取到 aiResponse 的下一行，插入这行代码 ▼▼▼
-const sanitizedResponse = aiResponse.replace(/!\[.*?\]\(.*?\)|https?:\/\/\S+/gi, '').trim();
-// ▲▲▲ 插入结束 ▲▲▲
-
+        const sanitizedResponse = aiResponse.replace(/!\[.*?\]\(.*?\)|https?:\/\/\S+/gi, '').trim();
 
         const connectingElement = callFeed.querySelector('em');
         if (connectingElement) connectingElement.remove();
@@ -17716,9 +17693,9 @@ const sanitizedResponse = aiResponse.replace(/!\[.*?\]\(.*?\)|https?:\/\/\S+/gi,
         if (isVisualMode) {
             const aiBubble = document.createElement('div');
             aiBubble.className = 'visual-call-bubble ai';
-aiBubble.textContent = sanitizedResponse;
-callFeed.appendChild(aiBubble);
-videoCallState.callHistory.push({ role: 'assistant', content: sanitizedResponse });
+            aiBubble.textContent = sanitizedResponse;
+            callFeed.appendChild(aiBubble);
+            videoCallState.callHistory.push({ role: 'assistant', content: sanitizedResponse });
         } else {
             if (videoCallState.isGroupCall) {
                 const speechArray = parseAiResponse(sanitizedResponse); 
@@ -17730,7 +17707,7 @@ videoCallState.callHistory.push({ role: 'assistant', content: sanitizedResponse 
                     callFeed.appendChild(aiBubble);
                     videoCallState.callHistory.push({ role: 'assistant', content: `${turn.name}: ${turn.speech}` });
                     
-                    const speaker = videoCallState.participants.find(p => p.name === turn.name);
+                    const speaker = videoCallState.participants.find(p => p.originalName === turn.name);
                     if (speaker) {
                         const speakingAvatar = document.querySelector(`.participant-avatar-wrapper[data-participant-id="${speaker.id}"] .participant-avatar`);
                         if(speakingAvatar) {
@@ -17743,8 +17720,8 @@ videoCallState.callHistory.push({ role: 'assistant', content: sanitizedResponse 
                 const aiBubble = document.createElement('div');
                 aiBubble.className = 'call-message-bubble ai-speech';
                 aiBubble.textContent = sanitizedResponse;
-callFeed.appendChild(aiBubble);
-videoCallState.callHistory.push({ role: 'assistant', content: sanitizedResponse });
+                callFeed.appendChild(aiBubble);
+                videoCallState.callHistory.push({ role: 'assistant', content: sanitizedResponse });
                 const speakingAvatar = document.querySelector(`.participant-avatar-wrapper .participant-avatar`);
                 if(speakingAvatar) {
                     speakingAvatar.classList.add('speaking');
@@ -17771,8 +17748,6 @@ videoCallState.callHistory.push({ role: 'assistant', content: sanitizedResponse 
         videoCallState.callHistory.push({ role: 'assistant', content: `[ERROR: ${error.message}]` });
     }
 }
-// ▲▲▲ 替换结束 ▲▲▲
-
 
 // ▼▼▼ 将这个【全新函数】粘贴到JS功能函数定义区 ▼▼▼
 function toggleCallButtons(isGroup) {

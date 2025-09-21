@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -2722,6 +2723,15 @@ body {
     max-width: 60%;
 }
 
+/* 【新增】这是我们新加的样式，用于将标题和心形按钮横向排列 */
+#chat-header-main-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* 标题和心形按钮之间的间距 */
+}
+
+
 /* 2. 主标题的样式微调 */
 #chat-header-title {
     font-size: 16px; /* 可以稍微缩小一点，给状态栏留出空间 */
@@ -4724,8 +4734,8 @@ body {
 /* ▼▼▼ 【全新】“一键重roll”按钮样式 ▼▼▼ */
 #reroll-btn {
     position: static;
-    width: 40px;
-    height: 40px;
+    width: 37px;
+    height: 37px;
     padding: 0;
     border-radius: 20px;
     background-color: rgba(255, 255, 255, 0.6);
@@ -6964,6 +6974,105 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 /* ▲▲▲ 替换结束 ▲▲▲ */
+/* ▼▼▼ 把这一整块全新的CSS，粘贴到 <style> 的末尾 ▼▼▼ */
+
+/* 【核心】专门为角色手机里的日记删除按钮，重新定义位置 */
+#character-diary-list .character-data-item .item-delete-btn {
+    top: auto;         /* 解除顶部的定位 */
+    right: auto;       /* 解除右侧的定位 */
+    bottom: 8px;       /* 定位到距离底部8像素 */
+    left: 8px;         /* 定位到距离左侧8像素 */
+    opacity: 0;        /* 保持默认隐藏 */
+    transition: opacity 0.2s ease; /* 保持淡入淡出动画 */
+}
+
+/* 【美化】鼠标悬停在整张日记卡片上时，才显示这个按钮 */
+#character-diary-list .character-data-item:hover .item-delete-btn {
+    opacity: 1;
+}
+
+/* ▲▲▲ 粘贴结束 ▲▲▲ */
+/* ▼▼▼ 【全新】心声功能样式 ▼▼▼ */
+
+/* 1. 跳动的心动画 */
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+#char-heart-btn svg {
+    animation: heartbeat 1.5s infinite ease-in-out;
+}
+
+/* 2. 心声面板主内容样式 */
+#inner-voice-avatar-wrapper::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border: 1.5px solid #ffc1cc; /* 粉色的轮廓线 */
+    border-radius: 50%;
+    pointer-events: none; /* 让它不影响点击 */
+}
+
+#inner-voice-content-area p {
+    white-space: pre-wrap; /* 让换行符和空格生效 */
+    word-break: break-word; /* 防止长单词溢出 */
+}
+
+/* 3. 历史记录面板样式 */
+.inner-voice-history-item {
+    background-color: #fff;
+    margin: 10px;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.history-item-timestamp {
+    font-size: 11px;
+    color: #999;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+.history-item-content p {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #444;
+}
+.history-item-content strong {
+    font-size: 12px;
+}
+/* ▲▲▲ 心声功能样式结束 ▲▲▲ */
+/* 【全新】心声历史记录单条删除按钮样式 */
+.inner-voice-history-item {
+    position: relative; /* 让删除按钮可以相对于它定位 */
+}
+
+.history-item-delete-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    color: #888;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 24px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.history-item-delete-btn:hover {
+    background-color: #ff3b30;
+    color: white;
+}
 
 
 /* ▲▲▲ 步骤1粘贴结束 ▲▲▲ */
@@ -7391,15 +7500,26 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         <div class="default-controls">
             <span class="back-btn" id="back-to-list-btn">‹</span>
             
-            <!-- ▼▼▼ 【核心新增】标题和状态的容器 ▼▼▼ -->
-            <div id="chat-header-title-wrapper">
-                <span id="chat-header-title">聊天对象</span>
-                <div id="chat-header-status">
-                    <span class="status-dot"></span>
-                    <span class="status-text">在线</span>
-                </div>
-            </div>
-            <!-- ▲▲▲ 新增结束 ▲▲▲ -->
+ <!-- ▼▼▼ 【心声功能-已修改】标题和状态的容器 ▼▼▼ -->
+<div id="chat-header-title-wrapper">
+    <!-- 新增一个容器，把标题和心形按钮包起来 -->
+    <div id="chat-header-main-line">
+        <span id="chat-header-title">聊天对象</span>
+        <div id="char-heart-btn" style="display: none; cursor: pointer;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ff4d6d" stroke="#ffc3d0" stroke-width="1.5">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        </div>
+    </div>
+    <!-- 状态栏现在是独立的了 -->
+    <div id="chat-header-status">
+        <span class="status-dot"></span>
+        <span class="status-text">在线</span>
+    </div>
+</div>
+<!-- ▲▲▲ 修改结束 ▲▲▲ -->
+
+
 
             <div class="header-actions">
                 <span class="action-btn" id="listen-together-btn" title="一起听"><img src="https://i.postimg.cc/dV8sdNcx/210-20250618115221.png" alt="一起听"></span>
@@ -7422,67 +7542,55 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     <!-- 聊天消息区域 (保持不变) -->
     <div id="chat-messages"><div id="typing-indicator">对方正在输入...</div></div>
 
-    <!-- 输入区域 (保持不变) -->
+    <!-- 输入区域 (这是修改后的最终版本) -->
     <div id="chat-input-area">
-<div id="reply-preview-bar">
-    <div class="reply-preview-content">
-        <div class="sender">回复 xxx:</div>
-        <div class="text">被引用的消息内容...</div>
-    </div>
-    <span id="cancel-reply-btn">×</span>
-</div>
+        <div id="reply-preview-bar">
+            <div class="reply-preview-content">
+                <div class="sender">回复 xxx:</div>
+                <div class="text">被引用的消息内容...</div>
+            </div>
+            <span id="cancel-reply-btn">×</span>
+        </div>
         <div id="chat-input-actions-top">
             <button id="open-sticker-panel-btn" class="chat-action-icon-btn action-button" title="表情面板"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <line x1="12" y1="5" x2="12" y2="19"></line>
-    <line x1="5" y1="12" x2="19" y2="12"></line>
-</svg></button>
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg></button>
+            
+            <!-- “重新生成回复”按钮的新家 -->
+            <button id="reroll-btn" class="action-button" title="重新生成回复"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg></button>
+            
             <button id="send-photo-btn" class="chat-action-icon-btn action-button" title="发送照片"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></button>
             <button id="upload-image-btn" class="chat-action-icon-btn action-button" title="上传图片"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" ><path d="M21 3.5H3C2.44772 3.5 2 3.94772 2 4.5V19.5C2 20.0523 2.44772 20.5 3 20.5H21C21.5523 20.5 22 20.0523 22 19.5V4.5C22 3.94772 21.5523 3.5 21 3.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 13.5C17.6046 13.5 18.5 12.6046 18.5 11.5C18.5 10.3954 17.6046 9.5 16.5 9.5C15.3954 9.5 14.5 10.3954 14.5 11.5C14.5 12.6046 15.3954 13.5 16.5 13.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 14.5L18 10.5L10.3333 18.5M12.5 16L9 12.5L2 19.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-<button id="transfer-btn" class="chat-action-icon-btn action-button" title="转账">
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M7 4L12 12L17 4M12 12V20M8 10H16M8 13H16"></path>
-</svg>
-</button>
+            <button id="transfer-btn" class="chat-action-icon-btn action-button" title="转账">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 4L12 12L17 4M12 12V20M8 10H16M8 13H16"></path>
+            </svg>
+            </button>
             <button id="voice-message-btn" class="chat-action-icon-btn action-button" title="发送语音"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v4"/><path d="M8 23h8"/></svg></button>
-<!-- ▼▼▼ 将这行新代码粘贴到“发送语音”按钮的后面 ▼▼▼ -->
-<button id="send-waimai-request-btn" class="chat-action-icon-btn action-button" title="发起外卖请求"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></button>
-<!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
-<!-- ▼▼▼ 【新增】视频通话按钮 ▼▼▼ -->
-<button id="video-call-btn" class="chat-action-icon-btn action-button" title="视频通话"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg></button>
-<!-- ▲▲▲ 新增结束 ▲▲▲
-<!-- ▼▼▼群视频通话按钮 ▼▼▼ -->
-<button id="group-video-call-btn" class="chat-action-icon-btn action-button" title="群视频通话"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></button>
-<!-- ▲▲▲ 全新添加结束 ▲▲▲ -->
-<!-- ▼▼▼发起投票按钮▼▼▼ -->
-<button id="send-poll-btn" class="chat-action-icon-btn action-button" title="发起投票"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h10"/><path d="M6 6h.01"/><path d="M8 12h10"/><path d="M6 12h.01"/><path d="M8 18h10"/><path d="M6 18h.01"/></svg></button>
-<!-- ▲▲▲ 替换结束 ▲▲▲ -->
-<!-- ▼▼▼ 在 id="chat-input-actions-top" 的末尾，【添加】这个新的按钮 ▼▼▼ -->
-<button id="share-link-btn" class="chat-action-icon-btn action-button" title="分享链接"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg></button>
-<!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
-<!-- ▼▼▼ 【全新】发送定位按钮 ▼▼▼ -->
-<button id="send-location-btn" class="chat-action-icon-btn action-button" title="发送定位">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-        <circle cx="12" cy="10" r="3"></circle>
-    </svg>
-</button>
-<!-- ▲▲▲ 新增结束 ▲▲▲ -->
+            <button id="send-waimai-request-btn" class="chat-action-icon-btn action-button" title="发起外卖请求"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></button>
+            <button id="video-call-btn" class="chat-action-icon-btn action-button" title="视频通话"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg></button>
+            <button id="group-video-call-btn" class="chat-action-icon-btn action-button" title="群视频通话"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></button>
+            <button id="send-poll-btn" class="chat-action-icon-btn action-button" title="发起投票"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h10"/><path d="M6 6h.01"/><path d="M8 12h10"/><path d="M6 12h.01"/><path d="M8 18h10"/><path d="M6 18h.01"/></svg></button>
+            <button id="share-link-btn" class="chat-action-icon-btn action-button" title="分享链接"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg></button>
+            <button id="send-location-btn" class="chat-action-icon-btn action-button" title="发送定位">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+            </button>
         </div>
         <div id="chat-input-main-row">
             <textarea id="chat-input" rows="1" placeholder="输入消息..."></textarea>
             <div id="input-actions-wrapper">
                 <button id="wait-reply-btn" title="等待回复"><img src="https://i.postimg.cc/q72zq80N/ECE92-BBC-BE57-48-E9-BB2-C-345-B6019-C4-B2.png" alt="等待回复"></button>
-    <!-- ▼▼▼ 在这里粘贴下面这行新代码 ▼▼▼ -->
-    <button id="reroll-btn" class="action-button" title="重新生成回复"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <polyline points="23 4 23 10 17 10"></polyline>
-    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-</svg></button>
-    <!-- ▲▲▲ 粘贴结束 ▲▲▲ -->
                 <button id="send-btn" class="action-button">发送</button>
             </div>
         </div>
     </div>
-
 <!-- ▼▼▼ 在这里新增 ▼▼▼ -->
 <div id="chat-lock-overlay">
     <div id="chat-lock-content"></div>
@@ -8218,6 +8326,20 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             <!-- ▼▼▼ 在这里粘贴新代码 ▼▼▼ -->
 <div class="form-group" id="npc-library-group">
     <button id="manage-npcs-btn" class="form-button form-button-secondary" style="width: 100%; margin-top: 5px;">管理NPC库</button>
+</div>
+<!-- ▲▲▲ 粘贴结束 ▲▲▲ -->
+ <!-- ▼▼▼ 把这一整块全新的代码，粘贴到“管理NPC库”按钮的 div 之后 ▼▼▼ -->
+<hr style="opacity: 0.2; margin: 20px 0;">
+<div class="form-group">
+    <label for="time-perception-toggle" class="toggle-switch-label">
+        <span class="toggle-switch-text">启用实时时间感知</span>
+        <input type="checkbox" id="time-perception-toggle" checked>
+        <span class="toggle-switch-slider"></span>
+    </label>
+</div>
+<div id="custom-time-container" class="form-group" style="display: none;">
+    <label for="custom-time-input">自定义时间</label>
+    <input type="datetime-local" id="custom-time-input" style="width: 95%; padding: 8px; border-radius: 8px; border: 1px solid var(--border-color);">
 </div>
 <!-- ▲▲▲ 粘贴结束 ▲▲▲ -->
 <div class="form-group" id="ai-avatar-group"><label>对方头像</label>
@@ -9046,6 +9168,65 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     </div>
 </div>
 <!-- ▲▲▲ 新增HTML结束 ▲▲▲ -->
+<!-- ▼▼▼ 【全新】心声功能模态框 ▼▼▼ -->
+<div id="inner-voice-modal" class="modal">
+    <!-- 心声主面板 -->
+    <div id="inner-voice-main-panel" class="modal-content" style="width: 90%; max-width: 340px; height: auto; max-height: 80%; background-color: #fffafb; border: 1px solid #ffe4e1;">
+        <div class="modal-header" style="border-bottom: 1px solid #ffe4e1; padding: 12px 15px;">
+            <!-- 关闭按钮 -->
+            <span id="close-inner-voice-modal" style="cursor: pointer; font-size: 24px; color: #ff8a80;">×</span>
+            <!-- 历史按钮 -->
+            <span id="inner-voice-history-btn" style="cursor: pointer;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff8a80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+            </span>
+        </div>
+        <div class="modal-body" style="padding: 15px;">
+            <!-- 左上角头像和右侧信息 -->
+            <div style="display: flex; align-items: flex-start; margin-bottom: 20px;">
+                <div id="inner-voice-avatar-wrapper" style="position: relative; flex-shrink: 0;">
+                    <img id="inner-voice-avatar" src="" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+                </div>
+                <div style="margin-left: 12px;">
+                    <div id="inner-voice-char-name" style="font-weight: 600; font-size: 16px; color: #333;"></div>
+                    <div id="inner-voice-adopter" style="font-size: 13px; color: #888; margin-top: 4px;"></div>
+                </div>
+            </div>
+            <!-- 心声内容 -->
+            <div id="inner-voice-content-area" style="display: flex; flex-direction: column; gap: 15px;">
+                <div>
+                    <strong style="color: #e57373;">服装:</strong>
+                    <p id="inner-voice-clothing" style="margin: 5px 0 0 0; line-height: 1.6; color: #555;"></p>
+                </div>
+                <div>
+                    <strong style="color: #81c784;">行为:</strong>
+                    <p id="inner-voice-behavior" style="margin: 5px 0 0 0; line-height: 1.6; color: #555;"></p>
+                </div>
+                <div>
+                    <strong style="color: #64b5f6;">心声:</strong>
+                    <p id="inner-voice-thoughts" style="margin: 5px 0 0 0; line-height: 1.6; color: #555;"></p>
+                </div>
+                <div>
+                    <strong style="color: #ba68c8;">坏心思:</strong>
+                    <p id="inner-voice-naughty-thoughts" style="margin: 5px 0 0 0; line-height: 1.6; color: #555;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- 历史记录面板 (默认隐藏) -->
+<div id="inner-voice-history-panel" class="modal-content" style="width: 90%; max-width: 340px; height: 80%; background-color: #f5f5f5; display: none; flex-direction: column;">
+    <div class="modal-header" style="border-bottom: 1px solid #ddd; justify-content: space-between;">
+        <span id="back-from-history-btn" style="cursor: pointer; font-size: 16px; font-weight: 600; color: var(--accent-color);">返回</span>
+        <span>历史心声</span>
+        <!-- 【新增】全部清空按钮 -->
+        <span id="clear-all-history-btn" style="cursor: pointer; font-size: 14px; color: #ff3b30;">全部清空</span>
+    </div>
+    <div class="modal-body" id="inner-voice-history-list" style="padding: 0;">
+        <!-- 历史记录会由JS动态生成在这里 -->
+    </div>
+</div>
 
 <script>
 
@@ -9300,6 +9481,7 @@ let lyricsBarSettings = {
         const audioPlayer = document.getElementById('audio-player');
         let newWallpaperBase64 = null;
         let isSelectionMode = false;
+        let isInnerVoiceHistoryOpen = false; // 用于跟踪历史面板是否打开
         let selectedMessages = new Set();
         let editingMemberId = null;
         let editingWorldBookId = null;
@@ -9931,6 +10113,30 @@ const DEFAULT_APP_ICONS = {
                 showCustomModal();
             });
         }
+// ▼▼▼ 把这一整块全新的函数，粘贴到 <script> 标签的最开始 ▼▼▼
+/**
+ * 【全新】一个专门清除HTML标签和代码的函数
+ * @param {string} text - 包含HTML或代码的原始文本
+ * @returns {string} - 清理后的纯文本
+ */
+function stripHtmlAndCode(text) {
+    if (!text || typeof text !== 'string') {
+        return ''; // 如果输入为空或不是字符串，返回空字符串
+    }
+    // 1. 移除所有HTML标签 (例如 <b>, <div>)
+    let cleanedText = text.replace(/<\/?[^>]+(>|$)/g, "");
+    
+    // 2. 移除所有Markdown代码块 (例如 ```code``` 或 `code`)
+    cleanedText = cleanedText.replace(/```[\s\S]*?```/g, ''); // 移除多行代码块
+    cleanedText = cleanedText.replace(/`[^`]*`/g, '');     // 移除行内代码
+    
+    // 3. 将HTML实体 (例如 &lt; &gt;) 转换回正常字符 (< >)
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = cleanedText;
+    
+    return tempDiv.textContent || tempDiv.innerText || "";
+}
+// ▲▲▲ 粘贴结束 ▲▲▲
 
 // ▼▼▼ 把这【一整块】全新的代码，粘贴到 <script> 标签内的【变量定义区域】的末尾 ▼▼▼
 
@@ -10232,8 +10438,8 @@ function showCustomPrompt(title, placeholder, initialValue = '', type = 'text', 
         // ===================================================================
 
 db.version(30).stores({ 
-chats: '&id, isGroup, groupId, isPinned, characterPhoneData',
-    apiConfig: '&id', 
+chats: '&id, isGroup, groupId, isPinned, characterPhoneData,latestInnerVoice, innerVoiceHistory',
+    apiConfig: '&id',
     globalSettings: '&id, activeThemeId', 
     userStickers: '&id, url, name',
     worldBooks: '&id, name, categoryId', 
@@ -10370,17 +10576,16 @@ async function renderFontPresets() {
  * 【终极修复版】为单个预设加载字体以供预览
  * @param {object} preset - 字体预设对象 {id, name, url}
  */
+// ▼▼▼ 用下面这整块代码，替换掉你旧的 loadFontForPreview 函数 ▼▼▼
 function loadFontForPreview(preset) {
     const styleId = `font-style-${preset.id}`;
-    // 检查这个字体的专属样式表是否已经创建，如果已创建则无需重复操作
     if (document.getElementById(styleId)) return;
 
-    // 1. 创建一个新的 <style> 标签，专门用于这一个字体预设
     const style = document.createElement('style');
     style.id = styleId;
     
-    // 2. 在这个样式表里，我们同时定义 @font-face 和应用该字体的规则
-    //    我们用一个非常具体的选择器，确保只影响对应的那个预览框
+    // 【核心修改】我们不再手动操作元素的style属性，
+    // 而是直接创建一条高优先级的CSS规则来应用字体，这更可靠。
     style.innerHTML = `
         @font-face {
             font-family: 'preset-${preset.id}';
@@ -10388,19 +10593,15 @@ function loadFontForPreview(preset) {
             font-display: swap;
         }
 
-        /* 
-         * 核心修复：直接创建一个CSS规则来应用字体，
-         * 它的优先级高于通过 .style.fontFamily 设置的内联样式，
-         * 也高于全局的 body 字体样式。
-        */
         .font-preview-text[data-preset-id="${preset.id}"] {
             font-family: 'preset-${preset.id}', sans-serif !important;
         }
     `;
     
-    // 3. 将这个全新的、独立的样式表添加到文档头部
     document.head.appendChild(style);
 }
+// ▲▲▲ 替换结束 ▲▲▲
+
 
 /**
  * 为预设卡槽中的所有按钮统一添加事件监听器
@@ -10471,22 +10672,31 @@ function handleUploadFontLocal(slotIndex) {
  * @param {string} name - 字体名称
  * @param {string} url - 字体URL (网络或Base64)
  */
+// ▼▼▼ 用下面这整块代码，替换掉你旧的 saveFontPreset 函数 ▼▼▼
 async function saveFontPreset(slotIndex, name, url) {
-    const presets = await db.fontPresets.toArray();
-    const newPreset = { id: 'font_' + Date.now(), name, url };
+    try {
+        const presets = await db.fontPresets.toArray();
+        const newPreset = { id: 'font_' + Date.now(), name, url };
+        presets.splice(slotIndex, 0, newPreset);
+        const presetsToSave = presets.slice(0, 5);
 
-    // 将新预设插入到指定位置
-    presets.splice(slotIndex, 0, newPreset);
-    // 只保留前5个
-    const presetsToSave = presets.slice(0, 5);
+        // 【核心修改】使用数据库事务来保证操作的原子性
+        await db.transaction('rw', db.fontPresets, async () => {
+            await db.fontPresets.clear();
+            await db.fontPresets.bulkPut(presetsToSave);
+        });
 
-    // 清空旧数据并批量存入新数据
-    await db.fontPresets.clear();
-    await db.fontPresets.bulkAdd(presetsToSave);
-
-    await renderFontPresets(); // 刷新UI
-    alert(`字体 "${name}" 已成功保存到卡槽 ${slotIndex + 1}！`);
+        await renderFontPresets();
+        alert(`字体 "${name}" 已成功保存到卡槽 ${slotIndex + 1}！`);
+    } catch (error) {
+        // 【核心修改】如果出错，会在这里捕获，并告知用户数据是安全的
+        console.error("保存字体预设失败:", error);
+        alert(`保存字体失败，数据已自动回滚，你之前的字体数据是安全的。错误: ${error.message}`);
+        await renderFontPresets(); // 失败后重新渲染，恢复到旧的列表状态
+    }
 }
+// ▲▲▲ 替换结束 ▲▲▲
+
 
 /**
  * 删除一个字体预设
@@ -13190,6 +13400,8 @@ async function openChat(chatId) {
     showScreen('chat-interface-screen');
     window.updateListenTogetherIconProxy(state.activeChatId);
     toggleCallButtons(chat.isGroup || false);    
+// 【心声功能】根据是否为单聊，显示或隐藏心形按钮
+document.getElementById('char-heart-btn').style.display = chat.isGroup ? 'none' : 'inline-flex';
 
     if (!chat.isGroup && chat.relationship?.status === 'pending_ai_approval') {
         console.log(`检测到好友申请待处理状态，为角色 "${chat.name}" 自动触发AI响应...`);
@@ -13360,16 +13572,69 @@ let geminiConfig = toGeminiRequestData(model,apiKey,'', messagesForDecision,isGe
             return; 
         }
 
-        const now = new Date();
-        const currentTime = now.toLocaleString('zh-CN', { dateStyle: 'full', timeStyle: 'short' });
+            // ▼▼▼ 从这里开始，用这一整块【已修复错误】的代码，替换掉你之前修改过的那块时间代码 ▼▼▼
+            const historySlice = chat.history.filter(msg => !msg.isTemporary).slice(-chat.settings.maxMemory); // 1. 【修复】把这行加回来！
+
+            let now;
+            // 2. 检查时间感知开关是否打开 (北京时间转换逻辑)
+            if (chat.settings.timePerceptionEnabled ?? true) {
+                // 开关打开，使用真实的北京时间
+                const localNow = new Date();
+                const utcMilliseconds = localNow.getTime() + (localNow.getTimezoneOffset() * 60000);
+                const beijingMilliseconds = utcMilliseconds + (3600000 * 8);
+                now = new Date(beijingMilliseconds);
+            } else {
+                // 开关关闭，尝试使用自定义时间
+                if (chat.settings.customTime) {
+                    now = new Date(chat.settings.customTime);
+                } else {
+                    // 如果自定义时间为空，则安全地退回到真实的北京时间
+                    const localNow = new Date();
+                    const utcMilliseconds = localNow.getTime() + (localNow.getTimezoneOffset() * 60000);
+                    const beijingMilliseconds = utcMilliseconds + (3600000 * 8);
+                    now = new Date(beijingMilliseconds);
+                }
+            }
+            
+            // 3. 后续的时间差计算逻辑 (这部分保持不变)
+            const currentTime = now.toLocaleString('zh-CN', { dateStyle: 'full', timeStyle: 'short' });
+            let timeContext = `\n- **当前时间**: ${currentTime}`;
+            const lastAiMessage = historySlice.filter(m => m.role === 'assistant' && !m.isHidden).slice(-1)[0];
+
+            if (lastAiMessage) {
+                const lastTime = new Date(lastAiMessage.timestamp);
+                const realNow = new Date();
+                const diffMinutes = Math.floor((realNow - lastTime) / (1000 * 60));
+                
+                if (diffMinutes < 5) {
+                    timeContext += "\n- **对话状态**: 你们的对话刚刚还在继续。";
+                } else if (diffMinutes < 60) {
+                    timeContext += `\n- **对话状态**: 你们在${diffMinutes}分钟前聊过。`;
+                } else {
+                    const diffHours = Math.floor(diffMinutes / 60);
+                    if (diffHours < 24) {
+                        timeContext += `\n- **对话状态**: 你们在${diffHours}小时前聊过。`;
+                    } else {
+                        const diffDays = Math.floor(diffHours / 24);
+                        timeContext += `\n- **对话状态**: 你们已经有${diffDays}天没有聊天了。`;
+                    }
+                }
+            } else {
+                timeContext += "\n- **对话状态**: 这是你们的第一次对话。";
+            }
+            // ▲▲▲ 替换到这里结束 ▲▲▲
+
+        
         let worldBookContent = '';
         if (chat.settings.linkedWorldBookIds && chat.settings.linkedWorldBookIds.length > 0) {
             const linkedContents = chat.settings.linkedWorldBookIds.map(bookId => {
                 const worldBook = state.worldBooks.find(wb => wb.id === bookId);
-                return worldBook && worldBook.content ? `\n\n## 世界书: ${worldBook.name}\n${worldBook.content}` : '';
+                // ▼▼▼ 把它修改为 ▼▼▼
+return worldBook && worldBook.content ? `\n\n## 世界书: ${worldBook.name}\n${stripHtmlAndCode(worldBook.content)}` : '';
+
             }).filter(Boolean).join('');
             if (linkedContents) {
-                worldBookContent = `\n\n# 核心世界观设定 (必须严格遵守以下所有设定)\n${linkedContents}\n`;
+                worldBookContent = `\n\n# 核心世界观设定 (必须严格遵守以下所有设定)，里面可能会包含HTML小剧场，在捕获到关键词后输出\n${linkedContents}\n`;
             }
         }
         let musicContext = '';
@@ -13405,34 +13670,6 @@ const countdownContext = await getCountdownContext(); // <--- 就是这一行
 `;
         }
         let systemPrompt, messagesPayload;
-        const maxMemory = parseInt(chat.settings.maxMemory) || 10;
-        const historySlice = chat.history.slice(-maxMemory);
-
-        // --- ▼▼▼ 全新添加的时间感知代码 ▼▼▼ ---
-        let timeContext = `\n- **当前时间**: ${currentTime}`;
-        const lastAiMessage = historySlice.filter(m => m.role === 'assistant' && !m.isHidden).slice(-1)[0];
-
-        if (lastAiMessage) {
-            const lastTime = new Date(lastAiMessage.timestamp);
-            const diffMinutes = Math.floor((now - lastTime) / (1000 * 60));
-            
-            if (diffMinutes < 5) {
-                timeContext += "\n- **对话状态**: 你们的对话刚刚还在继续。";
-            } else if (diffMinutes < 60) {
-                timeContext += `\n- **对话状态**: 你们在${diffMinutes}分钟前聊过。`;
-            } else {
-                const diffHours = Math.floor(diffMinutes / 60);
-                if (diffHours < 24) {
-                    timeContext += `\n- **对话状态**: 你们在${diffHours}小时前聊过。`;
-                } else {
-                    const diffDays = Math.floor(diffHours / 24);
-                    timeContext += `\n- **对话状态**: 你们已经有${diffDays}天没有聊天了。`;
-                }
-            }
-        } else {
-            timeContext += "\n- **对话状态**: 这是你们的第一次对话。";
-        }
-        // --- ▲▲▲ 新代码添加结束 ▲▲▲ ---
 
     // 【核心修改】
 let sharedContext = '';
@@ -13618,8 +13855,34 @@ ${npcContext}
 
 # 你的当前状态：
 你现在的状态是【${chat.status.text}】。
+
 # 你的任务与规则：
 1. **【【【输出格式】】】**: 你的回复【必须】是一个JSON数组格式的字符串。数组中的【每一个元素都必须是一个带有type字段的JSON对象】。
+## 1. "chatResponse" 键:
+- 它的值【必须】是一个JSON数组，代表你要在聊天中发送的消息。
+- 数组中的每个元素都是一个独立的消息对象，这可以让你一次性发送多条消息，模拟真人的聊天习惯。
+- 你可以使用的消息对象格式见下方的 "你可以使用的操作指令"。
+## 2. "innerVoice" 键（每次必须更新这个）:
+- 它的值【必须】是一个JSON对象，代表你此刻不为人知的内心想法，每次必须更新这里的！必须更新心声和坏想法还有行为，服装可以随着时间和气温更换。
+- 这个对象【必须】包含以下四个键：
+  - "clothing": (字符串) 详细描述你当前【全身的服装】，从头到脚。
+  - "behavior": (字符串) 描述你当前【符合聊天情景的、细微的动作或表情】。
+  - "thoughts": (字符串) 描述你此刻【丰富、细腻的内心真实想法】，字数在50字左右。
+  - "naughtyThoughts": (字符串) 描述你此刻【有点腹黑或色色的坏心思】，要与当下聊天情境有关，符合人设。
+每一次回复必须输出这两个
+# 【【【输出格式示例】】】
+{
+  "chatResponse": [
+    {"type": "text", "content": "你好呀！"},
+    {"type": "text", "content": "今天天气真好呢~"}
+  ],
+  "innerVoice": {
+    "clothing": "我正穿着一件淡蓝色的连衣裙，裙摆刚好到膝盖，脚上是一双白色的小皮鞋。",
+    "behavior": "【看到你的消息，嘴角忍不住微微上扬，手指在屏幕上轻轻敲了敲】",
+    "thoughts": "他终于回我消息了，好开心！该怎么回才能显得不那么刻意呢？希望他能喜欢我今天的分享。",
+    "naughtyThoughts": "真想知道他现在是什么表情...是不是也在对着屏幕傻笑呢？如果能抱住他就好了。"
+  }
+}
 2. **对话节奏**: 模拟真人的聊天习惯，你可以一次性生成多条短消息。每次要回复至少3-8条消息！！！
 3. **情景限定**: 你们的互动【仅限于线上聊天软件】。决不允许出现或发展为线下见面剧情。**更重要的是，这【不是电话通话】，你必须清楚地意识到你们正在通过类似微信/QQ的软件进行文字、语音消息和图片交流。因此，【绝对禁止】使用任何与传统电话相关的词语，例如“挂电话”、“挂了”、“我先挂了”、“有电话进来了”等。**
 4. **情景感知**: 你需要感知当前的时间(${currentTime})、我们正在一起听的歌、以及你的人设和世界观。
@@ -13880,8 +14143,68 @@ if (visiblePosts.length > 0 && !chat.isGroup) {
 
         chat.history = chat.history.filter(msg => !msg.isTemporary);
 
-        const messagesArray = parseAiResponse(aiResponseContent);
-        
+// ▼▼▼ 【终极修复版】智能解析AI回复，确保心声数据不丢失 ▼▼▼
+let messagesArray = [];
+let innerVoiceData = null;
+
+try {
+    // 【核心修复】在解析前，先对AI的原始回复进行“净化”处理
+    let sanitizedContent = aiResponseContent
+        .replace(/^```json\s*/, '') // 移除开头的 ```json
+        .replace(/```$/, '')       // 移除结尾的 ```
+        .trim();                   // 移除首尾的空格和换行
+
+    // 再次净化，强行提取第一个 { 和最后一个 } 之间的内容
+    const firstBrace = sanitizedContent.indexOf('{');
+    const lastBrace = sanitizedContent.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace > firstBrace) {
+        sanitizedContent = sanitizedContent.substring(firstBrace, lastBrace + 1);
+    }
+
+    const fullResponse = JSON.parse(sanitizedContent);
+    
+    // 现在我们可以安全地解析净化后的内容了
+    if (fullResponse.chatResponse && Array.isArray(fullResponse.chatResponse)) {
+        messagesArray = fullResponse.chatResponse;
+    }
+    if (fullResponse.innerVoice && typeof fullResponse.innerVoice === 'object') {
+        innerVoiceData = fullResponse.innerVoice;
+    }
+    
+    if (!innerVoiceData && fullResponse.thoughts && fullResponse.behavior) {
+        innerVoiceData = fullResponse;
+    }
+    
+    if (messagesArray.length === 0 && !innerVoiceData) {
+         messagesArray = parseAiResponse(aiResponseContent);
+    }
+
+} catch (e) {
+    console.warn("AI回复不是有效的JSON，退回到标准解析模式。", e);
+    messagesArray = parseAiResponse(aiResponseContent);
+}
+
+// 最终处理心声数据
+if (innerVoiceData) {
+    console.log("解析成功：已成功捕获到心声(innerVoice)数据。", innerVoiceData);
+    const newInnerVoice = innerVoiceData;
+    newInnerVoice.timestamp = Date.now();
+    chat.latestInnerVoice = newInnerVoice;
+    if (!chat.innerVoiceHistory) {
+        chat.innerVoiceHistory = [];
+    }
+    chat.latestInnerVoice.clothing = chat.latestInnerVoice.clothing || '...';
+    chat.latestInnerVoice.behavior = chat.latestInnerVoice.behavior || '...';
+    chat.latestInnerVoice.thoughts = chat.latestInnerVoice.thoughts || '...';
+    chat.latestInnerVoice.naughtyThoughts = chat.latestInnerVoice.naughtyThoughts || '...';
+
+    chat.innerVoiceHistory.push(newInnerVoice);
+} else {
+     console.warn("本次AI回复中未检测到有效的心声(innerVoice)数据。");
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+
         const isViewingThisChat = document.getElementById('chat-interface-screen').classList.contains('active') && state.activeChatId === chatId;
         
         let callHasBeenHandled = false;
@@ -15468,7 +15791,131 @@ function runBackgroundSimulationTick() {
 
 }
 // ▲▲▲ 替换结束 ▲▲▲
+/**
+ * 根据AI的视角，过滤出它能看到的动态
+ * @param {Array} allPosts - 所有待检查的动态帖子
+ * @param {object} viewerChat - 正在“看”动态的那个AI的chat对象
+ * @returns {Array} - 过滤后该AI可见的动态帖子
+ */
+function filterVisiblePostsForAI(allPosts, viewerChat) {
+    if (!viewerChat || !viewerChat.id) return []; // 安全检查
 
+    const viewerGroupId = viewerChat.groupId; // 查看者所在的分组ID
+
+    return allPosts.filter(post => {
+        // 规则1：如果是用户发的动态
+        if (post.authorId === 'user') {
+            // 如果用户设置了“部分可见”
+            if (post.visibleGroupIds && post.visibleGroupIds.length > 0) {
+                // 只有当查看者AI的分组ID在用户的可见列表里时，才可见
+                return viewerGroupId && post.visibleGroupIds.includes(viewerGroupId);
+            }
+            // 如果用户没设置，说明是公开的，所有AI都可见
+            return true;
+        }
+
+        // 规则2：如果是其他AI发的动态
+        const authorGroupId = post.authorGroupId; // 发帖AI所在的分组ID
+        
+        // 如果发帖的AI没有分组，那它的动态就是公开的
+        if (!authorGroupId) {
+            return true;
+        }
+
+        // 如果发帖的AI有分组，那么只有在同一个分组的AI才能看到
+        return authorGroupId === viewerGroupId;
+    });
+}
+/**
+ * 【全新升级版】根据AI视角和动态设置，构建给AI看的评论区上下文
+ * @param {object} post - 正在处理的动态对象
+ * @param {object} viewerChat - 正在“看”动态的AI角色
+ * @param {string} userNickname - 用户的昵称
+ * @returns {{contextString: string, visibilityFlag: string}} - 返回包含上下文文本和可见性标志的对象
+ */
+function buildCommentsContextForAI(post, viewerChat, userNickname) {
+    if (!post.comments || post.comments.length === 0) {
+        // ★★★ 关键在这里：确保 "[评论区可见]" 是一个带引号的字符串 ★★★
+        return { contextString: "", visibilityFlag: "[评论区可见]" };
+    }
+
+    const viewerName = viewerChat.name;
+    let commentsForAI;
+    let visibilityFlag;
+
+    if (post.areCommentsVisible !== false) {
+        commentsForAI = post.comments;
+        // ★★★ 关键在这里：确保 "[评论区可见]" 是一个带引号的字符串 ★★★
+        visibilityFlag = "[评论区可见]"; 
+    } else {
+        commentsForAI = post.comments.filter(comment => {
+            return comment.commenterName === viewerName
+                || comment.commenterName === userNickname
+                || comment.replyTo === viewerName;
+        });
+        // ★★★ 关键在这里：确保 "[评论区部分可见]" 是一个带引号的字符串 ★★★
+        visibilityFlag = "[评论区部分可见]";
+    }
+
+    if (commentsForAI.length === 0) {
+        return { contextString: "", visibilityFlag: visibilityFlag };
+    }
+
+    let context = `  └ 评论区:\n`;
+    commentsForAI.slice(-5).forEach(c => {
+        if (c.replyTo) {
+            context += `    - ${c.commenterName} 回复 ${c.replyTo}: ${c.text}\n`;
+        } else {
+            context += `    - ${c.commenterName}: ${c.text}\n`;
+        }
+    });
+    
+    return { contextString: context, visibilityFlag: visibilityFlag };
+}
+
+/**
+ * 【全新】获取一条动态的可见观众列表，用于告知AI
+ * @param {object} post - 动态对象
+ * @param {object} allChats - 所有的聊天对象
+ * @param {string} userNickname - 用户的昵称
+ * @returns {Array<string>} - 可见观众的名字列表
+ */
+function getVisibleAudienceForPost(post, allChats, userNickname) {
+    const audience = new Set([userNickname]); // 用户永远是观众
+
+    // 1. 如果是用户发的动态
+    if (post.authorId === 'user') {
+        // 如果是公开的，所有AI都是观众
+        if (!post.visibleGroupIds || post.visibleGroupIds.length === 0) {
+            Object.values(allChats).forEach(chat => audience.add(chat.name));
+        } else {
+            // 如果是部分可见，只有指定分组的AI是观众
+            Object.values(allChats).forEach(chat => {
+                if (chat.groupId && post.visibleGroupIds.includes(chat.groupId)) {
+                    audience.add(chat.name);
+                }
+            });
+        }
+    } 
+    // 2. 如果是AI发的动态
+    else {
+        const authorChat = allChats[post.authorId];
+        // 如果发帖的AI没有分组，视为公开
+        if (!authorChat || !authorChat.groupId) {
+             Object.values(allChats).forEach(chat => audience.add(chat.name));
+        } else {
+            // 如果有分组，则同一分组的所有AI都是观众
+            const authorGroupId = authorChat.groupId;
+            Object.values(allChats).forEach(chat => {
+                if (chat.groupId === authorGroupId) {
+                    audience.add(chat.name);
+                }
+            });
+        }
+    }
+    
+    return Array.from(audience);
+}
 
 async function triggerInactiveAiAction(chatId) {
     const chat = state.chats[chatId];
@@ -15492,8 +15939,6 @@ async function triggerInactiveAiAction(chatId) {
         recentContextSummary += `\n你最后对用户说：“${String(lastAiMessage.content).substring(0, 50)}...”。`;
     }
 
-    // ★★★★★ 这就是我们这次修复的核心 ★★★★★
-    // 我们把世界书的准备逻辑放在了它被使用之前
     let worldBookContext = '';
     if (chat.settings.linkedWorldBookIds && chat.settings.linkedWorldBookIds.length > 0) {
         const linkedContents = chat.settings.linkedWorldBookIds.map(bookId => {
@@ -15504,7 +15949,6 @@ async function triggerInactiveAiAction(chatId) {
             worldBookContext = `\n\n# 核心世界观设定 (你必须严格遵守)\n${linkedContents}\n`;
         }
     }
-    // ★★★★★ 修复结束 ★★★★★
 
     const npcLibrary = chat.npcLibrary || [];
     let npcContextForAction = '';
@@ -15514,7 +15958,7 @@ async function triggerInactiveAiAction(chatId) {
 
     const systemPrompt = `
 # 你的任务
-你现在扮演一个名为"${chat.name}"的角色。你已经有一段时间没有和用户（${userNickname}）互动了，现在你有机会【主动】做点什么，来表现你的个性和独立生活。这是一个秘密的、后台的独立行动。
+你现在扮演角色 "${chat.name}"。你已经有一段时间没有和用户（${userNickname}）互动了，现在你有机会【主动】做点什么，来表现你的个性和独立生活。这是一个秘密的、后台的独立行动。
 
 # 你的可选行动 (请根据你的人设【选择一项】执行):
 1.  **改变状态**: 去做点别的事情，然后给用户发条消息。
@@ -15522,10 +15966,11 @@ async function triggerInactiveAiAction(chatId) {
 3.  **与动态互动**:
     -   你【永远可以】根据动态本身的【内容】发表你自己的【新评论】。
     -   每条动态后面会有一个可见性标志，这只影响你【如何回复别人的评论】：
-        -   **"[评论区可见]"**: 你能看到所有人的评论，可以自由地回复任何人。
+        -   **"[评论区可见]"**: 你能看到所有人的评论，可以自由地回复任何人。 
         -   **"[评论区部分可见]"**: 你处于隐私模式，只能看到用户和你自己的评论。在这种情况下，你【只能】回复用户或你自己的评论，【绝对不能】提及或回复任何你看不到的评论。
 4.  **发起视频通话**: 如果你觉得时机合适，可以主动给用户打一个视频电话。
 5.  **庆祝或提醒约定**: 查看你的备忘录。如果今天有约定，就给用户发去祝福；如果约定快到了，就主动提醒一下。
+6.  **【【【互动倾向】】】**: 就算动态的观众只有你和用户，你也应该根据内容，像平时一样自然地发表评论，这很重要。
 
 # 指令格式 (你的回复【必须】是包含一个对象的JSON数组):
 -   **发普通消息**: \`[{"type": "text", "content": "你想对用户说的话..."}]\`
@@ -15563,24 +16008,29 @@ ${worldBookContext}
         const aiName = chat.name;
         
         let dynamicContext = ""; 
-if (visiblePosts.length > 0) {
-    let postsContext = "\n\n# 最近的动态列表 (供你参考和评论):\n";
-    for (const post of visiblePosts) {
-        let authorName = post.authorId === 'user' ? userNickname : (state.chats[post.authorId]?.name || '一位朋友');
-        let interactionStatus = '';
-        if (post.likes && post.likes.includes(aiName)) interactionStatus += " [你已点赞]";
-        if (post.comments && post.comments.some(c => c.commenterName === aiName)) interactionStatus += " [你已评论]";
-        
-        postsContext += `- (ID: ${post.id}) 作者: ${authorName}, 内容: "${(post.publicText || post.content || "图片动态").substring(0, 30)}..."${interactionStatus}`;
+        if (visiblePosts.length > 0) {
+            let postsContext = "\n\n# 最近的动态列表 (供你参考和评论):\n";
+            for (const post of visiblePosts) {
+                let authorName = post.authorId === 'user' ? userNickname : (state.chats[post.authorId]?.name || '一位朋友');
+                let interactionStatus = '';
+                if (post.likes && post.likes.includes(aiName)) interactionStatus += " [你已点赞]";
+                if (post.comments && post.comments.some(c => c.commenterName === aiName)) interactionStatus += " [你已评论]";
+                
+                postsContext += `- (ID: ${post.id}) 作者: ${authorName}, 内容: "${(post.publicText || post.content || "图片动态").substring(0, 30)}..."${interactionStatus}`;
 
-        // 【核心修改】调用新函数并使用返回的两个值
-        const { contextString: commentsContext, visibilityFlag } = buildCommentsContextForAI(post, chat, userNickname);
-        
-        postsContext += ` ${visibilityFlag}\n`; // 在行末加上可见性标志
-        postsContext += commentsContext; // 添加评论区文本
-    }
-    dynamicContext = postsContext;
-}
+                const { contextString: commentsContext, visibilityFlag } = buildCommentsContextForAI(post, chat, userNickname);
+                
+                // ★★★★★ 这就是我们这次修复的核心 ★★★★★
+                // 1. 调用新的“点名”函数
+                const audience = getVisibleAudienceForPost(post, state.chats, userNickname);
+                // 2. 将点名结果和评论区可见性标志，一起告诉AI
+                postsContext += ` ${visibilityFlag} [当前观众: ${audience.join(', ')}]\n`;
+                // ★★★★★ 修复结束 ★★★★★
+                
+                postsContext += commentsContext;
+            }
+            dynamicContext = postsContext;
+        }
 
         messagesPayload.push({
             role: 'user',
@@ -15654,20 +16104,17 @@ if (visiblePosts.length > 0) {
                 await db.qzonePosts.add(newPost);
                 updateUnreadIndicator(unreadPostsCount + 1);
                 console.log(`后台活动: 角色 "${chat.name}" 发布了动态`);
-// ▼▼▼ 步骤5：用这块新代码替换旧的 else if (action.type === 'qzone_comment') 代码块 ▼▼▼
 } else if (action.type === 'qzone_comment') {
     const post = await db.qzonePosts.get(parseInt(action.postId));
     if (post) {
         if (!post.comments) post.comments = [];
         
-        // 创建新的评论对象
         const newAiComment = { 
-            commenterName: action.commenterName || chat.name, // 优先使用AI指定的评论者
+            commenterName: action.commenterName || chat.name,
             text: action.commentText, 
             timestamp: Date.now() 
         };
         
-        // 【核心修改】检查AI是否指定了回复对象
         if (action.replyTo) {
             newAiComment.replyTo = action.replyTo;
         }
@@ -15678,8 +16125,6 @@ if (visiblePosts.length > 0) {
         console.log(`后台活动: 角色 "${chat.name}" 评论了动态 #${post.id}`);
     }
 }
-// ▲▲▲ 步骤5替换结束 ▲▲▲
-
              else if (action.type === 'qzone_like') {
                 const post = await db.qzonePosts.get(parseInt(action.postId));
                 if (post) {
@@ -15704,6 +16149,8 @@ if (visiblePosts.length > 0) {
         console.error(`角色 "${chat.name}" 的独立行动失败:`, error);
     }
 }
+
+
 
 // ▼▼▼ 请用这个【终极修正版】函数，完整替换掉你旧的 applyScopedCss 函数 ▼▼▼
 
@@ -16715,8 +17162,9 @@ let videoCallState = {
 
 let callTimerInterval = null; // 用于存储计时器的ID
 
+// ▼▼▼ 用这整块【最终通话修复版】的代码，完整替换掉上一个版本的 handleInitiateCall 函数 ▼▼▼
 /**
- * 【总入口】用户点击“发起视频通话”或“发起群视频”按钮
+ * 【总入口】用户点击“发起视频通话”或“发起群视频”按钮 (V3 - 通话决策修复版)
  */
 async function handleInitiateCall() {
     if (!state.activeChatId || videoCallState.isActive || videoCallState.isAwaitingResponse) return;
@@ -16726,9 +17174,9 @@ async function handleInitiateCall() {
     videoCallState.isAwaitingResponse = true;
     videoCallState.initiator = 'user';
     videoCallState.activeChatId = chat.id;
-    videoCallState.isUserParticipating = true; // 用户自己发起的，当然是参与者
+    videoCallState.isUserParticipating = true;
 
-    // 根据是单聊还是群聊，显示不同的呼叫界面
+    // 1. 显示“正在呼叫”界面 (这部分不变)
     if (chat.isGroup) {
         document.getElementById('outgoing-call-avatar').src = chat.settings.myAvatar || defaultMyGroupAvatar;
         document.getElementById('outgoing-call-name').textContent = chat.settings.myNickname || '我';
@@ -16739,21 +17187,117 @@ async function handleInitiateCall() {
     document.querySelector('#outgoing-call-screen .caller-text').textContent = chat.isGroup ? "正在呼叫所有成员..." : "正在呼叫...";
     showScreen('outgoing-call-screen');
     
-    // 准备并发送系统消息给AI
-    const requestMessage = {
-        role: 'system',
-        content: chat.isGroup 
-            ? `[系统提示：用户 (${chat.settings.myNickname || '我'}) 发起了群视频通话请求。请你们各自决策，并使用 "group_call_response" 指令，设置 "decision" 为 "join" 或 "decline" 来回应。]`
-            : `[系统提示：用户向你发起了视频通话请求。请根据你的人设，使用 "video_call_response" 指令，并设置 "decision" 为 "accept" 或 "reject" 来回应。]`,
-        timestamp: Date.now(),
-        isHidden: true,
-    };
-    chat.history.push(requestMessage);
-    await db.chats.put(chat);
-    
-    // 触发AI响应
-    await triggerAiResponse();
+    // 2. 【核心修复】重新构建一个信息更丰富、指令更明确的API请求
+    try {
+        const { proxyUrl, apiKey, model } = state.apiConfig;
+        if (!proxyUrl || !apiKey || !model) {
+            throw new Error('API未配置，无法发起通话。');
+        }
+
+        // 提取通话前的最后20条消息作为上下文
+        videoCallState.preCallContext = chat.history
+            .slice(-20)
+            .map(msg => `${msg.role === 'user' ? (chat.settings.myNickname || '我') : (msg.senderName || chat.name)}: ${String(msg.content).substring(0, 50)}...`)
+            .join('\n');
+        
+        // 构建一个强大且明确的系统指令(System Prompt)
+        let systemPromptForCall;
+        if (chat.isGroup) {
+            systemPromptForCall = `
+# 你的任务
+你是一个群聊AI，负责扮演【除了用户以外】的所有角色。
+用户 (${chat.settings.myNickname || '我'}) 刚刚发起了群视频通话。
+你的任务是根据每个角色的性格和最近的聊天内容，决定他们是否要加入通话。
+
+# 核心规则
+1.  **决策**: 每个角色都必须独立决策。
+2.  **格式**: 你的回复【必须】是一个JSON数组，每个对象代表一个角色的决策，格式为：\`{"type": "group_call_response", "name": "【角色的本名】", "decision": "join"}\` 或 \`{"type": "group_call_response", "name": "【角色的本名】", "decision": "decline"}\`。
+3.  **倾向性**: 在没有特殊理由的情况下，你的角色们通常乐于加入群聊。
+
+# 角色列表与人设
+${chat.members.map(m => `- **${m.originalName}**: ${m.persona}`).join('\n')}
+
+# 通话前的聊天摘要
+${videoCallState.preCallContext}
+`;
+        } else {
+            systemPromptForCall = `
+# 你的任务
+你正在扮演角色 "${chat.name}"。用户 (${chat.settings.myNickname || '我'}) 刚刚向你发起了视频通话请求。
+你的任务是根据你的人设和我们最近的聊天内容，决定是否接受。
+
+# 核心规则
+1.  **决策**: 你必须做出 "accept" (接受) 或 "reject" (拒绝) 的决定。
+2.  **格式**: 你的回复【必须且只能】是一个JSON数组，其中包含一个对象，格式为：\`[{"type": "video_call_response", "decision": "accept"}]\` 或 \`[{"type": "video_call_response", "decision": "reject"}]\`。
+3.  **倾向性**: 作为一个友好的AI伴侣，在没有特殊理由（比如在之前的对话中明确表示了不想被打扰或正在忙）的情况下，你【应该优先选择接受】通话。
+
+# 你的人设
+${chat.settings.aiPersona}
+
+# 通话前的聊天摘要
+${videoCallState.preCallContext}
+`;
+        }
+        
+        // 准备发送给API的消息体
+        const messagesForApi = [{ role: 'user', content: "请根据你在系统指令中读到的规则，立即做出你的决策。" }];
+        
+        let isGemini = proxyUrl === GEMINI_API_URL;
+        let geminiConfig = toGeminiRequestData(model, apiKey, systemPromptForCall, messagesForApi, isGemini);
+
+        const response = isGemini 
+            ? await fetch(geminiConfig.url, geminiConfig.data)
+            : await fetch(`${proxyUrl}/v1/chat/completions`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`},
+                body: JSON.stringify({
+                    model: model,
+                    messages: [{ role: 'system', content: systemPromptForCall }, ...messagesForApi],
+                    temperature: 0.7
+                })
+            });
+            
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`API 错误 (${response.status}): ${errorText}`);
+        }
+
+        const data = await response.json();
+        const aiResponseContent = (isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content).replace(/^```json\s*|```$/g, '');
+        const responseArray = JSON.parse(aiResponseContent);
+
+        // 3. 处理AI的决策 (与上一版相同)
+        if (chat.isGroup) {
+            responseArray.forEach(action => {
+                if (action.type === 'group_call_response' && action.decision === 'join') {
+                    const member = chat.members.find(m => m.originalName === action.name);
+                    if (member) videoCallState.participants.push(member);
+                }
+            });
+            if (videoCallState.participants.length > 0) {
+                startVideoCall();
+            } else {
+                throw new Error("群里没有人接听你的通话邀请。");
+            }
+        } else {
+            const decision = responseArray[0];
+            if (decision.type === 'video_call_response' && decision.decision === 'accept') {
+                startVideoCall();
+            } else {
+                throw new Error("对方拒绝了你的视频通话请求。");
+            }
+        }
+
+    } catch (error) {
+        // 4. 统一处理所有失败情况 (与上一版相同)
+        console.error("发起通话失败:", error);
+        await showCustomAlert("呼叫失败", error.message);
+        videoCallState.isAwaitingResponse = false;
+        showScreen('chat-interface-screen');
+    }
 }
+// ▲▲▲ 替换结束 ▲▲▲
+
 
 
 // ▼▼▼ 用这个【全新的函数】，完整替换掉你旧的 startVideoCall 函数 ▼▼▼
@@ -17065,25 +17609,27 @@ async function triggerAiInCallAction(userInput = null) {
 // ▼▼▼ 用下面这【一整块 if/else】，替换掉旧的 inCallPrompt 定义 ▼▼▼
     let inCallPrompt;
     if (videoCallState.isGroupCall) {
-        const participantNames = videoCallState.participants.map(p => p.name);
+        const participantNames = videoCallState.participants.map(p => p.originalName); // 使用本名
         if(videoCallState.isUserParticipating) {
             participantNames.unshift(userNickname);
         }
-        inCallPrompt = `
+inCallPrompt = `
 # 你的任务
-你是一个群聊视频通话的导演。你的任务是扮演所有【除了用户以外】的AI角色，并以【第三人称旁观视角】来描述他们在通话中的所有动作和语言。
+你是一个群聊AI，负责扮演所有【除了用户以外】的AI角色。你们正在进行一场群聊视频通话。
+你的任务是根据每个角色的性格，生成他们在通话中会说的【第一人称对话】。
+
 # 核心规则
-1.  **【【【格式铁律】】】**: 你的回复【必须】是一个JSON数组，每个对象代表一个角色的发言，格式为：\`{"name": "【角色的本名，绝不能是备注】", "speech": "*他笑了笑* 大家好啊！"}\`。
-2.  **【【【内容铁律】】】**: 你的回复【必须是纯文本】。你【绝对禁止】生成任何URL链接、Markdown图片语法(\`![alt](url)\`)、或任何形式的文件路径。
-3.  **身份铁律**: 用户的身份是【${userNickname}】。你【绝对不能】生成 \`name\` 字段为 **"${userNickname}"** 的发言。
-4.  **视角铁律**: 你的回复【绝对不能】使用第一人称“我”。
-5.  **角色扮演**: 严格遵守每个角色的设定。
+1.  **【【【格式铁律】】】**: 你的回复【必须】是一个JSON数组，每个对象代表一个角色的发言，格式为：\`{"name": "【角色的本名】", "speech": "【在这里加入带动作的对话】"}\`。
+2.  **【【【表现力铁律】】】**: 在 "speech" 字段中，你【必须】为角色的对话加入【动作、表情或心理活动】，并用【】符号包裹。这非常重要！
+3.  **示例**: \`{"name": "张三", "speech": "【挠了挠头】啊？我刚刚走神了，你们说到哪了？"}\`
+4.  **身份铁律**: 用户的身份是【${userNickname}】。你【绝对不能】生成 \`name\` 字段为 **"${userNickname}"** 的发言。
+5.  **角色扮演**: 严格遵守每个角色的设定，用他们的口吻说话。
+
 # 当前情景
 你们正在一个群视频通话中。
 **通话前的聊天摘要**:
 ${videoCallState.preCallContext}
 **当前参与者**: ${participantNames.join('、 ')}。
-**通话刚刚开始...**
 ${worldBookContent}
 现在，请根据【通话前摘要】和下面的【通话实时记录】，继续进行对话。
 `;
@@ -17091,18 +17637,25 @@ ${worldBookContent}
         let openingContext = videoCallState.initiator === 'user'
             ? `你刚刚接听了用户的视频通话请求。`
             : `用户刚刚接听了你主动发起的视频通话。`;
+        // ★★★ 核心修改：单聊的系统提示词 ★★★
         inCallPrompt = `
 # 你的任务
-你现在是一个场景描述引擎。你的任务是扮演 ${chat.name} (${chat.settings.aiPersona})，并以【第三人称旁观视角】来描述TA在视频通话中的所有动作和语言。
+你是一个群聊AI，负责扮演所有【除了用户以外】的AI角色。你们正在进行一场群聊视频通话。
+你的任务是根据每个角色的性格，生成他们在通话中会说的【第一人称对话】。
+
 # 核心规则
-1.*【【【身份铁律】】】**: 你的角色真名定义在人设中，用户的备注是“${chat.name}”。在通话中，你【只能】使用你的真名或人设中的称呼，【绝对禁止】说自己是“${chat.name}”。
-1.  **【【【内容铁律】】】**: 你的回复【必须是纯文本】。你【绝对禁止】返回任何JSON格式的指令、URL链接、Markdown图片语法(\`![alt](url)\`)、或任何形式的文件路径。
-2.  **视角铁律**: 你的回复【绝对不能】使用第一人称“我”。必须使用第三人称，如“他”、“她”、或直接使用角色名“${chat.name}”。
+1.  **【【【语言铁律】】】**: 无论角色人设是什么国籍或说什么语言，在本次视频通话中，所有角色【必须】全程使用【中文】进行交流。
+2.  **【【【格式铁律】】】**: 你的回复【必须】是一个JSON数组，每个对象代表一个角色的发言，格式为：\`{"name": "【角色的本名】", "speech": "【在这里加入带动作的对话】"}\`。
+3.  **【【【表现力铁律】】】**: 在 "speech" 字段中，你【必须】为角色的对话加入【动作、表情或心理活动】，并用【】符号包裹。这非常重要！
+4.  **示例**: \`{"name": "张三", "speech": "【挠了挠头】啊？我刚刚走神了，你们说到哪了？"}\`
+5.  **身份铁律**: 用户的身份是【${userNickname}】。你【绝对不能】生成 \`name\` 字段为 **"${userNickname}"** 的发言。
+6.  **角色扮演**: 严格遵守每个角色的设定，用他们的口吻说话。
+
 # 当前情景
-你正在和用户（${userNickname}，人设: ${chat.settings.myPersona}）进行视频通话。
-**${openingContext}**
-**通话前的聊天摘要 (这是你们通话的原因，至关重要！)**:
+你们正在一个群视频通话中。
+**通话前的聊天摘要**:
 ${videoCallState.preCallContext}
+**当前参与者**: ${participantNames.join('、 ')}。
 ${worldBookContent}
 现在，请根据【通话前摘要】和下面的【通话实时记录】，继续进行对话。
 `;
@@ -21031,8 +21584,9 @@ function renderCharacterAppGrid() {
     });
 }
 
+// ▼▼▼ 用下面这【一整块】增强版代码，替换掉你旧的 generateCharacterPhoneData 函数 ▼▼▼
 /**
- * 【AI核心】生成角色手机数据
+ * 【AI核心】生成角色手机数据 (已增加错误处理)
  */
 async function generateCharacterPhoneData() {
     if (!activeCharacterPhoneId) return;
@@ -21042,7 +21596,7 @@ async function generateCharacterPhoneData() {
     document.getElementById('generation-overlay').classList.add('visible');
 
     try {
-        const userNickname = state.qzoneSettings.nickname || '我'; // 获取用户昵称
+        const userNickname = state.qzoneSettings.nickname || '我';
         const persona = chat.settings.aiPersona;
         const recentHistory = chat.history.slice(-10).map(msg => {
             const sender = msg.role === 'user' ? userNickname : chat.name;
@@ -21066,8 +21620,24 @@ async function generateCharacterPhoneData() {
         } else {
             npcContext = '# 你的专属NPC好友列表\n(你没有专属NPC，请虚构一些普通朋友)';
         }
+// ▼▼▼ 在 prompt = `...` 的上方，粘贴这段代码 ▼▼▼
 
-const prompt = `
+// 【新增】为AI准备已有的NPC聊天记录上下文
+let npcChatHistoryContext = '';
+const existingNpcChats = Object.entries(chat.characterPhoneData.chats || {}).filter(([name, chatData]) => chatData.history && chatData.history.length > 0);
+
+if (existingNpcChats.length > 0) {
+    npcChatHistoryContext += '\n\n# 已有的聊天记录摘要 (请在此基础上继续对话)\n';
+    existingNpcChats.forEach(([contactName, chatData]) => {
+        // 只取每个联系人最新的5条消息作为上下文，避免prompt过长
+        const recentMessages = chatData.history.slice(-5).map(msg => `  - ${msg.sender}: ${msg.content}`).join('\n');
+        npcChatHistoryContext += `\n## 你和“${contactName}”的最近对话:\n${recentMessages}\n`;
+    });
+}
+
+// ▲▲▲ 新增代码粘贴结束 ▲▲▲
+
+ const prompt = `
 # 任务
 你现在是角色 "${chat.name}"。请根据你的人设、世界观、NPC好友列表以及和${userNickname}的最近聊天记录，模拟生成你手机中的各项数据。你需要一次性生成所有数据，并严格按照下面的JSON格式返回。
 
@@ -21085,7 +21655,7 @@ ${worldBookContext}
 ${recentHistory}
 
 ${npcContext}
-
+${npcChatHistoryContext}
 # JSON输出格式 (必须严格遵守，不要添加任何额外说明)
 {
   "chats": [
@@ -21140,7 +21710,6 @@ ${npcContext}
 - 不要只生成一问一答的机械式对话。
 `;
 
-
         const { proxyUrl, apiKey, model } = state.apiConfig;
         let isGemini = proxyUrl === GEMINI_API_URL;
         let geminiConfig = toGeminiRequestData(model, apiKey, prompt, [{role: 'user', content: prompt}], isGemini);
@@ -21158,38 +21727,70 @@ ${npcContext}
                 })
             });
 
-        if (!response.ok) throw new Error('API请求失败');
+        // --- ★★★ 错误处理核心代码 ★★★ ---
+        if (!response.ok) {
+            let errorMsg = `API请求失败，状态码: ${response.status}`;
+            try {
+                const errorData = await response.json();
+                errorMsg += `\n错误信息: ${errorData.error.message}`;
+            } catch (e) {
+                errorMsg += `\n无法解析错误响应体。`;
+            }
+            throw new Error(errorMsg);
+        }
+        // --- ★★★ 错误处理结束 ★★★ ---
         
         const data = await response.json();
         const aiResponseContent = (isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content)
             .replace(/^```json\s*|```$/g, '');
 
-        const newData = parseAiResponse(aiResponseContent);
+        // --- ★★★ 增加对AI返回内容的解析检查 ★★★ ---
+        let newData;
+        try {
+            newData = JSON.parse(aiResponseContent);
+        } catch (e) {
+            throw new Error(`AI返回的不是有效的JSON格式，无法解析。\n原始返回内容:\n${aiResponseContent}`);
+        }
+        // --- ★★★ 解析检查结束 ★★★ ---
 
         let phoneData = chat.characterPhoneData;
         phoneData.lastGenerated = Date.now();
         
-        if (newData.chats) {
-            newData.chats.forEach(newChat => {
-                if (!newChat.messages) {
-                    if (!phoneData.chats[userNickname]) {
-                        phoneData.chats[userNickname] = { avatar: '', history: [] };
-                    }
-                    phoneData.chats[userNickname].remarkName = newChat.contactName;
-                } 
-                else {
-                    const contactName = newChat.contactName;
-                    if (phoneData.chats[contactName]) {
-                        phoneData.chats[contactName].history.push(...newChat.messages);
-                    } else {
-                        phoneData.chats[contactName] = { 
-                            avatar: newChat.avatar, 
-                            history: newChat.messages 
-                        };
-                    }
-                }
-            });
+ // ▼▼▼ 用这整块新代码替换 ▼▼▼
+if (newData.chats) {
+    newData.chats.forEach(newChat => {
+        // 首先，处理和“我”的聊天备注名，这部分逻辑不变
+        if (!newChat.messages) {
+            const myNickname = userNickname || '我'; // 确保有默认值
+            if (!phoneData.chats[myNickname]) {
+                phoneData.chats[myNickname] = { avatar: '', history: [] };
+            }
+            phoneData.chats[myNickname].remarkName = newChat.contactName;
+        } 
+        // 接下来，处理和NPC的聊天记录
+        else {
+            const contactName = newChat.contactName;
+            
+            // 【关键改动】检查这个联系人是否已经存在于手机数据中
+            if (phoneData.chats[contactName] && phoneData.chats[contactName].history) {
+                // 如果存在，就把新生成的消息追加到已有的历史记录后面
+                console.log(`合并聊天记录: 为 "${contactName}" 追加 ${newChat.messages.length} 条新消息。`);
+                phoneData.chats[contactName].history.push(...newChat.messages);
+            } else {
+                // 如果不存在，就创建一个新的联系人记录
+                console.log(`创建新聊天: "${contactName}"`);
+                phoneData.chats[contactName] = { 
+                    avatar: newChat.avatar, 
+                    history: newChat.messages 
+                };
+            }
         }
+    });
+}
+// ▲▲▲ 替换结束 ▲▲▲
+
+// ▲▲▲ 修复到这里结束 ▲▲▲
+
 
         if(!phoneData.shoppingCart) phoneData.shoppingCart = [];
         phoneData.shoppingCart.push(...(newData.shoppingCart || []));
@@ -21217,11 +21818,14 @@ ${npcContext}
 
     } catch (error) {
         console.error("生成角色手机数据失败:", error);
-        alert(`生成失败: ${error.message}`);
+        // 使用我们强大的弹窗来显示详细错误
+        await showCustomAlert('生成失败', `发生了一个错误，请检查你的网络、API密钥或模型设置。\n\n详细信息:\n${error.message}`);
     } finally {
+        // 无论成功还是失败，最后都必须隐藏加载动画
         document.getElementById('generation-overlay').classList.remove('visible');
     }
 }
+// ▲▲▲ 替换结束 ▲▲▲
 
 
 /**
@@ -21248,159 +21852,165 @@ async function clearCharacterPhoneData() {
     }
 }
 
-// --- 以下是各个APP界面的渲染函数 ---
-
+// ▼▼▼ 请用这整块代码，完整替换掉你旧的 renderCharacterChatList 函数 ▼▼▼
 /**
- * 【V6最终修正版】渲染角色手机的聊天列表 (修复NPC头像颜色不一致问题)
+ * 【V12 - 诊断版 A】渲染角色手机的聊天列表 (诊断备注名问题)
  */
 function renderCharacterChatList() {
     const listEl = document.getElementById('character-chat-list');
-    const characterChatData = state.chats[activeCharacterPhoneId].characterPhoneData;
-    const realChatHistory = state.chats[activeCharacterPhoneId].history;
-    listEl.innerHTML = '';
-
-    // 【移除】不再需要 colorIndex，因为颜色不再依赖顺序
-    // let colorIndex = 0; 
-    const avatarColors = ['#FFC107', '#4CAF50', '#2196F3', '#F44336', '#9C27B0', '#00BCD4'];
-
-    // 1. 优先渲染和“我”的聊天 (逻辑不变)
-    const myChatData = characterChatData.chats['我'];
-    if (myChatData) {
-        const lastMsg = realChatHistory.filter(m => !m.isHidden).slice(-1)[0] || { content: '...' };
-        const myChatItem = document.createElement('div');
-        myChatItem.className = 'chat-list-item';
-        const remarkNameForMe = myChatData.remarkName || '我';
-        myChatItem.dataset.contactName = remarkNameForMe; 
-        
-        const myAvatar = state.chats[activeCharacterPhoneId].settings.myAvatar || defaultMyGroupAvatar;
-        
-        myChatItem.innerHTML = `
-            <img src="${myAvatar}" class="avatar" style="border-radius: 6px;">
-            <div class="info">
-                <span class="name">${remarkNameForMe}</span>
-                <div class="last-msg">${String(lastMsg.content).substring(0, 30)}</div>
-            </div>
-        `;
-        listEl.appendChild(myChatItem);
-    }
-
-    // 2. 接着渲染所有和NPC的聊天
-    for (const contactName in characterChatData.chats) {
-        if (contactName === '我') continue;
-
-        const contact = characterChatData.chats[contactName];
-        const lastNpcMsg = contact.history.slice(-1)[0] || { content: '...' };
-        const npcChatItem = document.createElement('div');
-        npcChatItem.className = 'chat-list-item';
-        npcChatItem.dataset.contactName = contactName;
-
-// ▼▼▼ 从这里开始替换 ▼▼▼
-        let npcAvatarHtml;
-        const characterChat = state.chats[activeCharacterPhoneId];
-        // 在角色的NPC库中，根据名字查找这个联系人
-        const npcFromLibrary = (characterChat.npcLibrary || []).find(npc => npc.name === contactName);
-
-        // 如果在NPC库中找到了这个NPC，并且他有头像URL
-        if (npcFromLibrary && npcFromLibrary.avatar) {
-            // 就使用他的真实头像
-            npcAvatarHtml = `<img src="${npcFromLibrary.avatar}" class="avatar" style="border-radius: 6px;">`;
-        } else {
-            // 否则 (比如这个NPC是AI临时虚构的，或者你没给他设置头像)，
-            // 我们才使用原来的文字头像作为备用方案
-            const npcNameInitial = contactName.slice(-1);
-            const colorIndex = contactName.length % avatarColors.length;
-            const bgColor = avatarColors[colorIndex];
-            
-            npcAvatarHtml = `
-                <div class="avatar" style="border-radius: 6px; background-color: ${bgColor}; color: white; display: flex; justify-content: center; align-items: center; font-size: 18px; font-weight: 500;">
-                    ${npcNameInitial}
-                </div>
-            `;
-        }
-// ▲▲▲ 替换到这里结束 ▲▲▲
-
-
-        npcChatItem.innerHTML = `
-            ${npcAvatarHtml}
-            <div class="info">
-                <span class="name">${contactName}</span>
-                <div class="last-msg">${String(lastNpcMsg.content).substring(0, 30)}</div>
-            </div>
-        `;
-        listEl.appendChild(npcChatItem);
-    }
-
-    if (listEl.children.length === 0) {
-         listEl.innerHTML = '<p style="text-align:center; color: #8a8a8a; margin-top: 50px;">还没有聊天记录，请先刷新数据。</p>';
-    }
-}
-
-// ▼▼▼ 从这里开始替换 ▼▼▼
-/**
- * 【V7最终美化版】渲染角色手机的具体聊天记录 (同步列表头像样式 + 显示真实NPC头像)
- */
-function renderCharacterChatHistory(contactName) {
-    const messagesEl = document.getElementById('character-chat-history-messages');
-    messagesEl.innerHTML = '';
-    
     const characterChat = state.chats[activeCharacterPhoneId];
     if (!characterChat) return;
 
-    let finalContactName = contactName;
-    const myChatData = characterChat.characterPhoneData.chats['我'];
-    if ((contactName === '我' || (myChatData && contactName === myChatData.remarkName)) && myChatData) {
-        finalContactName = myChatData.remarkName || '我';
-    }
-    document.getElementById('character-chat-with-name').textContent = finalContactName;
+    const characterChatData = characterChat.characterPhoneData;
+    const realChatHistory = characterChat.history;
+    listEl.innerHTML = '';
 
-    const avatarColors = ['#FFC107', '#4CAF50', '#2196F3', '#F44336', '#9C27B0', '#00BCD4'];
-    let mainCharacterAvatarHtml;
-    let otherParticipantAvatarHtml;
+    // ★★★★★ 诊断日志 A 和 B ★★★★★
+    console.log("【诊断日志 A】: 开始渲染聊天列表，完整的 characterPhoneData.chats 对象是:", characterChatData.chats);
 
-    const characterAvatarSrc = characterChat.settings.aiAvatar || defaultAvatar;
-    mainCharacterAvatarHtml = `<img src="${characterAvatarSrc}" class="character-chat-avatar">`;
+    const userContactInData = characterChatData.chats
+        ? Object.values(characterChatData.chats).find(c => !c.history || c.history.length === 0)
+        : null;
+    
+    console.log("【诊断日志 B】: 根据 '!c.history' 条件找到的用户联系人对象是:", userContactInData);
+    
+    const remarkNameForMe = userContactInData ? userContactInData.remarkName : '我';
+    console.log("【诊断日志 C】: 最终为真实用户决定的备注名是:", remarkNameForMe);
+    // ★★★★★ 诊断结束 ★★★★★
 
-    if (finalContactName === (myChatData?.remarkName || '我')) {
-        const myAvatarSrc = characterChat.settings.myAvatar || defaultMyGroupAvatar;
-        otherParticipantAvatarHtml = `<img src="${myAvatarSrc}" class="character-chat-avatar">`;
-    } else {
-        const npcData = (characterChat.npcLibrary || []).find(npc => npc.name === contactName);
-        if (npcData && npcData.avatar) {
-            otherParticipantAvatarHtml = `<img src="${npcData.avatar}" class="character-chat-avatar">`;
-        } else {
-            const npcNameInitial = contactName.slice(-1);
-            const colorIndex = contactName.length % avatarColors.length;
-            const bgColor = avatarColors[colorIndex];
-            otherParticipantAvatarHtml = `
-                <div class="character-chat-avatar" style="background-color: ${bgColor}; color: white; display: flex; justify-content: center; align-items: center; font-size: 18px; font-weight: 500;">
-                    ${npcNameInitial}
-                </div>
-            `;
+    // --- 后续渲染逻辑保持不变 ---
+    const lastMsg = realChatHistory.filter(m => !m.isHidden).slice(-1)[0] || { content: '...' };
+    const myChatItem = document.createElement('div');
+    myChatItem.className = 'chat-list-item';
+    myChatItem.dataset.contactName = remarkNameForMe;
+    myChatItem.dataset.isUserChat = 'true';
+    const myAvatar = characterChat.settings.myAvatar || defaultMyGroupAvatar;
+    myChatItem.innerHTML = `
+        <img src="${myAvatar}" class="avatar" style="border-radius: 6px;">
+        <div class="info">
+            <span class="name">${remarkNameForMe}</span>
+            <div class="last-msg">${stripHtmlAndCode(String(lastMsg.content)).substring(0, 30)}</div>
+        </div>
+    `;
+    listEl.appendChild(myChatItem);
+
+    if (characterChatData.chats) {
+        for (const contactName in characterChatData.chats) {
+            if (contactName === remarkNameForMe) continue;
+            const contact = characterChatData.chats[contactName];
+            if (!contact.history || contact.history.length === 0) continue;
+            // ... (后续NPC渲染代码不变) ...
+            const lastNpcMsg = contact.history.slice(-1)[0] || { content: '...' };
+            const npcChatItem = document.createElement('div');
+            npcChatItem.className = 'chat-list-item';
+            npcChatItem.dataset.contactName = contactName;
+
+            let npcAvatarHtml;
+            const npcFromLibrary = (characterChat.npcLibrary || []).find(npc => npc.name === contactName);
+            if (npcFromLibrary && npcFromLibrary.avatar) {
+                npcAvatarHtml = `<img src="${npcFromLibrary.avatar}" class="avatar" style="border-radius: 6px;">`;
+            } else {
+                const avatarColors = ['#FFC107', '#4CAF50', '#2196F3', '#F44336', '#9C27B0', '#00BCD4'];
+                const npcNameInitial = contactName.slice(-1);
+                const colorIndex = contactName.length % avatarColors.length;
+                const bgColor = avatarColors[colorIndex];
+                npcAvatarHtml = `<div class="avatar" style="border-radius: 6px; background-color: ${bgColor}; color: white; display: flex; justify-content: center; align-items: center; font-size: 18px; font-weight: 500;">${npcNameInitial}</div>`;
+            }
+            npcChatItem.innerHTML = `${npcAvatarHtml}<div class="info"><span class="name">${contactName}</span><div class="last-msg">${stripHtmlAndCode(String(lastNpcMsg.content)).substring(0, 30)}</div></div>`;
+            addLongPressListener(npcChatItem, () => { deleteCharacterPhoneContact(contactName); });
+            listEl.appendChild(npcChatItem);
         }
     }
+}
+// ▲▲▲ 替换结束 ▲▲▲
 
-    let historyToShow = [];
-    if (finalContactName === (myChatData?.remarkName || '我')) {
-        historyToShow = characterChat.history.filter(m => !m.isHidden).slice(-20);
+// ▼▼▼ 请用这整块代码，完整替换掉你旧的 renderCharacterChatHistory 函数 ▼▼▼
+/**
+ * 【V13 - 性能优化版】渲染角色手机的具体聊天记录 (分页加载)
+ */
+function renderCharacterChatHistory(contactName, isUserChat = false, loadOffset = 0) {
+    const MESSAGES_PER_PAGE = 50; // 每次加载50条
+
+    const messagesEl = document.getElementById('character-chat-history-messages');
+    const characterChat = state.chats[activeCharacterPhoneId];
+    if (!characterChat) {
+        console.error("【错误】: 找不到 characterChat 对象！");
+        return;
+    }
+
+    // --- 准备工作：设置标题和头像 (仅在首次加载时执行) ---
+    if (loadOffset === 0) {
+        messagesEl.innerHTML = ''; // 首次加载才清空
+        let finalContactName = contactName;
+        if (isUserChat) {
+            const myChatData = characterChat.characterPhoneData.chats['我'];
+            // 尝试从手机数据里找AI给用户的备注名
+            const userContactInData = characterChat.characterPhoneData.chats
+                ? Object.values(characterChat.characterPhoneData.chats).find(c => !c.history || c.history.length === 0)
+                : null;
+            finalContactName = userContactInData ? userContactInData.remarkName : '我';
+        }
+        document.getElementById('character-chat-with-name').textContent = finalContactName;
+    }
+
+    // --- 数据源选择 ---
+    let fullHistory = [];
+    if (isUserChat) {
+        fullHistory = characterChat.history.filter(m => !m.isHidden);
     } else {
         const npcChat = characterChat.characterPhoneData.chats[contactName];
-        if (npcChat) {
-            historyToShow = npcChat.history;
+        if (npcChat && npcChat.history) {
+            fullHistory = npcChat.history;
         }
     }
-    
+
+    // --- 核心分页逻辑 ---
+    const totalMessages = fullHistory.length;
+    const startIndex = Math.max(0, totalMessages - MESSAGES_PER_PAGE - loadOffset);
+    const endIndex = totalMessages - loadOffset;
+    const historyToShow = fullHistory.slice(startIndex, endIndex);
+
+    // --- 移除旧的“加载更多”按钮 ---
+    const existingLoader = document.getElementById('load-more-messages-btn');
+    if (existingLoader) {
+        existingLoader.remove();
+    }
+
+    // --- 渲染消息 ---
+    const fragment = document.createDocumentFragment(); // 使用文档片段提升性能
     const characterName = characterChat.name;
+
+    // (渲染逻辑与之前版本基本相同，只是添加到了 fragment 中)
     historyToShow.forEach((msg, index) => {
         if (msg.isHidden) return;
-
         const container = document.createElement('div');
-        const sender = msg.role === 'user' ? '我' : (msg.sender || characterName);
+        let sender;
+        if (isUserChat) { sender = msg.role === 'user' ? '我' : characterName; } 
+        else { sender = msg.sender; }
+
         const isSentByCharacter = sender === characterName;
-        
         container.className = `character-chat-bubble-container ${isSentByCharacter ? 'sent' : 'received'}`;
         
-        const avatarHtml = isSentByCharacter ? mainCharacterAvatarHtml : otherParticipantAvatarHtml;
-        
+        let avatarHtml = '';
+        if(isSentByCharacter) {
+             avatarHtml = `<img src="${characterChat.settings.aiAvatar || defaultAvatar}" class="character-chat-avatar">`;
+        } else {
+             if(isUserChat){
+                avatarHtml = `<img src="${characterChat.settings.myAvatar || defaultMyGroupAvatar}" class="character-chat-avatar">`;
+             } else {
+                 const npcData = (characterChat.npcLibrary || []).find(npc => npc.name === contactName);
+                 if (npcData && npcData.avatar) {
+                    avatarHtml = `<img src="${npcData.avatar}" class="character-chat-avatar">`;
+                 } else {
+                    const avatarColors = ['#FFC107', '#4CAF50', '#2196F3', '#F44336', '#9C27B0', '#00BCD4'];
+                    const npcNameInitial = contactName.slice(-1);
+                    const colorIndex = contactName.length % avatarColors.length;
+                    const bgColor = avatarColors[colorIndex];
+                    avatarHtml = `<div class="character-chat-avatar" style="background-color: ${bgColor}; color: white; display: flex; justify-content: center; align-items: center; font-size: 18px; font-weight: 500;">${npcNameInitial}</div>`;
+                 }
+             }
+        }
+
         let contentHtml = '';
         if (typeof msg.content === 'string' && STICKER_REGEX.test(msg.content)) {
             contentHtml = `<img src="${msg.content}" class="sticker-image" style="max-height: 100px;">`;
@@ -21408,19 +22018,41 @@ function renderCharacterChatHistory(contactName) {
             contentHtml = msg.content;
         }
         const bubbleHtml = `<div class="character-chat-bubble">${contentHtml}</div>`;
-        
-        // 【核心修改】在这里加入了删除按钮
-        container.innerHTML = `
-            ${avatarHtml}
-            ${bubbleHtml}
-            <button class="item-delete-btn message-delete-btn" data-contact-name="${finalContactName}" data-index="${index}">×</button>
-        `;
-        
-        messagesEl.appendChild(container);
+        const originalIndex = startIndex + index; // 计算在完整历史记录中的真实索引
+        container.innerHTML = `${avatarHtml}${bubbleHtml}<button class="item-delete-btn message-delete-btn" data-contact-name="${contactName}" data-index="${originalIndex}" data-is-user-chat="${isUserChat}">×</button>`;
+        fragment.appendChild(container);
     });
+    
+    // --- 决定是否显示“加载更多”按钮 ---
+    if (startIndex > 0) {
+        const loadMoreBtn = document.createElement('div');
+        loadMoreBtn.id = 'load-more-messages-btn';
+        loadMoreBtn.textContent = '加载更早的消息';
+        loadMoreBtn.style.textAlign = 'center';
+        loadMoreBtn.style.padding = '10px';
+        loadMoreBtn.style.color = '#888';
+        loadMoreBtn.style.cursor = 'pointer';
+        loadMoreBtn.style.fontSize = '12px';
+        loadMoreBtn.onclick = () => {
+            // 记录当前滚动条位置，以便加载后恢复
+            const currentScrollHeight = messagesEl.scrollHeight;
+            renderCharacterChatHistory(contactName, isUserChat, loadOffset + MESSAGES_PER_PAGE);
+            // 加载后，将滚动条定位到之前的位置，避免跳动
+            messagesEl.scrollTop = messagesEl.scrollHeight - currentScrollHeight;
+        };
+        messagesEl.prepend(loadMoreBtn); // 将按钮添加到顶部
+    }
+    
+    messagesEl.prepend(fragment); // 将新消息一次性插入到DOM中
 
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+    // --- 滚动条定位 ---
+    if (loadOffset === 0) {
+        // 首次加载，滚动到底部
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
 }
+// ▲▲▲ 替换结束 ▲▲▲
+
 
 
 function renderCharacterShoppingCart() {
@@ -21685,8 +22317,9 @@ function renderCharacterDiary() {
 }
 
 
+// ▼▼▼ 用下面这【一整块】增强版代码，替换掉你旧的 generateNewDiaryEntry 函数 ▼▼▼
 /**
- * 【日记】独立刷新，生成新的日记条目
+ * 【日记】独立刷新，生成新的日记条目 (已增加错误处理)
  */
 async function generateNewDiaryEntry() {
     if (!activeCharacterPhoneId) return;
@@ -21701,19 +22334,16 @@ async function generateNewDiaryEntry() {
             const sender = msg.role === 'user' ? '我' : chat.name;
             return `${sender}: ${msg.content}`;
         }).join('\n');
-
-// ▼▼▼ 在这里添加下面的代码 ▼▼▼
-let worldBookContext = '';
-if (chat.settings.linkedWorldBookIds && chat.settings.linkedWorldBookIds.length > 0) {
-    worldBookContext = '--- 世界观设定 (这是你必须严格遵守的背景) ---\n' +
-        chat.settings.linkedWorldBookIds.map(id => {
-            const book = state.worldBooks.find(b => b.id === id);
-            return book ? `[${book.name}]: ${book.content}` : '';
-        }).join('\n\n');
-}
-// ▲▲▲ 添加结束 ▲▲▲
         
-        // 日记的专属Prompt (V2富文本版)
+        let worldBookContext = '';
+        if (chat.settings.linkedWorldBookIds && chat.settings.linkedWorldBookIds.length > 0) {
+            worldBookContext = '--- 世界观设定 (这是你必须严格遵守的背景) ---\n' +
+                chat.settings.linkedWorldBookIds.map(id => {
+                    const book = state.worldBooks.find(b => b.id === id);
+                    return book ? `[${book.name}]: ${book.content}` : '';
+                }).join('\n\n');
+        }
+        
         const diaryPrompt = `
 # 任务
 你现在是角色 "${chat.name}"。请你回顾一下最近和我的聊天，以及你的人设，然后用你的口吻写一篇日记。
@@ -21751,16 +22381,26 @@ ${recentHistory}
                 body: JSON.stringify({
                     model: model,
                     messages: [{role: 'user', content: diaryPrompt}],
-                    temperature: 0.9, // 提高一点温度，让日记更有创造性
+                    temperature: 0.9,
                 })
             });
-
-        if (!response.ok) throw new Error('API请求失败');
+        
+        // --- ★★★ 错误处理核心代码 ★★★ ---
+        if (!response.ok) {
+            let errorMsg = `API请求失败，状态码: ${response.status}`;
+            try {
+                const errorData = await response.json();
+                errorMsg += `\n错误信息: ${errorData.error.message}`;
+            } catch (e) {
+                errorMsg += `\n无法解析错误响应体。`;
+            }
+            throw new Error(errorMsg);
+        }
+        // --- ★★★ 错误处理结束 ★★★ ---
         
         const data = await response.json();
         const diaryContent = isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content;
 
-        // 创建新的日记对象并保存
         const newEntry = {
             timestamp: Date.now(),
             content: diaryContent
@@ -21769,17 +22409,18 @@ ${recentHistory}
         chat.characterPhoneData.diary.push(newEntry);
         await db.chats.put(chat);
         
-        // 刷新日记页面
         renderCharacterDiary();
         alert('新日记已生成！');
 
     } catch (error) {
         console.error("生成日记失败:", error);
-        alert(`生成失败: ${error.message}`);
+        await showCustomAlert('生成失败', `发生了一个错误，请检查你的网络、API密钥或模型设置。\n\n详细信息:\n${error.message}`);
     } finally {
         document.getElementById('generation-overlay').classList.remove('visible');
     }
 }
+// ▲▲▲ 替换结束 ▲▲▲
+
 
 // ▲▲▲ 新增函数结束 ▲▲▲
 
@@ -21924,6 +22565,164 @@ function toggleTheme() {
     const newTheme = toggleSwitch.checked ? 'dark' : 'light';
     applyTheme(newTheme);
 }
+// ▼▼▼ 请将这个新函数粘贴到你的JS功能函数定义区 ▼▼▼
+/**
+ * 【全新】删除角色手机中的一个联系人及其所有聊天记录
+ * @param {string} contactName - 要删除的联系人的名字
+ */
+async function deleteCharacterPhoneContact(contactName) {
+    if (!activeCharacterPhoneId) return;
+
+    // 弹出确认框，防止误删
+    const confirmed = await showCustomConfirm(
+        '删除联系人',
+        `确定要从TA的手机中删除联系人“${contactName}”以及所有相关聊天记录吗？此操作不可恢复。`,
+        { confirmButtonClass: 'btn-danger' }
+    );
+
+    if (confirmed) {
+        const chat = state.chats[activeCharacterPhoneId];
+        if (chat && chat.characterPhoneData && chat.characterPhoneData.chats) {
+            // 从数据中删除这个联系人
+            delete chat.characterPhoneData.chats[contactName];
+            
+            // 将更新后的数据保存回数据库
+            await db.chats.put(chat);
+            
+            // 重新渲染聊天列表，让删除效果立刻显示
+            renderCharacterChatList();
+            
+            alert(`联系人“${contactName}”已删除。`);
+        }
+    }
+}
+// ▲▲▲ 新函数粘贴结束 ▲▲▲
+/* ▼▼▼ 【全新】心声功能核心函数 ▼▼▼ */
+
+/**
+ * 打开心声面板
+ */
+function openInnerVoiceModal() {
+    if (!state.activeChatId) return;
+    const chat = state.chats[state.activeChatId];
+    if (!chat || !chat.latestInnerVoice) {
+        // 如果还没有心声数据，可以给个提示
+        alert("还没有捕捉到Ta的心声哦，试着再聊一句吧！");
+        return;
+    }
+    
+    const modal = document.getElementById('inner-voice-modal');
+    const data = chat.latestInnerVoice;
+    
+    // 填充数据
+    document.getElementById('inner-voice-avatar').src = chat.settings.aiAvatar || defaultAvatar;
+    document.getElementById('inner-voice-char-name').textContent = chat.name;
+    document.getElementById('inner-voice-adopter').textContent = `领养人: ${state.qzoneSettings.nickname || '你'}`;
+    
+    document.getElementById('inner-voice-clothing').textContent = data.clothing || '...';
+    document.getElementById('inner-voice-behavior').textContent = data.behavior || '...';
+    document.getElementById('inner-voice-thoughts').textContent = data.thoughts || '...';
+    document.getElementById('inner-voice-naughty-thoughts').textContent = data.naughtyThoughts || '...';
+
+    // 显示面板
+    modal.classList.add('visible');
+    // 确保历史面板是隐藏的
+    document.getElementById('inner-voice-history-panel').style.display = 'none';
+    document.getElementById('inner-voice-main-panel').style.display = 'flex';
+    isInnerVoiceHistoryOpen = false;
+}
+
+/**
+ * 打开或关闭历史记录面板
+ */
+function toggleInnerVoiceHistory() {
+    const mainPanel = document.getElementById('inner-voice-main-panel');
+    const historyPanel = document.getElementById('inner-voice-history-panel');
+    
+    if (isInnerVoiceHistoryOpen) {
+        // 如果是打开的，就关闭它，显示主面板
+        mainPanel.style.display = 'flex';
+        historyPanel.style.display = 'none';
+    } else {
+        // 如果是关闭的，就打开它，隐藏主面板
+        renderInnerVoiceHistory(); // 渲染历史记录
+        mainPanel.style.display = 'none';
+        historyPanel.style.display = 'flex';
+    }
+    isInnerVoiceHistoryOpen = !isInnerVoiceHistoryOpen; // 切换状态
+}
+
+/**
+ * 渲染心声的历史记录列表
+ */
+function renderInnerVoiceHistory() {
+    const listEl = document.getElementById('inner-voice-history-list');
+    listEl.innerHTML = '';
+    const chat = state.chats[state.activeChatId];
+    const history = chat.innerVoiceHistory || [];
+
+    if (history.length === 0) {
+        listEl.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">还没有历史记录</p>';
+        return;
+    }
+
+    // 从新到旧显示
+    [...history].reverse().forEach(item => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'inner-voice-history-item';
+        
+        const date = new Date(item.timestamp);
+        const dateString = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+        
+        // 【核心修改】在HTML中加入了删除按钮
+        itemEl.innerHTML = `
+            <button class="history-item-delete-btn" data-timestamp="${item.timestamp}">×</button>
+            <div class="history-item-timestamp">${dateString}</div>
+            <div class="history-item-content">
+                <p><strong>服装:</strong> ${item.clothing || '...'}</p>
+                <p><strong>行为:</strong> ${item.behavior || '...'}</p>
+                <p><strong>心声:</strong> ${item.thoughts || '...'}</p>
+                <p><strong>坏心思:</strong> ${item.naughtyThoughts || '...'}</p>
+            </div>
+        `;
+        listEl.appendChild(itemEl);
+    });
+}
+/**
+ * 【全新】删除单条心声记录
+ * @param {number} timestamp - 要删除的心声的时间戳
+ */
+async function deleteSingleInnerVoice(timestamp) {
+    const chat = state.chats[state.activeChatId];
+    if (!chat || !chat.innerVoiceHistory) return;
+
+    // 弹出确认框
+    const confirmed = await showCustomConfirm('确认删除', '确定要删除这条心声记录吗？', { confirmButtonClass: 'btn-danger' });
+    if (confirmed) {
+        // 从数组中过滤掉匹配的项
+        chat.innerVoiceHistory = chat.innerVoiceHistory.filter(item => item.timestamp !== timestamp);
+        // 保存回数据库
+        await db.chats.put(chat);
+        // 重新渲染列表
+        renderInnerVoiceHistory();
+    }
+}
+
+/**
+ * 【全新】清空所有心声记录
+ */
+async function clearAllInnerVoiceHistory() {
+    const chat = state.chats[state.activeChatId];
+    if (!chat || !chat.innerVoiceHistory || chat.innerVoiceHistory.length === 0) return;
+
+    const confirmed = await showCustomConfirm('确认清空', '确定要清空所有心声历史记录吗？此操作不可恢复。', { confirmButtonClass: 'btn-danger' });
+    if (confirmed) {
+        chat.innerVoiceHistory = [];
+        await db.chats.put(chat);
+        renderInnerVoiceHistory();
+    }
+}
+
 
 // ▲▲▲ 新函数粘贴结束 ▲▲▲
 
@@ -22608,6 +23407,19 @@ document.getElementById('chat-search-results-list').addEventListener('click', (e
 // ▼▼▼ 在 init() 函数的事件监听器区域末尾，粘贴下面这行新代码 ▼▼▼
 document.getElementById('delete-expired-songs-btn').addEventListener('click', deleteExpiredSearchedSongs);
 // ▲▲▲ 粘贴结束 ▲▲▲
+// ▼▼▼ 【全新】心声历史记录删除功能事件绑定 ▼▼▼
+document.getElementById('clear-all-history-btn').addEventListener('click', clearAllInnerVoiceHistory);
+
+// 使用事件委托处理单条删除
+document.getElementById('inner-voice-history-list').addEventListener('click', (e) => {
+    if (e.target.classList.contains('history-item-delete-btn')) {
+        const timestamp = parseInt(e.target.dataset.timestamp);
+        if (!isNaN(timestamp)) {
+            deleteSingleInnerVoice(timestamp);
+        }
+    }
+});
+// ▲▲▲ 心声历史删除事件绑定结束 ▲▲▲
 
  // ▼▼▼ 这是我们新加的导入功能事件监听 ▼▼▼
         document.getElementById('import-character-card-btn').addEventListener('click', () => {
@@ -22640,7 +23452,10 @@ document.getElementById('phone-screen').addEventListener('click', unlockAudioCon
     applyScopedCss('', '#settings-preview-area', 'preview-bubble-style'); // 清除预览区的自定义样式
     // ▲▲▲ 修改结束 ▲▲▲
 
-exitSelectionMode(); state.activeChatId = null; showScreen('chat-list-screen'); });
+exitSelectionMode(); state.activeChatId = null;
+// 【心声功能】返回列表时，隐藏心形按钮
+document.getElementById('char-heart-btn').style.display = 'none';
+ showScreen('chat-list-screen'); });
             // ▼▼▼ 在 init() 的事件监听器区域末尾，粘贴这段新代码 ▼▼▼
             // 为歌曲封面/歌词区域绑定点击切换事件
             document.getElementById('music-display-area').addEventListener('click', () => {
@@ -23003,9 +23818,6 @@ document.getElementById('show-status-bar-toggle').addEventListener('change', (e)
 
 // --- ▲▲▲ 粘贴结束 ▲▲▲ ---
 
-// ▼▼▼ 在 init() 的事件监听器区域，粘贴这整块新代码 ▼▼▼
-
-// ▼▼▼ 用这【一整块】代码，替换掉旧的 “全新视频通话功能事件绑定” 注释块 ▼▼▼
 
 // --- 全新视频通话功能事件绑定 (V2 修正版) ---
 
@@ -23032,6 +23844,7 @@ document.getElementById('reroll-call-btn-text').addEventListener('click', handle
 // ▲▲▲ 替换结束 ▲▲▲
 
 
+
     document.getElementById('chat-name-group').style.display = 'block';
     document.getElementById('my-persona-group').style.display = 'block';
     document.getElementById('my-avatar-group').style.display = 'block';
@@ -23052,6 +23865,20 @@ document.getElementById('reroll-call-btn-text').addEventListener('click', handle
     document.getElementById('my-persona').value = chat.settings.myPersona;
     document.getElementById('my-avatar-preview').src = chat.settings.myAvatar || (isGroup ? defaultMyGroupAvatar : defaultAvatar);
     document.getElementById('max-memory').value = chat.settings.maxMemory;
+    // ▼▼▼ 在 max-memory 赋值的下一行，粘贴这一整块代码 ▼▼▼
+const timeToggle = document.getElementById('time-perception-toggle');
+const customTimeContainer = document.getElementById('custom-time-container');
+const customTimeInput = document.getElementById('custom-time-input');
+
+// 如果是旧聊天，给一个默认值 true（开启）
+const isTimeEnabled = chat.settings.timePerceptionEnabled ?? true; 
+timeToggle.checked = isTimeEnabled;
+customTimeInput.value = chat.settings.customTime || '';
+
+// 根据开关状态，决定是否显示自定义时间输入框
+customTimeContainer.style.display = isTimeEnabled ? 'none' : 'block';
+// ▲▲▲ 粘贴结束 ▲▲▲
+
     const bgPreview = document.getElementById('bg-preview');
     const removeBgBtn = document.getElementById('remove-bg-btn');
     if (chat.settings.background) {
@@ -23329,6 +24156,10 @@ chat.settings.userVideoImage = document.getElementById('user-video-image-preview
     }
 
     chat.settings.maxMemory = parseInt(document.getElementById('max-memory').value) || 10;
+    // ▼▼▼ 在 chat.settings.maxMemory = ... 的下一行添加 ▼▼▼
+chat.settings.timePerceptionEnabled = document.getElementById('time-perception-toggle').checked;
+chat.settings.customTime = document.getElementById('custom-time-input').value;
+// ▲▲▲ 添加结束 ▲▲▲
     await db.chats.put(chat);
 
     applyScopedCss(chat.settings.customCss, '#chat-messages', 'custom-bubble-style');
@@ -25763,16 +26594,27 @@ applyLyricsSettings();
                     openCharacterPhone(item.dataset.chatId);
                 }
             });
+// ▼▼▼ 请用这整块代码替换 ▼▼▼
+// 【V3版】角色手机聊天列表的点击事件 (事件委托)
+document.getElementById('character-chat-list').addEventListener('click', (e) => {
+    const item = e.target.closest('.chat-list-item');
+    if (item && item.dataset.contactName) {
+        // ▼▼▼ 在这里粘贴探针 #2 ▼▼▼
+        const isUserChat = item.dataset.isUserChat === 'true';
+        console.log("【诊断日志 2】: 点击了聊天列表项", {
+            contactName: item.dataset.contactName,
+            isUserChat: isUserChat
+        });
+        // ▲▲▲ 探针结束 ▲▲▲
+        
+        // 将联系人名字和“身份证”一起传递给渲染函数
+        renderCharacterChatHistory(item.dataset.contactName, isUserChat);
+        showCharacterPhonePage('character-chat-history-screen');
+    }
+});
+// ▲▲▲ 替换结束 ▲▲▲
 
-            // 【V3版】角色手机聊天列表的点击事件 (事件委托)
-            document.getElementById('character-chat-list').addEventListener('click', (e) => {
-                const item = e.target.closest('.chat-list-item');
-                // 从 data-contact-name 获取要打开的聊天对象的名字
-                if (item && item.dataset.contactName) {
-                    renderCharacterChatHistory(item.dataset.contactName);
-                    showCharacterPhonePage('character-chat-history-screen');
-                }
-            });
+
 
             // 3. 角色手机顶部的“刷新”和“清空”按钮
             document.getElementById('generate-character-data-btn').addEventListener('click', generateCharacterPhoneData);
@@ -26111,6 +26953,26 @@ startGroupSimulation(); // 启动群聊专属的后台时钟
         }
     });
     // ▲▲▲ 步骤3.3粘贴结束 ▲▲▲
+// ▼▼▼ 把这一整块代码，粘贴到 init(); 的正上方 ▼▼▼
+// 【全新】为时间感知开关添加实时交互事件
+document.getElementById('time-perception-toggle').addEventListener('change', (e) => {
+    const customTimeContainer = document.getElementById('custom-time-container');
+    customTimeContainer.style.display = e.target.checked ? 'none' : 'block';
+});
+// ▲▲▲ 粘贴结束 ▲▲▲
+// ▼▼▼ 【全新】心声功能事件监听器 ▼▼▼
+document.getElementById('chat-header-title-wrapper').addEventListener('click', (e) => {
+    // 使用 .closest() 确保即使点到SVG内部也能触发
+    if (e.target.closest('#char-heart-btn')) {
+        openInnerVoiceModal();
+    }
+});
+document.getElementById('close-inner-voice-modal').addEventListener('click', () => {
+    document.getElementById('inner-voice-modal').classList.remove('visible');
+});
+document.getElementById('inner-voice-history-btn').addEventListener('click', toggleInnerVoiceHistory);
+document.getElementById('back-from-history-btn').addEventListener('click', toggleInnerVoiceHistory);
+// ▲▲▲ 心声功能事件监听器结束 ▲▲▲
 
 
 // ===================================================================

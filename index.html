@@ -12077,74 +12077,85 @@ function showChoiceModal(title, options) {
         modal.classList.add('visible');
     });
 }
-// ▼▼▼ 把这一整块全新的函数，粘贴到你的JS代码里 ▼▼▼
+// ▼▼▼ 【最终正确版】请用这整块代码，完整替换旧的 deleteExpiredSearchedSongs 函数 ▼▼▼
+
 /**
- * 一键删除所有临时的、通过搜索添加的歌曲
+ * 【全新重构】检查并删除所有失效的API歌曲
+ * 核心逻辑：不再依赖任何标签，直接根据链接特征识别需要检查的歌曲。
  */
 async function deleteExpiredSearchedSongs() {
-    // 1. 筛选出所有被标记为 isTemporary 的歌曲
-    // ▼▼▼ 只用下面这块代码替换上面那一行 ▼▼▼
-const twentyFourHoursAgo = Date.now() - (24 * 60 * 60 * 1000);
-const songsToDelete = musicState.playlist.filter(track => 
-    // 条件1：必须是临时歌曲
-    track.isTemporary &&
-    // 条件2：这首歌的添加时间早于24小时前
-    // (为了兼容你之前添加的、没有时间戳的临时歌曲，我们把它们也视为过期)
-    (!track.addedTimestamp || track.addedTimestamp < twentyFourHoursAgo)
-);
-// ▲▲▲ 替换结束 ▲▲▲
+    await showCustomAlert("请稍候...", "正在检查播放列表中所有在线歌曲的有效性...");
 
+    // 1. 【核心改变】我们不再寻找 isTemporary 标签！
+    // 而是直接找出所有 src 链接来自于 API 服务器的歌曲。
+    // 这是一个绝对可靠的识别方法，无论它有没有被正确保存。
+    const songsToCheck = musicState.playlist.filter(track => track.src && track.src.includes('api.vkeys.cn'));
 
-    if (songsToDelete.length === 0) {
-        await showCustomAlert('提示', '播放列表中没有需要清理的搜索歌曲。');
+    if (songsToCheck.length === 0) {
+        await showCustomAlert('提示', '播放列表中没有需要检查的在线歌曲。');
         return;
     }
 
-    // 2. 弹窗让用户确认
+    const songsToDelete = [];
+    const twentyFourHoursAgo = Date.now() - (24 * 60 * 60 * 1000);
+
+    // 2. 对每一首识别出的歌曲，进行严格的“体检”
+    await Promise.all(songsToCheck.map(async (track) => {
+        // 条件1：检查链接本身是否已经失效（无法播放）
+        const isUrlInvalid = !(await checkAudioAvailability(track.src));
+        
+        // 条件2：检查添加时间是否超过24小时（作为双重保险）
+        const isOlderThan24h = track.addedTimestamp && track.addedTimestamp < twentyFourHoursAgo;
+
+        // 只要满足【任意一个】条件，就判定为“失效”
+        if (isUrlInvalid || isOlderThan24h) {
+            songsToDelete.push(track);
+            console.log(`标记删除: ${track.name} (原因: ${isUrlInvalid ? '链接失效' : ''} ${isOlderThan24h ? '超过24小时' : ''})`);
+        }
+    }));
+
+    // 3. 根据检查结果进行反馈和操作 (这部分逻辑不变)
+    if (songsToDelete.length === 0) {
+        await showCustomAlert('检查完成', '播放列表中的所有在线歌曲当前均有效。');
+        return;
+    }
+
     const confirmed = await showCustomConfirm(
         '确认清理',
-        `确定要删除 ${songsToDelete.length} 首24h后会失效的搜索歌曲吗？`,
+        `检测到 ${songsToDelete.length} 首已失效的在线歌曲。确定要将它们从列表中移除吗？`,
         { confirmButtonClass: 'btn-danger' }
     );
 
     if (!confirmed) return;
 
-    // 3. 执行删除逻辑
-    // 记录下当前正在播放的歌曲
+    // 执行删除...
     const currentTrack = musicState.currentIndex > -1 ? musicState.playlist[musicState.currentIndex] : null;
-
-    // 创建一个新的播放列表，只包含那些不是临时的歌曲
-    musicState.playlist = musicState.playlist.filter(track => !track.isTemporary);
-
-    // 4. 处理当前播放状态
+    musicState.playlist = musicState.playlist.filter(track => !songsToDelete.includes(track));
     const newIndex = currentTrack ? musicState.playlist.findIndex(t => t.src === currentTrack.src && t.name === currentTrack.name) : -1;
 
-    if (newIndex === -1) { // 如果当前播放的歌曲被删了
+    if (newIndex === -1) {
         if (musicState.isPlaying) {
             audioPlayer.pause();
             audioPlayer.src = '';
         }
         musicState.isPlaying = false;
-        // 如果列表里还有歌，就从第一首开始播放
         if (musicState.playlist.length > 0) {
             playSong(0); 
         } else {
-            // 如果列表空了，就重置播放器
             musicState.currentIndex = -1;
             updatePlayerUI();
         }
     } else {
-        // 如果当前播放的歌曲没被删，就更新它的新位置
         musicState.currentIndex = newIndex;
         updatePlayerUI();
     }
     
-    // 5. 保存永久播放列表并更新UI
-    await saveGlobalPlaylist(); // 这会把过滤后的、只剩永久歌曲的列表保存到数据库
-    updatePlaylistUI(); // 刷新播放列表界面
+    await saveGlobalPlaylist();
+    updatePlaylistUI();
     await showCustomAlert('清理完成', `${songsToDelete.length} 首歌曲已从列表中移除。`);
 }
-// ▲▲▲ 粘贴结束 ▲▲▲
+// ▲▲▲ 替换结束 ▲▲▲
+
 
 
 /**

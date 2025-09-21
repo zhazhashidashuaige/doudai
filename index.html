@@ -2730,19 +2730,20 @@ body {
 
 /* === 【全新】聊天界面头部状态栏样式 === */
 
+/* === 【全新】聊天界面头部状态栏样式 === */
+
 /* 1. 标题和状态的总容器，使用flex布局让它们垂直排列 */
 #chat-header-title-wrapper {
+    /* ▼▼▼ 新增下面这3行 ▼▼▼ */
+    position: absolute;         /* ★ 核心：让它脱离文档流，不再被挤压 */
+    left: 50%;                  /* ★ 核心：定位到屏幕中线 */
+    transform: translateX(-50%); /* ★ 核心：将自身向左移动一半宽度，实现完美居中 */
+    /* ▲▲▲ 新增结束 ▲▲▲ */
+    
     display: flex;
     flex-direction: column;
     align-items: center; /* 水平居中 */
     gap: 2px; /* 标题和状态之间的微小间距 */
-    
-    /* 
-      核心修改：
-      移除了 position: absolute, left, 和 transform 属性。
-      这样它就能参与父容器的高度计算，把顶栏撑开。
-      因为父级 .header 已经是flex布局，它会自动居中。
-    */
     max-width: 60%;
 }
 
@@ -12307,7 +12308,6 @@ function renderBackgroundFrequencySelector() {
 // ▲▲▲ 新函数粘贴结束 ▲▲▲
 
         window.renderApiSettingsProxy = renderApiSettings;
-
 // ▼▼▼ 请用这个【全新修正版】替换旧的 renderChatList 函数 ▼▼▼
 async function renderChatList() {
     const chatListEl = document.getElementById('chat-list');
@@ -12356,18 +12356,19 @@ async function renderChatList() {
         
         if (groupChats.length === 0) return; // 如果这个分组里没有未置顶的好友，就跳过
 
-                // ... 省略前面的代码 ...
         const groupContainer = document.createElement('div');
         groupContainer.className = 'chat-group-container';
+        
+        // 【核心修改】下面这两行代码里，我已经删除了 collapsed 类，这样默认就是展开的了！
         groupContainer.innerHTML = `
-            <div class="chat-group-header collapsed">
+            <div class="chat-group-header">
                 <span class="arrow">▼</span>
                 <span class="group-name">${group.name}</span>
             </div>
-            <div class="chat-group-content collapsed"></div>
+            <div class="chat-group-content"></div>
         `;
         const contentEl = groupContainer.querySelector('.chat-group-content');
-        // ... 省略后面的代码 ...
+
         groupChats.forEach(chat => {
             const item = createChatListItem(chat);
             contentEl.appendChild(item);
@@ -12394,6 +12395,7 @@ async function renderChatList() {
     });
 }
 // ▲▲▲ 替换结束 ▲▲▲
+
 
 // ▼▼▼ 用这个【最终修正版】替换你项目中那个导致错误的 createChatListItem 函数 ▼▼▼
 function createChatListItem(chat) {
@@ -19985,19 +19987,18 @@ function renderNpcList() {
     });
 }
 
-// ▼▼▼ 从这里开始替换 ▼▼▼
-/**
- * 【V2 - 完整版】打开NPC编辑器（用于新建或编辑）
- * @param {string|null} npcId - 如果是编辑，则传入NPC的ID；如果是新建，则为null
- */
-// ▼▼▼ 用这个全新的函数，完整替换旧的 openNpcEditor 函数 ▼▼▼
+// ▼▼▼ 用这个【全新的、已修复两个Bug的函数】，完整替换旧的 openNpcEditor 函数 ▼▼▼
 async function openNpcEditor(npcId = null) {
     editingNpcId = npcId;
+    // 【核心修复1】使用正确的 state.activeChatId 来获取当前聊天对象
     const chat = state.chats[state.activeChatId];
+    if (!chat) return; // 安全检查
+
     let npc = { name: '', persona: '', avatar: defaultGroupMemberAvatar };
     
     if (npcId) {
-        npc = (chat.npcs || []).find(n => n.id === npcId) || npc;
+        // 【核心修复2】从正确的 chat.npcLibrary 中查找数据
+        npc = (chat.npcLibrary || []).find(n => n.id === npcId) || npc;
         document.getElementById('persona-editor-title').textContent = `编辑NPC: ${npc.name}`;
     } else {
         document.getElementById('persona-editor-title').textContent = '添加新NPC';
@@ -20012,8 +20013,7 @@ async function openNpcEditor(npcId = null) {
     document.getElementById('npc-editor-name-group').style.display = 'block';
     document.getElementById('persona-editor-change-frame-btn').style.display = 'none';
 
-    // 【【【这就是您代码中的正确做法！】】】
-    // 我们直接覆盖保存按钮的 onclick 事件，强制它只执行保存NPC的函数
+    // 绑定正确的保存函数
     document.getElementById('save-persona-preset-btn').onclick = saveNpc;
 
     // 最后才显示弹窗
@@ -20025,12 +20025,14 @@ async function openNpcEditor(npcId = null) {
 
 
 
+
 // ▼▼▼ 从这里开始替换 ▼▼▼
 /**
  * 【V2 - 完整版】保存NPC（新建或更新）
  */
 async function saveNpc() {
     const chat = state.chats[state.activeChatId];
+
     
     // 从编辑器中获取所有数据
     const name = document.getElementById('npc-editor-name-input').value.trim();

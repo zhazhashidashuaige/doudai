@@ -295,7 +295,9 @@ body {
     background-color: var(--secondary-bg);
     padding-top: 80px;
     margin-top: -80px;
+    min-height: 0; /* ★★★ 就是在这里添加了这一行！ ★★★ */
 }
+
 
 /* 修改后的 #chat-list 样式，去掉了 padding 和 margin */
 #chat-list {
@@ -7174,6 +7176,11 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 /* ▲▲▲ 复制到这里结束 ▲▲▲ */
+/* ▼▼▼ 请将这段新CSS粘贴到 <style> 的末尾 ▼▼▼ */
+.action-icon.summon-npc svg {
+    stroke-width: 1.5; /* 让图标线条稍微粗一点，更清晰 */
+}
+/* ▲▲▲ 新CSS粘贴结束 ▲▲▲ */
 
     </style>
     <!-- ▼▼▼ 在这里添加下面这行 ▼▼▼ -->
@@ -11046,31 +11053,45 @@ async function createCharacterFromData(data, avatarBase64) {
     
     // 步骤 2: 创建新的聊天对象 (不变)
     const newChatId = 'chat_' + Date.now();
-    const newChat = {
-        id: newChatId,
-        name: characterName,
-        isGroup: false,
-        isPinned: false,
-        npcLibrary: [],
-        relationship: { status: 'friend', blockedTimestamp: null, applicationReason: '' },
-        status: { text: '在线', lastUpdate: Date.now(), isBusy: false },
-        settings: {
-            aiPersona: charData.description || '该角色没有描述。',
-            myPersona: '我是谁呀。',
-            maxMemory: 10,
-            aiAvatar: avatarBase64,
-            myAvatar: defaultAvatar,
-            background: '',
-            theme: 'default',
-            fontSize: 13,
-            customCss: '',
-            linkedWorldBookIds: [],
-            aiAvatarLibrary: [],
-        },
-        history: [],
-        musicData: { totalTime: 0 },
-        characterPhoneData: {}
-    };
+// 这是修改后的新代码块
+const newChat = {
+    id: newChatId,
+    name: characterName,
+    isGroup: false,
+    isPinned: false,
+    npcLibrary: [],
+    relationship: { status: 'friend', blockedTimestamp: null, applicationReason: '' },
+    status: { text: '在线', lastUpdate: Date.now(), isBusy: false },
+    settings: {
+        aiPersona: charData.description || '该角色没有描述。',
+        myPersona: '我是谁呀。',
+        maxMemory: 10,
+        aiAvatar: avatarBase64,
+        myAvatar: defaultAvatar,
+        background: '',
+        theme: 'default',
+        fontSize: 13,
+        customCss: '',
+        linkedWorldBookIds: [],
+        aiAvatarLibrary: [],
+    },
+    history: [],
+    musicData: { totalTime: 0 },
+    // ▼▼▼ 把原来的那一行替换成下面这整块 ▼▼▼
+    characterPhoneData: {
+        lastGenerated: null,
+        chats: {},
+        shoppingCart: [],
+        memos: [],
+        browserHistory: [],
+        photoAlbum: [],
+        bank: { balance: 0, transactions: [] },
+        trajectory: [],
+        appUsage: [],
+        diary: []
+    }
+    // ▲▲▲ 替换结束 ▲▲▲
+};
     await db.chats.put(newChat);
     state.chats[newChatId] = newChat;
     
@@ -11433,7 +11454,8 @@ posts.forEach(post => {
             <div class="post-feedback-icons">
                 <span class="action-icon like ${isLikedByUser ? 'active' : ''}"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></span>
                 <span class="action-icon favorite ${isFavoritedByUser ? 'active' : ''}"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg></span>
-            </div>
+                <span class="action-icon summon-npc" data-post-id="${post.id}" data-author-id="${post.authorId}" title="召唤NPC评论"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
+                </div>
             ${likesHtml}
             ${commentsAndFooterHtml} 
         `;
@@ -22905,10 +22927,247 @@ async function clearAllInnerVoiceHistory() {
         await db.chats.put(chat);
         renderInnerVoiceHistory();
     }
+}// ▼▼▼ 请将下面这一整块全新的代码，粘贴到 init() 函数的上方 ▼▼▼
+
+/**
+ * 【总入口】当用户点击“召唤NPC评论”按钮时触发
+ * @param {number} postId - 动态的ID
+ * @param {string} authorId - 动态作者的ID ('user' 或 'chat_...')
+ */
+async function handleNpcSummonClick(postId, authorId) {
+    const post = await db.qzonePosts.get(postId);
+    if (!post) {
+        alert("找不到该动态！");
+        return;
+    }
+
+    if (authorId === 'user') {
+        // 如果是用户发的动态，弹出选择菜单
+        await handleUserPostCommentTrigger(post);
+    } else {
+        // 如果是角色发的动态，直接触发他自己的NPC
+        await handleCharPostCommentTrigger(post, authorId);
+    }
+}
+
+/**
+ * 处理【角色】动态的NPC召唤
+ * @param {object} post - 动态对象
+ * @param {string} authorId - 动态作者的角色ID
+ */
+async function handleCharPostCommentTrigger(post, authorId) {
+    const authorChar = state.chats[authorId];
+    if (!authorChar || !authorChar.npcLibrary || authorChar.npcLibrary.length === 0) {
+        alert(`角色“${authorChar.name}”还没有自己的NPC朋友哦！`);
+        return;
+    }
+
+    // 只使用这个角色自己的NPC库
+    await generateNpcCommentsForPost(post, authorChar.npcLibrary);
+}
+
+/**
+ * 处理【用户】动态的NPC召唤（弹出选择框）
+ */
+async function handleUserPostCommentTrigger(post) {
+    const modal = document.getElementById('custom-modal-overlay');
+    const modalTitle = document.getElementById('custom-modal-title');
+    const modalBody = document.getElementById('custom-modal-body');
+    const modalConfirmBtn = document.getElementById('custom-modal-confirm');
+    const modalCancelBtn = document.getElementById('custom-modal-cancel');
+    
+    modalTitle.textContent = '选择要召唤的NPC';
+    
+    // 筛选出所有拥有NPC库的角色
+    const charsWithNpcs = Object.values(state.chats).filter(
+        chat => !chat.isGroup && chat.npcLibrary && chat.npcLibrary.length > 0
+    );
+
+    if (charsWithNpcs.length === 0) {
+        alert("当前没有任何角色拥有NPC库。");
+        return;
+    }
+
+    // 构建选择列表的HTML
+    let optionsHtml = '<div style="text-align: left;">';
+    optionsHtml += `<label style="display: block; padding: 5px;"><input type="radio" name="npc_summon_choice" value="all" checked> 召唤所有人</label>`;
+    charsWithNpcs.forEach(char => {
+        optionsHtml += `<label style="display: block; padding: 5px;"><input type="radio" name="npc_summon_choice" value="${char.id}"> 只召唤 ${char.name} 的朋友</label>`;
+    });
+    optionsHtml += '</div>';
+    
+    modalBody.innerHTML = optionsHtml;
+    modalConfirmBtn.textContent = '确认召唤';
+    modalCancelBtn.style.display = 'block';
+
+    modal.classList.add('visible');
+
+    modalConfirmBtn.onclick = async () => {
+        const selectedValue = document.querySelector('input[name="npc_summon_choice"]:checked').value;
+        let npcsToSummon = [];
+
+        if (selectedValue === 'all') {
+            // 集合所有角色的所有NPC
+            charsWithNpcs.forEach(char => {
+                npcsToSummon.push(...char.npcLibrary);
+            });
+        } else {
+            // 只获取被选中的那个角色的NPC
+            const selectedChar = state.chats[selectedValue];
+            if (selectedChar) {
+                npcsToSummon = selectedChar.npcLibrary;
+            }
+        }
+        
+        modal.classList.remove('visible');
+        if (npcsToSummon.length > 0) {
+            await generateNpcCommentsForPost(post, npcsToSummon);
+        }
+    };
+    
+    modalCancelBtn.onclick = () => modal.classList.remove('visible');
+}
+
+/**
+ * 【AI核心 - V2.1 弹窗修正版】生成NPC评论或回复，并更新到动态
+ * @param {object} post - 动态对象
+ * @param {Array<object>} npcsToComment - 将要发表评论的NPC对象数组
+ */
+async function generateNpcCommentsForPost(post, npcsToComment) {
+    // ▼▼▼ 【日志#1】函数开始，并显示传入的数据 ▼▼▼
+    console.log("【NPC评论-诊断】: 1. 函数 generateNpcCommentsForPost 已触发", { post, npcsToComment });
+
+    await showCustomAlert("请稍候...", "正在召唤NPC们前来围观评论...");
+
+    const { proxyUrl, apiKey, model } = state.apiConfig;
+    if (!proxyUrl || !apiKey || !model) {
+        alert('请先配置API！');
+        return;
+    }
+
+    const postContent = (post.content || post.publicText || post.hiddenContent || "(图片动态)").substring(0, 150);
+    const existingComments = (post.comments || []).slice(-3).map(c => `${c.commenterName}: ${c.text}`).join('\n');
+
+    const shuffledNpcs = [...npcsToComment].sort(() => 0.5 - Math.random());
+    const selectedNpcs = shuffledNpcs.slice(0, 5);
+    const npcList = selectedNpcs.map(npc => `- ${npc.name} (人设: ${npc.persona})`).join('\n');
+    
+    const authorName = post.authorId === 'user' ? state.qzoneSettings.nickname : (state.chats[post.authorId]?.name || '未知作者');
+
+    const systemPrompt = `
+# 任务
+你是一个多角色扮演AI。现在有一条动态需要你扮演指定的NPC角色进行评论或回复。
+
+# 动态信息
+- 作者: ${authorName}
+- 内容摘要: ${postContent}...
+- 最近的评论 (你可以回复他们):
+${existingComments || "(暂无评论)"}
+
+# 你需要扮演的NPC列表 (及他们的人设)
+${npcList}
+
+# 核心规则
+1.  你【必须】从上面的NPC列表中，选择1到3个最合适的角色进行评论或回复。
+2.  评论/回复内容【必须】严格符合该NPC的人设和口吻，并与动态内容或已有评论相关。
+3.  你的回复【必须且只能】是一个严格的JSON数组，每个对象代表一条评论或回复。
+4.  格式: \`[{"commenterName": "NPC名字", "commentText": "评论内容", "replyTo": "(可选)被回复者名字"}]\`
+
+现在，请开始生成评论或回复。
+`;
+    // ▼▼▼ 【日志#2】显示最终构建好、即将发送给AI的Prompt ▼▼▼
+    console.log("【NPC评论-诊断】: 2. 已构建完成，准备发送给AI的 System Prompt:", systemPrompt);
+
+    try {
+        let isGemini = proxyUrl === GEMINI_API_URL;
+        let messagesForApi;
+        if (isGemini) {
+            messagesForApi = [{ role: 'user', content: systemPrompt }];
+        } else {
+            messagesForApi = [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: "请根据你在system prompt中读到的信息生成评论。" }
+            ];
+        }
+        
+        let geminiConfig = toGeminiRequestData(model, apiKey, systemPrompt, messagesForApi, isGemini);
+
+        // ▼▼▼ 【日志#3】在发送请求前，显示最终的请求体，这是最关键的信息！▼▼▼
+        console.log("【NPC评论-诊断】: 3. 即将发送API请求... 请求地址:", isGemini ? geminiConfig.url : `${proxyUrl}/v1/chat/completions`);
+        console.log("【NPC评论-诊断】: 3.1 请求体 (Body) 内容:", isGemini ? geminiConfig.data.body : JSON.stringify({ model, messages: messagesForApi, temperature: 0.9, response_format: { type: "json_object" } }));
+
+        const response = isGemini 
+            ? await fetch(geminiConfig.url, geminiConfig.data) 
+            : await fetch(`${proxyUrl}/v1/chat/completions`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`},
+                body: JSON.stringify({
+                    model: model,
+                    messages: messagesForApi,
+                    temperature: 0.9,
+                    response_format: { type: "json_object" }
+                })
+            });
+
+        // ▼▼▼ 【日志#4】显示API的响应状态，判断网络请求是否成功 ▼▼▼
+        console.log("【NPC评论-诊断】: 4. 收到API响应", { ok: response.ok, status: response.status });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`API请求失败: ${response.status} - ${errorText}`);
+        }
+
+        const data = await response.json();
+        const aiResponseContent = (isGemini ? data.candidates[0].content.parts[0].text : data.choices[0].message.content)
+            .replace(/^```json\s*|```$/g, '').trim();
+        
+        // ▼▼▼ 【日志#5】显示AI返回的原始文本内容，看它有没有乱来 ▼▼▼
+        console.log("【NPC评论-诊断】: 5. 从API获取到的原始回复内容:", aiResponseContent);
+        
+        let newComments;
+        if (aiResponseContent.includes('"chatResponse"')) {
+            newComments = JSON.parse(aiResponseContent).chatResponse;
+        } else {
+            newComments = JSON.parse(aiResponseContent);
+        }
+
+        // ▼▼▼ 【日志#6】显示成功解析后的JSON对象，看格式对不对 ▼▼▼
+        console.log("【NPC评论-诊断】: 6. 成功解析后的评论对象数组:", newComments);
+
+        if (Array.isArray(newComments) && newComments.length > 0) {
+            const postToUpdate = await db.qzonePosts.get(post.id); 
+            if (!postToUpdate) throw new Error("在数据库中找不到要更新的帖子！");
+            if (!postToUpdate.comments) postToUpdate.comments = [];
+
+            newComments.forEach(comment => {
+                if(comment.commenterName && comment.commentText) {
+                    const newCommentObject = {
+                        commenterName: comment.commenterName,
+                        text: comment.commentText,
+                        timestamp: Date.now()
+                    };
+                    if (comment.replyTo) newCommentObject.replyTo = comment.replyTo;
+                    postToUpdate.comments.push(newCommentObject);
+                }
+            });
+
+            await db.qzonePosts.put(postToUpdate);
+            hideCustomModal();
+            await renderQzonePosts(); 
+            alert("NPC们评论成功！");
+        } else {
+             hideCustomModal();
+             alert("NPC们似乎没什么想说的。");
+        }
+
+    } catch (error) {
+        // ▼▼▼ 【日志#7】如果中途出错，打印详细的错误信息 ▼▼▼
+        console.error("【NPC评论-错误】: 召唤NPC评论失败:", error);
+        await showCustomAlert('召唤失败', `发生了一个错误：\n${error.message}`);
+    }
 }
 
 
-// ▲▲▲ 新函数粘贴结束 ▲▲▲
 
         // ===================================================================
         // 4. 初始化函数 init()
@@ -24750,15 +25009,16 @@ document.getElementById('create-album-btn-page').addEventListener('click', async
             imageModeBtn.addEventListener('click', () => { imageModeBtn.classList.add('active'); textImageModeBtn.classList.remove('active'); imageModeContent.classList.add('active'); textImageModeContent.classList.remove('active'); });
             textImageModeBtn.addEventListener('click', () => { textImageModeBtn.classList.add('active'); imageModeBtn.classList.remove('active'); textImageModeContent.classList.add('active'); imageModeContent.classList.remove('active'); });
 
-// ▼▼▼ 步骤3.2 操作2：替换 confirm-create-post-btn 的 click 事件监听器 ▼▼▼
+// ▼▼▼ 请用下面这一整块【修复后】的代码，替换掉刚才删除的旧代码 ▼▼▼
+
 document.getElementById('confirm-create-post-btn').addEventListener('click', async () => {
     const modal = document.getElementById('create-post-modal');
     const mode = modal.dataset.mode;
     const editingId = parseInt(modal.dataset.editingPostId);
 
-    // --- 1. 获取通用的可见性设置和评论开关状态 ---
+    // --- 1. 获取通用的可见性设置和评论开关状态 (这部分不变) ---
     const visibilityMode = document.querySelector('input[name="visibility"]:checked').value;
-    const areCommentsVisible = document.getElementById('post-comments-toggle').checked; // 获取开关状态
+    const areCommentsVisible = document.getElementById('post-comments-toggle').checked;
     let visibleGroupIds = null;
     
     if (visibilityMode === 'include') {
@@ -24766,18 +25026,24 @@ document.getElementById('confirm-create-post-btn').addEventListener('click', asy
     }
 
     let postData = {};
-    const basePostData = {
-        timestamp: editingId ? (await db.qzonePosts.get(editingId)).timestamp : Date.now(),
-        authorId: 'user',
-        visibleGroupIds: visibleGroupIds,
-        areCommentsVisible: areCommentsVisible, // 保存开关状态
-    };
 
+    // --- 2. 【核心修复】我们在这里区分“编辑模式”和“新建模式” ---
     if (mode === 'edit') {
+        // --- 编辑模式的逻辑 ---
         const existingPost = await db.qzonePosts.get(editingId);
-        postData = { ...existingPost, ...basePostData };
+        if (!existingPost) {
+            alert('错误：找不到要编辑的动态！');
+            return;
+        }
+
+        // 关键！我们从现有的动态数据开始，这样就能保留原始的 authorId 和 timestamp
+        postData = { 
+            ...existingPost, 
+            visibleGroupIds: visibleGroupIds,
+            areCommentsVisible: areCommentsVisible,
+        };
         
-        // 更新内容
+        // 只更新内容相关的字段
         if (postData.type === 'shuoshuo') {
             postData.content = document.getElementById('post-public-text').value.trim();
         } else {
@@ -24789,32 +25055,44 @@ document.getElementById('confirm-create-post-btn').addEventListener('click', asy
                 postData.hiddenContent = document.getElementById('post-hidden-text').value.trim();
             }
         }
-
+        
+        // 将更新后的数据保存回数据库
         await db.qzonePosts.put(postData);
 
-    } else if (mode === 'shuoshuo') {
-        const content = document.getElementById('post-public-text').value.trim();
-        if (!content) return alert('说说内容不能为空哦！');
-        postData = { ...basePostData, type: 'shuoshuo', content: content };
-        await db.qzonePosts.add(postData);
-    } else { // complex mode
-        const publicText = document.getElementById('post-public-text').value.trim();
-        const isImageModeActive = document.getElementById('image-mode-content').classList.contains('active');
-        if (isImageModeActive) {
-            const imageUrl = document.getElementById('post-image-preview').src;
-            const imageDescription = document.getElementById('post-image-description').value.trim();
-            if (!imageUrl || !(imageUrl.startsWith('http') || imageUrl.startsWith('data:'))) return alert('请先添加一张图片再发布动态哦！');
-            if (!imageDescription) return alert('请为你的图片添加一个简单的描述（必填，给AI看的）！');
-            postData = { ...basePostData, type: 'image_post', publicText, imageUrl, imageDescription };
-        } else {
-            const hiddenText = document.getElementById('post-hidden-text').value.trim();
-            if (!hiddenText) return alert('请输入文字图描述！');
-            postData = { ...basePostData, type: 'text_image', publicText, hiddenContent: hiddenText };
+    } else {
+        // --- 新建模式的逻辑 (说说 或 复杂动态) ---
+        // 关键！只有在新建时，我们才把 authorId 设置为 'user'
+        const basePostData = {
+            timestamp: Date.now(),
+            authorId: 'user', // <--- 只有新建时才是用户
+            visibleGroupIds: visibleGroupIds,
+            areCommentsVisible: areCommentsVisible,
+        };
+        
+        if (mode === 'shuoshuo') {
+            const content = document.getElementById('post-public-text').value.trim();
+            if (!content) return alert('说说内容不能为空哦！');
+            postData = { ...basePostData, type: 'shuoshuo', content: content };
+        } else { // complex mode
+            const publicText = document.getElementById('post-public-text').value.trim();
+            const isImageModeActive = document.getElementById('image-mode-content').classList.contains('active');
+            if (isImageModeActive) {
+                const imageUrl = document.getElementById('post-image-preview').src;
+                const imageDescription = document.getElementById('post-image-description').value.trim();
+                if (!imageUrl || !(imageUrl.startsWith('http') || imageUrl.startsWith('data:'))) return alert('请先添加一张图片再发布动态哦！');
+                if (!imageDescription) return alert('请为你的图片添加一个简单的描述（必填，给AI看的）！');
+                postData = { ...basePostData, type: 'image_post', publicText, imageUrl, imageDescription };
+            } else {
+                const hiddenText = document.getElementById('post-hidden-text').value.trim();
+                if (!hiddenText) return alert('请输入文字图描述！');
+                postData = { ...basePostData, type: 'text_image', publicText, hiddenContent: hiddenText };
+            }
         }
+        // 将新动态添加到数据库
         await db.qzonePosts.add(postData);
     }
     
-    // 通知AI的逻辑保持不变
+    // --- 3. 后续的通知和刷新逻辑 (这部分不变) ---
     let postSummary = postData.content || postData.publicText || postData.imageDescription || postData.hiddenContent || "（无文字内容）";
     postSummary = postSummary.substring(0, 50) + (postSummary.length > 50 ? '...' : '');
     for (const chatId in state.chats) {
@@ -24838,7 +25116,9 @@ document.getElementById('confirm-create-post-btn').addEventListener('click', asy
     delete modal.dataset.mode;
     alert(`动态${editingId ? '编辑' : '发布'}成功！`);
 });
-// ▲▲▲ 步骤3.2 操作2 替换结束 ▲▲▲
+
+// ▲▲▲ 粘贴到这里结束 ▲▲▲
+
 
 // ▼▼▼ 请用这【一整块】包含所有滑动和点击事件的完整代码，替换掉旧的 postsList 事件监听器 ▼▼▼
 
@@ -24949,6 +25229,17 @@ postsList.addEventListener('touchend', handleSwipeEnd);
 postsList.addEventListener('click', async (e) => {
     e.stopPropagation();
     const target = e.target;
+// ▼▼▼ 在这里粘贴新代码 ▼▼▼
+const summonBtn = target.closest('.action-icon.summon-npc');
+if (summonBtn) {
+    const postId = parseInt(summonBtn.dataset.postId);
+    const authorId = summonBtn.dataset.authorId;
+    if (!isNaN(postId) && authorId) {
+        handleNpcSummonClick(postId, authorId);
+    }
+    return; // 处理完召唤逻辑后，直接结束，不执行后续的点赞等判断
+}
+// ▲▲▲ 粘贴结束 ▲▲▲
 
     // ★★★★★【核心修改：处理点击评论本身（用于回复）】★★★★★
     const commentItem = target.closest('.comment-item');

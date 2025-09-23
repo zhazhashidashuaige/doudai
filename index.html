@@ -29515,6 +29515,14 @@ document.getElementById('weibo-app-icon').addEventListener('click', () => {
 // 2. 绑定微博页面内的各种点击事件 (使用事件委托)
 document.getElementById('weibo-screen').addEventListener('click', async (e) => {
     const target = e.target;
+// ▼▼▼ 在这里粘贴新代码 ▼▼▼
+// 【核心修复】处理微博中的“文字图”点击事件
+if (target.classList.contains('weibo-post-image') && target.dataset.hiddenText) {
+    showCustomAlert("图片内容", target.dataset.hiddenText.replace(/<br>/g, '\n'));
+    return; // 处理完后，立刻退出，避免触发其他逻辑
+}
+// ▲▲▲ 新代码粘贴结束 ▲▲▲
+
     const postItem = target.closest('.weibo-post-item');
     const postId = postItem ? parseInt(postItem.dataset.postId) : null;
 

@@ -2756,14 +2756,27 @@ body {
 
 /* === 【全新】聊天界面头部状态栏样式 === */
 
-/* ▼▼▼ 请用这块【已修复】的代码，替换掉你旧的 #chat-header-title-wrapper 样式 ▼▼▼ */
+/* ▼▼▼ 用这块【居中修复版】的代码，替换旧的 #chat-header-title-wrapper 样式 ▼▼▼ */
 #chat-header-title-wrapper {
+    /* --- 核心修改：让标题区域绝对居中 --- */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    /* ------------------------------------ */
+    
+    /* 保持其内部元素（标题和状态）的布局不变 */
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px; /* ★★★ 修复1：我把间距从 4px 增加到了 6px，让它们分开一点 ★★★ */
-    flex-grow: 1; /* ★★★ 这一行是上次加的，请保留，它能让容器撑满中间区域 ★★★ */
+    gap: 6px; 
+    
+    /* (可选但推荐) 防止长标题与两边按钮重叠 */
+    max-width: 60%;
+    
+    /* 注意：我们不再需要 flex-grow: 1; 了，因为绝对定位已经使其脱离了flex布局流 */
 }
+/* ▲▲▲ 替换结束 ▲▲▲ */
+
 /* ▲▲▲ 替换结束 ▲▲▲ */
 
 /* 【新增】这是我们新加的样式，用于将标题和心形按钮横向排列 */

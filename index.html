@@ -7331,13 +7331,22 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 .weibo-view.active {
     display: flex; /* 只显示激活的页面 */
 }
+/* ▼▼▼ 请用这块新代码替换旧的 #weibo-bottom-nav 样式 ▼▼▼ */
 #weibo-bottom-nav {
+    position: absolute; /* 核心修改：改为绝对定位，使其脱离文档流并固定 */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 15; /* 确保它在内容区之上 */
     display: flex;
     border-top: 1px solid var(--border-color);
-    background-color: #f7f7f7;
-    flex-shrink: 0;
+    /* 与消息列表底栏统一为毛玻璃效果 */
+    background-color: rgba(247, 247, 247, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     padding-bottom: env(safe-area-inset-bottom); /* 适配iPhone底部安全区 */
 }
+/* ▲▲▲ 替换结束 ▲▲▲ */
 .weibo-nav-item {
     flex: 1;
     text-align: center;
@@ -7397,11 +7406,18 @@ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 /* ▲▲▲ 点击手势样式结束 ▲▲▲ */
 /* ▼▼▼ 【全新】微博页面布局修复CSS ▼▼▼ */
+/* ▼▼▼ 请用这块新代码替换旧的 #weibo-page-container 样式 ▼▼▼ */
 #weibo-page-container {
-    flex-grow: 1; /* 【核心】让这个容器占据所有可用的垂直空间 */
+    flex-grow: 1;
     position: relative;
-    overflow: hidden; /* 防止内容溢出 */
+    overflow: hidden;
+    /* 核心修改：为绝对定位的导航栏预留出空间，防止内容被遮挡 */
+    /* 50px 是导航栏的大致高度，env() 用于适配iPhone底部的小黑条 */
+    padding-bottom: calc(50px + env(safe-area-inset-bottom));
+    box-sizing: border-box; /* 确保内边距被正确计算在内 */
 }
+/* ▲▲▲ 替换结束 ▲▲▲ */
+
 
 /* 确保个人主页的内容可以滚动 */
 #weibo-profile-page {

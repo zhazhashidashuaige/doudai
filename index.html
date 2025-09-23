@@ -25086,17 +25086,22 @@ async function editWeiboNickname() {
     }
 }
 
+// ▼▼▼ 请【再次确认】并用下面这【整块函数】替换掉旧的 editWeiboFansCount 函数 ▼▼▼
 /**
- * 编辑微博粉丝数
+ * 【微博专属】编辑微博粉丝数 (已修复，支持汉字)
  */
 async function editWeiboFansCount() {
-    const newFans = await showCustomPrompt("编辑粉丝数", "请输入新的粉丝数", state.qzoneSettings.weiboFansCount, "number");
+    // 核心修改：确保这里的第四个参数是 "text"，而不是 "number"
+    const newFans = await showCustomPrompt("编辑粉丝数", "请输入新的粉丝数", state.qzoneSettings.weiboFansCount, "text");
+    
     if (newFans !== null) {
-        state.qzoneSettings.weiboFansCount = newFans.trim() || '0';
+        state.qzoneSettings.weiboFansCount = newFans.trim() || '0'; // 只修改微博粉丝数
         await saveQzoneSettings();
         await renderWeiboProfile();
     }
 }
+// ▲▲▲ 替换结束 ▲▲▲
+
 // ▲▲▲ 新函数粘贴结束 ▲▲▲
 
 

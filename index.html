@@ -47930,13 +47930,14 @@ async function handleConciseAllSummaries() {
     }
 }
 
-// ▲▲▲ 新功能函数粘贴结束 ▲▲▲
+// ▼▼▼ 第2步：用这块【已改造】的代码，完整替换旧的 triggerManualSummaryNow 函数 ▼▼▼
 
-// ▼▼▼ 【最终修复版】用这整块代码，完整替换你旧的 triggerManualSummaryNow 函数 ▼▼▼
 /**
- * 【手动总结】用户点击“立即手动总结”按钮时触发的函数 (V2 - 已修复逻辑)
+ * 【手动总结 V2】用户点击“立即手动总结”按钮时触发的函数 (支持不同模式)
+ * @param {'latest' | 'range'} mode - 总结模式
+ * @param {{start: number, end: number} | null} range - 如果是范围模式，则为起始和结束序号
  */
-async function triggerManualSummaryNow() {
+async function triggerManualSummaryNow(mode = 'latest', range = null) {
     if (isSummarizing) {
         alert("正在处理上一个总结任务，请稍候...");
         return;
@@ -47951,31 +47952,38 @@ async function triggerManualSummaryNow() {
     isSummarizing = true; // 上锁
 
     try {
+        let messagesToSummarize = [];
+
         // --- ▼▼▼ 这就是我们本次修改的核心逻辑 ▼▼▼ ---
 
-        // 1. 获取当前聊天设定的总结条数
-        const summarySettings = chat.settings.summary;
-        const count = (summarySettings && summarySettings.count > 0) ? summarySettings.count : 20;
-
-        // 2. 直接从聊天记录的末尾，截取最后 N 条消息
-        const messagesToSummarize = chat.history.slice(-count);
-
-        // 3. 检查是否有足够的消息可供总结
-        if (messagesToSummarize.length === 0) {
-            alert("聊天记录为空，无法进行总结。");
-            return; // 提前退出
+        // 1. 根据传入的模式，决定要截取哪些消息
+        if (mode === 'latest') {
+            const summarySettings = chat.settings.summary;
+            const count = (summarySettings && summarySettings.count > 0) ? summarySettings.count : 20;
+            messagesToSummarize = chat.history.slice(-count);
+            console.log(`手动总结最新 ${count} 条消息...`);
+        } else if (mode === 'range' && range) {
+            // 注意：数组索引从0开始，而用户输入从1开始，所以需要-1
+            messagesToSummarize = chat.history.slice(range.start - 1, range.end);
+            console.log(`手动总结从 ${range.start} 到 ${range.end} 的消息...`);
+        } else {
+            throw new Error("无效的总结模式或范围。");
         }
-        
-        // 4. 【关键】将我们手动截取的消息数组，作为参数传递给 generateSummary 函数
-        // 这样它就不会再执行“自上次总结以来没有新内容”的错误判断了
-        const summaryText = await generateSummary(state.activeChatId, messagesToSummarize);
-        
+
         // --- ▲▲▲ 修改结束 ▲▲▲ ---
 
+        // 后续的逻辑保持不变
+        if (messagesToSummarize.length === 0) {
+            alert("选定的范围内没有可总结的聊天记录。");
+            isSummarizing = false; // 解锁
+            return;
+        }
+        
+        const summaryText = await generateSummary(state.activeChatId, messagesToSummarize);
+        
         if (summaryText) {
             await saveSummaryAsMemory(state.activeChatId, summaryText);
             await showCustomAlert('总结完成', '新的对话记忆已生成！');
-            // 如果总结管理列表是打开的，就刷新它
             if (document.getElementById('summary-viewer-modal').classList.contains('visible')) {
                 openSummaryViewer();
             }
@@ -47984,11 +47992,12 @@ async function triggerManualSummaryNow() {
         console.error("手动总结过程中发生未捕获的错误:", e);
         await showCustomAlert('错误', '手动总结时发生错误，详情请查看控制台。');
     } finally {
-        isSummarizing = false; // 解锁
+        isSummarizing = false; // 别忘了无论成功失败都要解锁
     }
 }
 
-// ▼▼▼ 在这里粘贴下面这一整块新代码 ▼▼▼
+// ▲▲▲ 替换结束 ▲▲▲
+
 
 /**
  * 【全新】更新角色手机钱包的余额和交易记录
@@ -52911,11 +52920,67 @@ async function handleDisconnectLoversSpace() {
     }
 }
 // ▲▲▲ 第1步替换结束 ▲▲▲
+// ▼▼▼ 第1步：在这里粘贴下面这整块新代码 ▼▼▼
 
+/**
+ * 【全新】打开手动总结的模式选择弹窗
+ */
+async function openManualSummaryOptions() {
+    const choice = await showChoiceModal(
+        '手动总结',
+        [
+            { text: '总结最新内容', value: 'latest' },
+            { text: '总结指定范围', value: 'range' }
+        ]
+    );
 
+    if (choice === 'latest') {
+        // 用户选择总结最新，调用主函数并传入'latest'模式
+        await triggerManualSummaryNow('latest');
+    } else if (choice === 'range') {
+        // 用户选择总结范围，调用范围输入函数
+        await promptForSummaryRange();
+    }
+}
 
+/**
+ * 【全新】提示用户输入要总结的消息范围
+ */
+async function promptForSummaryRange() {
+    const chat = state.chats[state.activeChatId];
+    if (!chat) return;
 
+    const totalMessages = chat.history.length;
+    if (totalMessages === 0) {
+        alert("聊天记录为空，无法进行总结。");
+        return;
+    }
 
+    // 弹出输入框，让用户输入开始序号
+    const startStr = await showCustomPrompt('指定范围', `请输入开始的消息序号 (1 - ${totalMessages})`, '1', 'number');
+    if (startStr === null) return; // 用户点击了取消
+
+    const startNum = parseInt(startStr);
+    if (isNaN(startNum) || startNum < 1 || startNum > totalMessages) {
+        alert("请输入有效的开始序号。");
+        return;
+    }
+
+    // 弹出输入框，让用户输入结束序号
+    const endStr = await showCustomPrompt('指定范围', `请输入结束的消息序号 (${startNum} - ${totalMessages})`, totalMessages, 'number');
+    if (endStr === null) return; // 用户点击了取消
+
+    const endNum = parseInt(endStr);
+    if (isNaN(endNum) || endNum < startNum || endNum > totalMessages) {
+        alert("请输入有效的结束序号。");
+        return;
+    }
+
+    // 调用主函数并传入'range'模式和具体的范围
+    await triggerManualSummaryNow('range', { start: startNum, end: endNum });
+}
+
+// ▲▲▲ 新函数粘贴结束 ▲▲▲
 
         // ===================================================================
         // 4. 初始化函数 init()
@@ -59124,16 +59189,17 @@ document.getElementById('summary-list').addEventListener('click', (e) => {
 document.getElementById('concise-all-summaries-btn').addEventListener('click', handleConciseAllSummaries);
 // ▲▲▲ 替换结束 ▲▲▲
 
-// 在 init() 函数的事件监听器区域
-// ▼▼▼ 【全新】为“立即手动总结”按钮绑定事件 ▼▼▼
+// ▼▼▼ 第3步：用这块【新代码】替换旧的 manual-summary-btn 事件监听器 ▼▼▼
 document.getElementById('chat-settings-modal').addEventListener('click', (e) => {
     if (e.target.id === 'manual-summary-btn') {
-        // 点击后先关闭设置弹窗，避免遮挡后续的提示
+        // 点击后先关闭设置弹窗
         document.getElementById('chat-settings-modal').classList.remove('visible');
-        triggerManualSummaryNow();
+        // 【核心修改】调用我们新创建的选择函数，而不是直接总结
+        openManualSummaryOptions();
     }
 });
-// ▲▲▲ 新事件绑定结束 ▲▲▲
+// ▲▲▲ 替换结束 ▲▲▲
+
 // ▼▼▼ 把这一整块全新的事件监听器代码，粘贴到 init() 的事件监听器区域末尾 ▼▼▼
 
 /* --- 【全新】“桃宝”App 事件监听器 --- */

@@ -32627,9 +32627,44 @@ async function triggerInactiveAiAction(chatId) {
 你和用户（${userNickname}）已经有一段时间没有互动了。你的任务是回顾你们最近的对话，并根据你的人设，【自然地延续对话】或【开启一个新的、相关的话题】来主动联系用户。
 请不要发送一整段！
 # 【【【输出铁律：这是最高指令】】】
-你的回复【必须且只能】是一个严格的JSON数组格式的字符串，例如 \`[{"type": "text", "content": "你好呀"}]\`。
+你的回复【必须且只能】是一个严格的JSON数组格式的字符串，必须多发几条，禁止全部杂糅在一条，是在线上，例如 \`[{"type": "text", "content": "你好呀"}]\`。
 【绝对禁止】返回任何JSON以外的文本、解释、分析或你自己的思考过程。你不是分析师，你就是角色本人。
+**1. JSON对象结构:**
+该JSON对象【**必须**】包含两个顶级键: "chatResponse" 和 "innerVoice"。
 
+**2. "chatResponse" 键:**
+- **类型**: JSON数组 []。
+- **内容**: 包含一条或多条你希望发送给用户的消息对象。这允许你模拟真人的聊天习惯，一次性发送多条短消息。
+- **格式**: 消息对象的具体格式见下方的【第五部分：可使用的操作指令】。
+
+**3. "innerVoice" 键:**
+- **类型**: JSON对象 {}。
+- **内容**: 描绘你此刻未曾说出口的内心活动。
+- **必含字段**:
+    - "clothing": (字符串) 详细描述你当前从头到脚的**全身服装**。
+    - "behavior": (字符串) 描述你当前符合聊天情景的**细微动作或表情**。
+    - "thoughts": (字符串) 描述你此刻**丰富、细腻的内心真实想法**（50字左右）。
+    - "naughtyThoughts": (字符串) 描述你此刻与情境相关的**腹黑或色色的坏心思**，必须符合人设。
+
+**4. 标准输出格式示例:**
+{
+  "chatResponse": [
+    {
+      "type": "text",
+      "content": ""
+    },
+    {
+      "type": "sticker",
+      "sticker_name": ""
+    }
+  ],
+  "innerVoice": {
+    "clothing": "",
+    "behavior": "",
+    "thoughts": "",
+    "naughtyThoughts": ""
+  }
+}
 # 你的可选行动 (请根据你的人设【选择一项】执行，并输出对应的JSON):
 1.  **发普通消息**: 直接给用户发消息，开启新话题。
 2.  **改变状态**: 去做点别的事情，然后给用户发条消息。
@@ -32682,7 +32717,6 @@ ${postsContext}
         { role: 'system', content: systemPrompt },
         { role: 'user', content: "请严格按照system prompt中的所有规则，特别是输出格式铁律，立即开始你的行动。" }
     ];
-
     try {
         let isGemini = proxyUrl === GEMINI_API_URL;
         let geminiConfig = toGeminiRequestData(model, apiKey, systemPrompt, messagesPayload, isGemini);
@@ -32709,6 +32743,8 @@ ${postsContext}
             console.warn(`API为空回或格式不正确（可能因安全设置被拦截），角色 "${chat.name}" 的本次后台活动跳过。返回数据:`, data);
             return;
         }
+        console.log(`【后台角色实时活动 - AI 原始输出】\n角色 "${chat.name}" 的原始回复:\n`, aiResponseContent);
+
         const responseArray = parseAiResponse(aiResponseContent);
         for (const action of responseArray) {
             if (!action) continue;

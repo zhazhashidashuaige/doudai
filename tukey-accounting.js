@@ -1,5 +1,5 @@
 // ▼▼▼ 用这块新代码替换旧的 ACCOUNT_STRUCTURE ▼▼▼
-const ACCOUNT_STRUCTURE = {
+let ACCOUNT_STRUCTURE = {
   普通账户: {
     isAsset: true,
     types: [
@@ -84,7 +84,7 @@ const ACCOUNT_STRUCTURE = {
 };
 // ▲▲▲ 替换结束 ▲▲▲
 // ▼▼▼ 【兔k记账】在JS文件顶部，变量定义区添加 ▼▼▼
-const ACCOUNTING_CATEGORIES = {
+let ACCOUNTING_CATEGORIES = {
   expense: [
     { name: '餐饮', icon: 'https://s3plus.meituan.net/opapisdk/op_ticket_1_5673241091_1763966898357_qdqqd_q6gypk.png' },
     { name: '购物', icon: 'https://static.eeo.cn/upload/images/20251124/286655c4437163e96279.png' },
@@ -183,6 +183,178 @@ async function saveTukeyUserSettings() {
   alert('记账设置已保存！');
 }
 /* --- 用户设置功能函数结束 --- */
+// ▼▼▼ 【全新】兔k记账 - 自定义配置核心函数 ▼▼▼
+
+/**
+ * 加载自定义配置并合并到全局变量中
+ */
+async function loadTukeyCustomConfig() {
+  try {
+    const config = await db.tukeyCustomConfig.get('main');
+    if (config) {
+      // 1. 合并自定义收支分类
+      if (config.customCategories) {
+        // 我们将自定义的追加到默认列表后面，或者完全覆盖（这里选择追加去重，或者简单替换）
+        // 为了简单起见，我们假设 config 里存的是“最新的完整列表”
+        // 如果你想保留默认项不可删除，可以做合并逻辑。这里我们假设用户配置是最终结果。
+        // 但为了防止第一次覆盖掉默认值，我们在保存时会保存完整列表。
+        ACCOUNTING_CATEGORIES = config.customCategories;
+      }
+
+      // 2. 合并自定义账户结构
+      if (config.customAccountStructure) {
+        ACCOUNT_STRUCTURE = config.customAccountStructure;
+      }
+    }
+  } catch (e) {
+    console.error('加载兔k记账自定义配置失败:', e);
+  }
+}
+
+/**
+ * 保存当前的全局配置到数据库
+ */
+async function saveTukeyCustomConfig() {
+  await db.tukeyCustomConfig.put({
+    id: 'main',
+    customCategories: ACCOUNTING_CATEGORIES,
+    customAccountStructure: ACCOUNT_STRUCTURE,
+  });
+  // console.log("自定义配置已保存");
+}
+
+/**
+ * 【核心】处理添加自定义收支分类
+ * @param {string} type - 'expense' (支出) 或 'income' (收入)
+ */
+async function handleAddCustomCategory(type) {
+  const typeName = type === 'expense' ? '支出' : '收入';
+
+  // 1. 输入名称
+  const name = await showCustomPrompt(`添加${typeName}分类`, '请输入分类名称 (例如: 奶茶, 游戏)');
+  if (!name || !name.trim()) return;
+
+  // 2. 选择图标来源
+  const choice = await showChoiceModal('选择图标', [
+    { text: '📁 从本地上传', value: 'local' },
+    { text: '🌐 使用网络URL', value: 'url' },
+    { text: '🎲 使用默认图标', value: 'default' },
+  ]);
+
+  if (!choice) return;
+
+  let iconUrl = '';
+
+  if (choice === 'local') {
+    iconUrl = await uploadImageLocally();
+  } else if (choice === 'url') {
+    iconUrl = await showCustomPrompt('图标URL', '请输入图片链接', '', 'url');
+  } else {
+    // 默认图标
+    iconUrl = 'https://i.postimg.cc/y88P16yW/default-icon.png';
+  }
+
+  if (!iconUrl) {
+    alert('图标无效，添加取消。');
+    return;
+  }
+
+  // 3. 更新数据
+  const newCategory = { name: name.trim(), icon: iconUrl };
+  ACCOUNTING_CATEGORIES[type].push(newCategory);
+
+  // 4. 保存并刷新
+  await saveTukeyCustomConfig();
+
+  // 重新渲染分类列表 (如果在记账弹窗中)
+  const card = document.getElementById('tukey-record-input-card');
+  if (card.classList.contains('visible')) {
+    // 只有当前是在对应类型的标签页下才刷新
+    const activeBtn = card.querySelector('.type-selector .type-btn.active');
+    if (activeBtn && activeBtn.dataset.type === type) {
+      renderRecordCategories(type); // 重新渲染分类网格
+    }
+  }
+
+  alert(`分类 "${newCategory.name}" 添加成功！`);
+}
+
+/**
+ * 【核心】处理添加自定义账户类型
+ * @param {string} categoryName - 账户大类名称 (例如 "普通账户", "信用账户")
+ */
+async function handleAddCustomAccountType(categoryName) {
+  // 1. 输入名称
+  const name = await showCustomPrompt(`添加${categoryName}类型`, '请输入类型名称 (例如: 招商银行, 京东金条)');
+  if (!name || !name.trim()) return;
+
+  // 2. 选择图标
+  const choice = await showChoiceModal('选择图标', [
+    { text: '📁 从本地上传', value: 'local' },
+    { text: '🌐 使用网络URL', value: 'url' },
+    { text: '🎲 使用默认图标', value: 'default' },
+  ]);
+
+  if (!choice) return;
+
+  let iconUrl = '';
+  if (choice === 'local') {
+    iconUrl = await uploadImageLocally();
+  } else if (choice === 'url') {
+    iconUrl = await showCustomPrompt('图标URL', '请输入图片链接', '', 'url');
+  } else {
+    iconUrl = 'https://i.postimg.cc/y88P16yW/default-icon.png';
+  }
+
+  if (!iconUrl) return;
+
+  // 3. 更新数据
+  if (ACCOUNT_STRUCTURE[categoryName]) {
+    ACCOUNT_STRUCTURE[categoryName].types.push({
+      name: name.trim(),
+      iconUrl: iconUrl,
+    });
+
+    // 4. 保存并刷新
+    await saveTukeyCustomConfig();
+    openAccountTypeSelector(); // 重新渲染类型选择界面
+    alert(`账户类型 "${name.trim()}" 添加成功！`);
+  }
+}
+
+/**
+ * 【辅助】渲染记账弹窗中的分类网格（带添加按钮）
+ * 替换掉 switchRecordType 中的简单 innerHTML 生成逻辑
+ */
+function renderRecordCategories(type) {
+  const card = document.getElementById('tukey-record-input-card');
+  const grid = card.querySelector('.category-grid');
+  grid.innerHTML = '';
+
+  // 渲染现有分类
+  ACCOUNTING_CATEGORIES[type].forEach(cat => {
+    grid.innerHTML += `
+        <div class="tukey-category-item" data-type="${type}" data-category="${cat.name}">
+            <img src="${cat.icon}" alt="${cat.name}">
+            <span>${cat.name}</span>
+        </div>
+    `;
+  });
+
+  // ★★★ 添加“自定义”按钮 ★★★
+  const addBtn = document.createElement('div');
+  addBtn.className = 'tukey-category-item add-custom-btn';
+  addBtn.innerHTML = `
+      <div style="width:40px; height:40px; border-radius:50%; background:#f0f2f5; display:flex; align-items:center; justify-content:center; font-size:24px; color:#999;">+</div>
+      <span>自定义</span>
+  `;
+  addBtn.addEventListener('click', e => {
+    e.stopPropagation(); // 防止触发选择事件
+    handleAddCustomCategory(type);
+  });
+  grid.appendChild(addBtn);
+}
+// ▲▲▲ 新增函数结束 ▲▲▲
 
 /* --- 【全新】兔k记账-钱包功能核心函数 --- */
 
@@ -272,11 +444,9 @@ async function renderTukeyWalletView() {
 // ▲▲▲ 替换结束 ▲▲▲
 // ▼▼▼ 粘贴下面这【三个】全新的函数，来替换旧的 openAccountEditor 和 saveTukeyAccount ▼▼▼
 
-/**
- * 【全新】第一步：打开账户类型选择界面
- */
+// ▼▼▼ 【修改】添加自定义账户类型按钮 ▼▼▼
 function openAccountTypeSelector() {
-  editingAccountId = null; // 确保是添加模式
+  editingAccountId = null;
   const modal = document.getElementById('account-editor-modal');
   const titleEl = document.getElementById('account-editor-title');
   const selectionView = document.getElementById('account-type-selection-view');
@@ -286,10 +456,9 @@ function openAccountTypeSelector() {
   titleEl.textContent = '选择账户类型';
   formView.style.display = 'none';
   selectionView.style.display = 'block';
-  saveBtn.style.display = 'none'; // 在选择阶段隐藏保存按钮
-  selectionView.innerHTML = ''; // 清空旧内容，准备重新渲染
+  saveBtn.style.display = 'none';
+  selectionView.innerHTML = '';
 
-  // 动态生成所有可选的账户类型
   for (const categoryName in ACCOUNT_STRUCTURE) {
     const categoryInfo = ACCOUNT_STRUCTURE[categoryName];
     const groupEl = document.createElement('div');
@@ -305,6 +474,15 @@ function openAccountTypeSelector() {
             `;
     });
 
+    // ★★★ 添加自定义按钮 ★★★
+    // 注意：我们给它一个特殊的 class 'add-custom-type-btn'
+    typesHtml += `
+        <div class="type-item add-custom-type-btn" data-category="${categoryName}">
+             <div style="width:40px; height:40px; border-radius:50%; background:#f0f2f5; display:flex; align-items:center; justify-content:center; font-size:20px; color:#999; margin-bottom:5px;">+</div>
+             <span class="type-name">自定义</span>
+        </div>
+    `;
+
     groupEl.innerHTML = `
             <div class="category-group-title">${categoryName}</div>
             <div class="type-grid">${typesHtml}</div>
@@ -313,6 +491,7 @@ function openAccountTypeSelector() {
   }
   modal.classList.add('visible');
 }
+// ▲▲▲ 替换结束 ▲▲▲
 
 /**
  * 【重构】第二步：打开账户编辑器表单（用于添加或编辑）
@@ -538,6 +717,7 @@ let activeTukeyGroup = null; // 用于存储当前激活的记账群聊数据
  */
 async function initTukeyAccounting() {
   await loadAndRenderTukeyUserSettings();
+  await loadTukeyCustomConfig();
   // 1. 绑定主屏幕图标点击事件
   document.getElementById('tukey-accounting-app-icon').addEventListener('click', async () => {
     // 打开App时，总是先尝试加载群聊数据
@@ -568,8 +748,23 @@ async function initTukeyAccounting() {
   });
   document.getElementById('tukey-save-group-btn').addEventListener('click', saveTukeyGroup);
 
-  // 5. 绑定群聊内部的“设置”按钮
-  document.getElementById('tukey-group-settings-btn').addEventListener('click', openReplySettingsModal);
+  // 5. 绑定群聊内部的“设置”按钮    // 5. 【核心修改】绑定群聊内部的“设置”按钮 -> 改为弹出选项菜单
+  document.getElementById('tukey-group-settings-btn').addEventListener('click', async () => {
+    // 使用现有的 showChoiceModal 弹出一个菜单
+    const choice = await showChoiceModal('记账群聊设置', [
+      { text: '👥 管理成员 (拉人/踢人)', value: 'manage_members' },
+      { text: '🤖 AI回复设置', value: 'ai_settings' },
+      { text: '⚠️ 解散群聊', value: 'dissolve_group' },
+    ]);
+
+    if (choice === 'manage_members') {
+      openGroupManagerModal(); // 打开成员选择弹窗（支持勾选添加/取消勾选踢人）
+    } else if (choice === 'ai_settings') {
+      openReplySettingsModal(); // 打开AI设置
+    } else if (choice === 'dissolve_group') {
+      dissolveTukeyGroup(); // 执行解散逻辑
+    }
+  });
 
   // 6. 绑定回复设置弹窗的按钮
   document.getElementById('tukey-cancel-reply-settings-btn').addEventListener('click', () => {
@@ -602,8 +797,17 @@ async function initTukeyAccounting() {
   // 10.【不要动！】你原有的钱包账户功能事件监听，保持不变
   document.getElementById('add-new-account-fab').addEventListener('click', openAccountTypeSelector);
   document.getElementById('account-type-selection-view').addEventListener('click', e => {
+    // 检查是否点击了“自定义”按钮
+    const customBtn = e.target.closest('.add-custom-type-btn');
+    if (customBtn) {
+      const category = customBtn.dataset.category;
+      handleAddCustomAccountType(category);
+      return;
+    }
+
+    // 检查是否点击了普通类型
     const typeItem = e.target.closest('.type-item');
-    if (typeItem) {
+    if (typeItem && !typeItem.classList.contains('add-custom-type-btn')) {
       const category = typeItem.dataset.category;
       const type = typeItem.dataset.type;
       openAccountEditor(null, category, type);
@@ -790,12 +994,40 @@ async function saveReplySettings() {
   alert('回复设置已保存！');
 }
 
-// ▼▼▼ 【兔k记账】用这【一整块】全新的代码，替换掉你旧的 openRecordEditor 函数 ▼▼▼
+/**
+ * 【全新】解散记账群聊
+ */
+async function dissolveTukeyGroup() {
+  if (!activeTukeyGroup) return;
 
-// ▼▼▼ 【兔k记账】用这【一整块】V3版的JS代码，替换旧的 openRecordEditor 和 saveTukeyRecordFromCard 函数 ▼▼▼
+  // 1. 弹出红色警告确认框
+  const confirmed = await showCustomConfirm(
+    '确认解散',
+    '确定要解散记账群聊吗？\n\n注意：\n1. 之前的记账记录**不会**被删除，依然可以在报表中查看。\n2. 解散后您可以重新创建一个新的记账群。',
+    { confirmButtonClass: 'btn-danger' },
+  );
+
+  if (confirmed) {
+    try {
+      // 2. 从数据库删除群组配置
+      await db.tukeyAccountingGroups.delete('main_group');
+
+      // 3. 重置内存状态
+      activeTukeyGroup = null;
+
+      // 4. 刷新界面（会自动显示回“创建群聊”的空状态页面）
+      await loadTukeyGroupData();
+
+      alert('记账群聊已解散。');
+    } catch (error) {
+      console.error('解散群聊失败:', error);
+      alert('解散失败，请重试。');
+    }
+  }
+}
 
 /**
- * 【V3版-总入口】打开浮动记账卡片并初始化
+ * 【V3修正版】打开浮动记账卡片并初始化 (已修复自定义按钮点击报错)
  */
 async function openRecordEditor() {
   const card = document.getElementById('tukey-record-input-card');
@@ -805,12 +1037,12 @@ async function openRecordEditor() {
   document.getElementById('tukey-card-amount-input').value = '';
   document.getElementById('tukey-card-remarks-input').value = '';
 
-  // 【新增】设置时间默认为当前时间
+  // 设置时间默认为当前时间
   const now = new Date();
   now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
   document.getElementById('tukey-card-time-input').value = now.toISOString().slice(0, 16);
 
-  // 【新增】渲染账户下拉列表
+  // 渲染账户下拉列表
   const accountSelect = document.getElementById('tukey-card-account-select');
   accountSelect.innerHTML = '';
   const accounts = await db.tukeyAccounts.toArray();
@@ -839,14 +1071,21 @@ async function openRecordEditor() {
   const categoryGrid = card.querySelector('.category-grid');
   const newCategoryGrid = categoryGrid.cloneNode(true);
   categoryGrid.parentNode.replaceChild(newCategoryGrid, categoryGrid);
+
+  // ★★★★★ 核心修复在这里 ★★★★★
   newCategoryGrid.addEventListener('click', e => {
+    // 1. 找到被点击的项
     const item = e.target.closest('.tukey-category-item');
-    if (item) {
+
+    // 2. 检查：如果点到了，并且它不是“添加自定义”按钮
+    if (item && !item.classList.contains('add-custom-btn')) {
       newCategoryGrid.querySelectorAll('.tukey-category-item').forEach(el => el.classList.remove('selected'));
       item.classList.add('selected');
+      // 3. 现在可以安全地读取 img.src 了
       updateSelectedCategoryDisplay(item.dataset.category, item.querySelector('img').src);
     }
   });
+  // ★★★★★ 修复结束 ★★★★★
 
   const closeBtn = card.querySelector('.close-card-btn');
   const newCloseBtn = closeBtn.cloneNode(true);
@@ -863,28 +1102,20 @@ async function openRecordEditor() {
   document.getElementById('tukey-card-amount-input').focus();
 }
 
-/**
- * 【V3版-辅助】切换支出/收入类型并重新渲染分类
- */
+// ▼▼▼ 【修改】使用新的渲染函数，支持自定义按钮 ▼▼▼
 function switchRecordType(type) {
   const card = document.getElementById('tukey-record-input-card');
   card.querySelectorAll('.type-selector .type-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.type === type);
   });
 
-  const grid = card.querySelector('.category-grid');
-  grid.innerHTML = '';
-  ACCOUNTING_CATEGORIES[type].forEach(cat => {
-    grid.innerHTML += `
-            <div class="tukey-category-item" data-type="${type}" data-category="${cat.name}">
-                <img src="${cat.icon}" alt="${cat.name}">
-                <span>${cat.name}</span>
-            </div>
-        `;
-  });
+  // 使用新函数来渲染，包含那个“+”号
+  renderRecordCategories(type);
+
   // 切换后清空已选分类
   updateSelectedCategoryDisplay();
 }
+// ▲▲▲ 替换结束 ▲▲▲
 
 /**
  * 【全新】更新金额输入框旁边已选分类的显示
@@ -1316,7 +1547,7 @@ function handleReportFilterChange() {
 }
 
 /**
- * 【渲染】每日明细视图
+ * 【渲染 - 美化版】每日明细视图 (精致的删除按钮)
  */
 async function renderDailyDetailView(accountId) {
   const view = document.getElementById('daily-report-view');
@@ -1334,17 +1565,14 @@ async function renderDailyDetailView(accountId) {
     return;
   }
 
-  // 按天分组
   const recordsByDay = records.reduce((acc, rec) => {
     const day = new Date(rec.timestamp).toISOString().split('T')[0];
-    if (!acc[day]) {
-      acc[day] = [];
-    }
+    if (!acc[day]) acc[day] = [];
     acc[day].push(rec);
     return acc;
   }, {});
 
-  view.innerHTML = ''; // 清空加载提示
+  view.innerHTML = '';
 
   for (const day in recordsByDay) {
     const dayRecords = recordsByDay[day];
@@ -1356,7 +1584,6 @@ async function renderDailyDetailView(accountId) {
       if (rec.type === 'income') dailyIncome += rec.amount;
       else dailyExpense += rec.amount;
 
-      // 复用记账群聊里的气泡样式
       const categoryData = ACCOUNTING_CATEGORIES[rec.type].find(c => c.name === rec.category);
       const categoryIcon = categoryData ? categoryData.icon : '';
       const recordTime = new Date(rec.timestamp);
@@ -1365,23 +1592,44 @@ async function renderDailyDetailView(accountId) {
         '0',
       )}`;
 
+      // ▼▼▼ 【美化修改】使用了 Flex 布局容器，加入了 SVG 垃圾桶图标 ▼▼▼
       transactionsHtml += `
-                <div class="tukey-record-bubble ${rec.type}">
-                    <div class="record-header">
-                        <img src="${categoryIcon}" class="record-category-icon" alt="${rec.category}">
-                        <span class="record-category-name">${rec.category}</span>
-                    </div>
-                    <div class="record-body">
-                        <span class="record-remarks">${rec.remarks || '无备注'}</span>
-                        <span class="record-amount">${rec.type === 'expense' ? '-' : '+'} ¥${rec.amount.toFixed(
+                <div class="report-record-item" style="display: flex; align-items: center; margin-bottom: 12px;">
+                    <!-- 气泡主体，设置 flex-grow: 1 让它占满剩余空间 -->
+                    <div class="tukey-record-bubble ${
+                      rec.type
+                    }" style="flex-grow: 1; margin-right: 10px; margin-bottom: 0;"> 
+                        <div class="record-header">
+                            <img src="${categoryIcon}" class="record-category-icon" alt="${rec.category}">
+                            <span class="record-category-name">${rec.category}</span>
+                        </div>
+                        <div class="record-body">
+                            <span class="record-remarks">${rec.remarks || '无备注'}</span>
+                            <span class="record-amount">${rec.type === 'expense' ? '-' : '+'} ¥${rec.amount.toFixed(
         2,
       )}</span>
+                        </div>
+                        <div class="record-footer">
+                            <span>${rec.accountName}</span> · <span>${timeString}</span>
+                        </div>
                     </div>
-                    <div class="record-footer">
-                        <span>${rec.accountName}</span> · <span>${timeString}</span>
-                    </div>
+                    
+                    <!-- 美化后的删除按钮 -->
+                    <button class="delete-record-btn" data-id="${rec.id}" title="删除"
+                            style="flex-shrink: 0; width: 36px; height: 36px; border: none; 
+                                   background-color: rgba(255, 59, 48, 0.08); border-radius: 10px; 
+                                   display: flex; align-items: center; justify-content: center; 
+                                   color: #ff3b30; cursor: pointer; transition: all 0.2s;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                    </button>
                 </div>
             `;
+      // ▲▲▲ 修改结束 ▲▲▲
     });
 
     const dayGroup = document.createElement('div');
@@ -1397,6 +1645,96 @@ async function renderDailyDetailView(accountId) {
             <div class="transaction-list">${transactionsHtml}</div>
         `;
     view.appendChild(dayGroup);
+  }
+}
+
+/**
+ * 【全新】删除一条记账记录并回滚账户余额
+ * @param {number} recordId - 要删除的记录ID
+ */
+async function deleteTukeyAccountingRecord(recordId) {
+  // 1. 获取记录详情
+  const record = await db.tukeyAccountingRecords.get(recordId);
+  if (!record) {
+    alert('找不到该记录，可能已被删除。');
+    return;
+  }
+
+  // 2. 弹出确认框
+  const confirmed = await showCustomConfirm(
+    '确认删除',
+    `确定要删除这笔 ${record.type === 'expense' ? '支出' : '收入'} (¥${
+      record.amount
+    }) 吗？\n删除后，关联账户的余额将自动回滚。`,
+    { confirmButtonClass: 'btn-danger' },
+  );
+  if (!confirmed) return;
+
+  try {
+    // 3. 回滚账户余额
+    const account = await db.tukeyAccounts.get(record.accountId);
+    if (account) {
+      let currentBalance = parseFloat(account.balance);
+
+      // 核心回滚逻辑：
+      // 如果删的是支出(expense)，余额应该加回去 (+ amount)
+      // 如果删的是收入(income)，余额应该减出来 (- amount)
+      if (record.type === 'expense') {
+        // 特殊处理：如果是借入/信用账户，支出意味着欠款增加，删除支出意味着欠款减少（数值逻辑取决于您是如何存储的）
+        // 根据您之前的 saveTukeyRecordFromCard 逻辑：
+        // 资产账户：余额 = 余额 - 支出。 回滚：余额 + 支出
+        // 信用账户：余额 = 余额 + 支出 (欠款变多)。 回滚：余额 - 支出
+
+        const categoryInfo = ACCOUNT_STRUCTURE[account.category];
+        // 检查是否是信用账户(isAsset === false) 或 借入账户
+        if ((categoryInfo && categoryInfo.isAsset === false) || account.type === '借入') {
+          // 信用账户之前是加了金额，现在要减去
+          account.balance = currentBalance - record.amount;
+        } else {
+          // 普通资产账户之前是减了金额，现在要加回
+          account.balance = currentBalance + record.amount;
+        }
+      } else {
+        // 如果删的是收入/还款
+        // 资产账户：余额 = 余额 + 收入。 回滚：余额 - 收入
+        // 信用账户：余额 = 余额 - 收入 (还款)。 回滚：余额 + 收入
+        const categoryInfo = ACCOUNT_STRUCTURE[account.category];
+        if ((categoryInfo && categoryInfo.isAsset === false) || account.type === '借入') {
+          account.balance = currentBalance + record.amount;
+        } else {
+          account.balance = currentBalance - record.amount;
+        }
+      }
+
+      // 保存账户余额更新
+      await db.tukeyAccounts.put(account);
+    }
+
+    // 4. 如果开启了桃宝同步，也要回滚桃宝余额
+    if (tukeyUserSettings.syncWithTaobao) {
+      // 逻辑取反：删支出=加钱，删收入=扣钱
+      const reverseAmount = record.type === 'expense' ? record.amount : -record.amount;
+      await updateUserBalanceAndLogTransaction(reverseAmount, `[撤销记账] ${record.category}`);
+    }
+
+    // 5. 删除记录本身
+    await db.tukeyAccountingRecords.delete(recordId);
+
+    // 6. 删除关联的AI回复 (如果有)
+    const replies = await db.tukeyAccountingReplies.where('recordId').equals(recordId).toArray();
+    if (replies.length > 0) {
+      const replyIds = replies.map(r => r.id);
+      await db.tukeyAccountingReplies.bulkDelete(replyIds);
+    }
+
+    // 7. 刷新界面
+    await renderTukeyReportsView(); // 刷新报表
+    // 如果记账群聊界面也在后台，可能需要标记刷新，这里暂只刷新当前报表
+
+    alert('记录已删除，余额已回滚。');
+  } catch (error) {
+    console.error('删除账单失败:', error);
+    alert(`删除失败: ${error.message}`);
   }
 }
 

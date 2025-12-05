@@ -60,25 +60,23 @@ document.addEventListener('DOMContentLoaded', () => {
     element.addEventListener('touchmove', cancelPress);
   }
   /**
-   * 渲染论坛主屏幕，显示所有小组及其分类（已支持筛选）
+   * 【V3 最终完美版】渲染论坛主屏幕
+   * 逻辑：内置小组显示SVG，用户小组显示自定义图片
    */
   async function renderForumScreen() {
     const listEl = document.getElementById('forum-group-list');
     const allGroups = await db.forumGroups.toArray();
     listEl.innerHTML = '';
 
-    // --- ▼▼▼ 【核心新增】筛选逻辑 ▼▼▼ ---
+    // --- 筛选逻辑 (保持不变) ---
     const globalFilters = activeForumFilters.global;
     let groupsToRender = allGroups;
-
     if (globalFilters && globalFilters.length > 0) {
       groupsToRender = allGroups.filter(
         group => group.categories && group.categories.some(cat => globalFilters.includes(cat)),
       );
     }
-    // --- ▲▲▲ 新增结束 ▲▲▲ ---
 
-    // 检查筛选后是否还有内容
     if (groupsToRender.length === 0) {
       const message =
         globalFilters.length > 0 ? '没有找到符合筛选条件的小组哦' : '还没有任何小组，点击右上角“+”创建一个吧！';
@@ -86,7 +84,47 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 使用筛选后的 groupsToRender 数组进行渲染
+    // --- 核心：图标生成器 (已修复：优先显示自定义图片) ---
+    const renderGroupIcon = group => {
+      const name = group.name;
+      const iconInput = group.icon || ''; // 可能是emoji 或 URL
+
+      // 1. 【最高优先级】检查是否是图片URL (http开头 或 data:开头)
+      // 只要用户填了链接，不管它叫什么名字，都强制显示图片！
+      if (iconInput.startsWith('http') || iconInput.startsWith('data:')) {
+        return `<img src="${iconInput}" class="forum-group-custom-img">`;
+      }
+
+      // 2. 如果没有图片URL，再检查是否是【内置小组】，使用精美SVG
+      const svgStyle = `width="24" height="24" fill="currentColor" viewBox="0 0 24 24"`;
+
+      if (name.includes('娱乐') || name.includes('瓜')) {
+        return `<div class="forum-group-icon-wrapper style-pink"><svg ${svgStyle}><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>`;
+      }
+      if (name.includes('灵异') || name.includes('鬼')) {
+        return `<div class="forum-group-icon-wrapper style-purple"><svg ${svgStyle}><path d="M9 22v-2c0-1.1.9-2 2-2s2 .9 2 2v2M6 22v-4c0-1.1.9-2 2-2s2 .9 2 2v4M18 22v-4c0-1.1-.9-2-2-2s-2 .9-2 2v4M12 2a8 8 0 0 0-8 8v7a5 5 0 0 0 5 5h10a5 5 0 0 0 5-5v-7a8 8 0 0 0-8-8z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="9" r="1"/></svg></div>`;
+      }
+      if (name.includes('crush') || name.includes('梦') || name.includes('恋') || name.includes('心动')) {
+        return `<div class="forum-group-icon-wrapper style-red"><svg ${svgStyle}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>`;
+      }
+      if (name.includes('同人') || name.includes('文') || name.includes('写')) {
+        return `<div class="forum-group-icon-wrapper style-blue"><svg ${svgStyle}><path d="M12 19l7-7 3 3-7 7-3-3z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M2 2l7.586 7.586" stroke="currentColor" stroke-width="2"/><circle cx="11" cy="11" r="2" fill="currentColor"/></svg></div>`;
+      }
+      if (name.includes('帮') || name.includes('选') || name.includes('助')) {
+        return `<div class="forum-group-icon-wrapper style-orange"><svg ${svgStyle}><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="currentColor" stroke-width="2"/><line x1="12" y1="17" x2="12.01" y2="17" stroke="currentColor" stroke-width="2"/></svg></div>`;
+      }
+
+      // 3. 如果既不是URL，名字也没匹配到内置风格，就检查是不是 Emoji
+      if (iconInput) {
+        // 这里简单处理，直接显示输入的字符作为图标（用于Emoji）
+        return `<div class="forum-group-icon-wrapper style-default" style="font-size: 24px; display: flex; align-items: center; justify-content: center;">${iconInput}</div>`;
+      }
+
+      // 4. 最后的默认 SVG (兜底)
+      return `<div class="forum-group-icon-wrapper style-default"><svg ${svgStyle}><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>`;
+    };
+
+    // --- 渲染列表 ---
     groupsToRender.forEach(group => {
       const item = document.createElement('div');
       item.className = 'forum-group-item';
@@ -101,10 +139,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       item.innerHTML = `
-            <div class="forum-group-icon">${group.icon || '📁'}</div>
-            <div class="forum-group-name">${group.name}</div>
-            <div class="forum-group-desc">${group.description}</div>
-            ${categoriesHtml}
+            ${renderGroupIcon(group)}
+            <div class="forum-group-info">
+                <div class="forum-group-name">${group.name}</div>
+                <div class="forum-group-desc">${group.description || '暂无简介'}</div>
+                ${categoriesHtml}
+            </div>
+            <div class="forum-group-arrow">›</div>
         `;
       item.addEventListener('click', () => openGroup(group.id, group.name));
       addLongPressListener(item, () => showGroupActions(group.id, group.name));
@@ -140,9 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ▼▼▼ 【修改点 1】打开小组时，更新全局变量 ▼▼▼
   async function openGroup(groupId, groupName) {
-    window.activeGroupId = groupId; // 【修改】使用 window.activeGroupId
+    window.activeGroupId = groupId;
     document.getElementById('group-screen-title').textContent = groupName;
     const fanficBar = document.getElementById('fanfic-preference-bar');
 
@@ -150,6 +190,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (groupName === '同人文小组') {
       fanficBar.style.display = 'block';
       await populateFanficSelectors();
+      await loadFanficPresets(); // ★ 新增：加载预设
+
+      // 默认折叠起来，不占用空间
+      document.getElementById('fanfic-bar-content').classList.add('collapsed');
+      document.getElementById('fanfic-bar-toggle-icon').classList.add('collapsed');
     } else {
       fanficBar.style.display = 'none';
     }
@@ -717,21 +762,22 @@ ${worldviewContext}
       await showCustomAlert('生成失败', `发生了一个错误：\n${error.message}`);
     }
   }
-  // ▲▲▲ 替换结束 ▲▲▲
-
-  // ▼▼▼ 用这块【V10 | 健壮稳定版】代码，完整替换旧的 generateFanfic 函数 ▼▼▼
-
-  // 这是【修复后】的代码
+  /**
+   * 【V12 | 拆分文风与类型版】
+   */
   async function generateFanfic(groupId) {
-    // 核心修改1：在这里添加 groupId 参数，接收传入的小组ID
     if (!groupId) {
-      // 安全检查，如果因为某些原因没传对ID，就报错提示，防止污染数据
       console.error('generateFanfic called without a groupId!');
       alert('发生内部错误：生成同人时未能指定小组ID。');
       return;
     }
     const char1Name = document.getElementById('fanfic-char1-select').value;
     const char2Name = document.getElementById('fanfic-char2-select').value;
+
+    // 获取分离后的参数
+    const wordCountReq = document.getElementById('fanfic-wordcount-input').value.trim();
+    const typeReq = document.getElementById('fanfic-type-input').value.trim(); // 类型：ABO, 甜文
+    const styleReq = document.getElementById('fanfic-style-input').value.trim(); // 文风：细腻, 华丽
     const worldviewPreference = document.getElementById('fanfic-worldview-input').value.trim();
 
     if (char1Name === char2Name) {
@@ -751,10 +797,6 @@ ${worldviewContext}
     const char1Data = allChars.find(c => c.name === char1Name);
     const char2Data = allChars.find(c => c.name === char2Name);
 
-    // updated by lrq 251103
-    // 如果选择的角色名是用户昵称，则默认使用微博人设
-    // （圈子目前只有同人文与user人设强关联，预设选择待更新，也可以考虑做分组人设绑定（画饼））
-
     let char1Persona = '';
     let char2Persona = '';
 
@@ -770,43 +812,46 @@ ${worldviewContext}
       char2Persona = state.chats[char2Data.id]?.settings.aiPersona || '一个普通人';
     }
 
-    console.log('Character 1 Persona:', char1Persona);
+    // 构建 Prompt
+    let contextInstructions = '';
 
-    // const char1Persona = (state.chats[char1Data.id]?.settings.aiPersona || '一个普通人');
-    // const char2Persona = (state.chats[char2Data.id]?.settings.aiPersona || '一个普通人');
+    if (typeReq) contextInstructions += `\n**【题材类型要求】**: 文章必须属于【${typeReq}】题材。`;
+    if (styleReq) contextInstructions += `\n**【文风/写作规范】**: 请严格模仿【${styleReq}】的笔触和叙事风格。`;
+    if (worldviewPreference) contextInstructions += `\n**【剧情/世界观设定】**: ${worldviewPreference}`;
 
-    let worldviewContext = worldviewPreference ? `世界观设定及创作要求：${worldviewPreference}` : '';
+    let lengthInstruction = wordCountReq ? `每篇故事字数需接近【${wordCountReq}】。` : '每篇故事不少于800字。';
 
-    // --- ▼▼▼ 【核心修正】重写Prompt，增强稳定性和清晰度 ---
     const prompt = `
 你是一位专业的同人文写手。请根据以下要求，创作【三篇】关于角色A和角色B的同人故事。
 
 # 角色信息
 - 角色A (${char1Name}): ${char1Persona}
 - 角色B (${char2Name}): ${char2Persona}
-${worldviewContext}
+
+# 核心创作指令
+${contextInstructions}
+${lengthInstruction}
 
 # 任务要求
-1.  **创作三篇故事**: 【每篇】故事的字数不能少于5000字。
-2.  **原创分类**: 为【每篇】故事，根据其情节原创1-2个最贴切的分类标签 (例如: "破镜重圆", "ABO", "甜文")。
-3.  **生成评论**: 为【每篇】故事，模拟读者口吻生成3-5条评论。
-4.  **JSON格式**: 你的回复【必须且只能】是一个纯净的JSON数组，直接以 '[' 开头，以 ']' 结尾。禁止包含任何其他说明文字。
+1.  **创作三篇故事**: 必须符合上述的题材类型和文风规范。
+2.  **原创分类**: 为每篇故事打上1-2个标签（例如：${typeReq || '甜文'}）。
+3.  **生成评论**: 为每篇故事模拟3-5条读者评论。
+4.  **JSON格式**: 你的回复【必须且只能】是一个纯净的JSON数组。
 
 # JSON结构
 [
   {
     "title": "故事标题1",
     "story": "故事内容1...",
-    "categories": ["原创分类1", "原创分类2"],
+    "categories": ["分类1", "分类2"],
     "comments": [
       {"author": "读者A", "content": "评论内容A..."},
       {"author": "读者B", "content": "评论内容B..."}
     ]
   },
-  ... (另外两个故事对象)
+  ...
 ]
 `;
-    // --- ▲▲▲ 更新结束 ▲▲▲ ---
 
     const messagesForApi = [{ role: 'user', content: prompt }];
     try {
@@ -833,17 +878,14 @@ ${worldviewContext}
         stories = JSON.parse(cleanedContent);
         if (!Array.isArray(stories)) throw new Error('AI未返回数组格式。');
       } catch (e) {
-        // --- ▼▼▼ 【核心修正】增强错误日志 ---
         console.error('JSON解析失败！', e);
-        console.error('AI返回的原始文本:', rawContent);
-        throw new Error('AI返回了无效的JSON格式。请按F12查看控制台中的“AI返回的原始文本”以了解详情。');
-        // --- ▲▲▲ 更新结束 ▲▲▲ ---
+        throw new Error('AI返回了无效的JSON格式。');
       }
       for (let i = 0; i < stories.length; i++) {
         const storyData = stories[i];
         const newPost = {
-          groupId: groupId, // 核心修改2：使用传入的 groupId
-          title: `【${char1Name}x${char2Name}】${storyData.title || `无题 ${Date.now().toString().slice(-4)}`}`,
+          groupId: groupId,
+          title: `【${char1Name}x${char2Name}】${storyData.title || `无题`}`,
           content: storyData.story || '内容生成失败',
           author: getRandomItem(['为爱发电的太太', '圈地自萌', 'CP是真的', '嗑拉了', '咕咕咕']),
           timestamp: Date.now() + i,
@@ -867,7 +909,7 @@ ${worldviewContext}
       await showCustomAlert('创作失败', `发生了一个错误：\n${error.message}`);
     }
   }
-  // ▲▲▲ 替换结束 ▲▲▲
+
   // ▼▼▼ 用这个【V2版】替换旧的 openCreateForumPostModal 函数 ▼▼▼
   /**
    * 打开创建帖子的模态框
@@ -987,10 +1029,8 @@ ${worldviewContext}
     }
   }
 
-  // ▼▼▼ 请用这块【最终修复版】的代码，完整替换掉你旧的 repostToChat 函数 ▼▼▼
-
   /**
-   * 【最终修复版】"转载"功能：将帖子内容分享到单聊，并植入强制AI评论的隐藏指令
+   * 【全能转发版】"转载"功能：将帖子内容分享到单聊或群聊
    */
   async function repostToChat() {
     if (!activeForumPostId) return;
@@ -1000,30 +1040,47 @@ ${worldviewContext}
       return;
     }
 
-    // 打开角色选择弹窗的逻辑保持不变
+    // 打开分享目标选择弹窗
     const modal = document.getElementById('share-target-modal');
     const listEl = document.getElementById('share-target-list');
     listEl.innerHTML = '';
-    const singleChats = Object.values(state.chats).filter(c => !c.isGroup);
-    singleChats.forEach(chat => {
-      const item = document.createElement('div');
-      item.className = 'contact-picker-item';
-      item.innerHTML = `
-            <input type="radio" name="repost-target" value="${chat.id}" id="target-${
-        chat.id
-      }" style="margin-right: 15px;">
+
+    // ★★★ 核心修改：不再过滤掉群聊，获取所有聊天 ★★★
+    const allChats = Object.values(state.chats);
+
+    if (allChats.length === 0) {
+      listEl.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">暂无聊天对象</p>';
+    } else {
+      allChats.forEach(chat => {
+        const item = document.createElement('div');
+        item.className = 'contact-picker-item'; // 复用联系人选择器的样式
+
+        // 根据是群聊还是单聊，显示不同的头像和标签
+        const avatarUrl = chat.isGroup
+          ? chat.settings.groupAvatar || defaultGroupAvatar
+          : chat.settings.aiAvatar || defaultAvatar;
+
+        const typeLabel = chat.isGroup
+          ? '<span style="font-size:10px; color:white; background:#007bff; padding:1px 4px; border-radius:4px; margin-left:5px;">群聊</span>'
+          : '';
+
+        item.innerHTML = `
+            <input type="radio" name="repost-target" value="${chat.id}" id="target-${chat.id}" style="margin-right: 15px;">
             <label for="target-${chat.id}" style="display:flex; align-items:center; width:100%; cursor:pointer;">
-                <img src="${chat.settings.aiAvatar || defaultAvatar}" class="avatar">
-                <span class="name">${chat.name}</span>
+                <img src="${avatarUrl}" class="avatar">
+                <span class="name">${chat.name} ${typeLabel}</span>
             </label>
         `;
-      listEl.appendChild(item);
-    });
-    document.getElementById('share-target-modal-title').textContent = '转载到...';
+        listEl.appendChild(item);
+      });
+    }
+
+    document.getElementById('share-target-modal-title').textContent = '转载帖子到...';
     modal.classList.add('visible');
 
     // 确认按钮的事件监听
     const confirmBtn = document.getElementById('confirm-share-target-btn');
+    // 使用克隆节点技巧清除旧监听器
     const newConfirmBtn = confirmBtn.cloneNode(true);
     confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
 
@@ -1038,14 +1095,15 @@ ${worldviewContext}
       const targetChat = state.chats[targetChatId];
       if (!targetChat) return;
 
-      // --- ▼▼▼ 这就是本次的【核心修改】！▼▼▼ ---
+      const myNickname = targetChat.isGroup ? targetChat.settings.myNickname || '我' : '我';
 
-      // 1. 创建对用户可见的转载卡片消息（这部分不变）
+      // 1. 创建对用户可见的转载卡片消息
       const repostMessage = {
         role: 'user',
+        senderName: myNickname, // 确保群聊里显示正确的发送者名字
         type: 'repost_forum_post',
         timestamp: Date.now(),
-        content: `[转载的帖子]\nID为${post.id}\n标题: 《${post.title}》\n作者: ${post.author}\n内容: ${post.content}\n你的任务是【必须】对这个帖子发表评论。请【立刻】使用 'forum_comment' 指令完成此任务`,
+        content: `[转载的帖子]\nID为${post.id}\n标题: 《${post.title}》\n作者: ${post.author}\n内容: ${post.content}\n请对这个帖子发表评论。`,
         payload: {
           postId: post.id,
           title: post.title,
@@ -1055,34 +1113,125 @@ ${worldviewContext}
       };
       targetChat.history.push(repostMessage);
 
-      // 2. 创建给【AI看】的隐藏指令，并【明确地告诉AI帖子的ID】
+      // 2. 创建给【AI看】的隐藏指令
+      // 注意：这里稍微修改了提示词，以适应群聊场景（群聊AI会自动决定谁来回复）
+      const instructionContent = targetChat.isGroup
+        ? `[系统指令：用户(${myNickname})刚刚向群里转载了一个ID为【${post.id}】的小组帖子，内容如下。群里的成员们【必须】阅读该帖子，并根据各自的人设，使用 'forum_comment' 指令对帖子发表评论或讨论。]\n\n--- 帖子开始 ---\n标题: ${post.title}\n作者: ${post.author}\n内容: ${post.content}\n--- 帖子结束 ---`
+        : `[系统指令：用户刚刚向你分享了一个ID为【${post.id}】的小组帖子，内容如下。你的任务是【必须】对这个帖子发表评论。请【立刻】使用 'forum_comment' 指令完成此任务，并确保在指令中包含正确的 "postId": ${post.id}。]\n\n--- 帖子开始 ---\n标题: ${post.title}\n作者: ${post.author}\n内容: ${post.content}\n--- 帖子结束 ---`;
+
       const hiddenInstructionMessage = {
         role: 'system',
-        // 【【【看这里！我们把 post.id 加进去了！】】】
-        content: `[系统指令：用户刚刚向你分享了一个ID为【${post.id}】的小组帖子，内容如下。你的任务是【必须】对这个帖子发表评论。请【立刻】使用 'forum_comment' 指令完成此任务，并确保在指令中包含正确的 "postId": ${post.id}。]\n\n--- 帖子开始 ---\n标题: ${post.title}\n作者: ${post.author}\n内容: ${post.content}\n--- 帖子结束 ---`,
+        content: instructionContent,
         timestamp: Date.now() + 1,
         isHidden: true,
       };
       targetChat.history.push(hiddenInstructionMessage);
 
-      // --- ▲▲▲ 修改结束 ▲▲▲ ---
-
-      // 后续的保存和跳转逻辑保持不变
+      // 3. 保存、关闭弹窗、跳转
       await db.chats.put(targetChat);
-
       modal.classList.remove('visible');
+
       await showCustomAlert('转载成功', `已成功将帖子转载给“${targetChat.name}”！`);
 
+      // 跳转到对应的聊天界面
       openChat(targetChatId);
+      // 自动触发AI响应（对于群聊，这会触发群友讨论帖子）
+      triggerAiResponse();
     };
   }
+  // --- 同人文预设与UI逻辑 ---
 
-  // ▲▲▲ 替换结束 ▲▲▲
+  // 初始化/加载同人文预设
+  async function loadFanficPresets() {
+    const select = document.getElementById('fanfic-preset-select');
+    select.innerHTML = '<option value="">-- 选择预设 --</option>';
 
-  // ▼▼▼ 【全新】圈子/小组高级功能辅助函数 ▼▼▼
+    // 确保全局设置里有这个字段
+    if (!state.globalSettings.fanficPresets) {
+      state.globalSettings.fanficPresets = [];
+    }
+
+    state.globalSettings.fanficPresets.forEach((preset, index) => {
+      const option = document.createElement('option');
+      option.value = index; // 使用索引作为 value
+      option.textContent = preset.name;
+      select.appendChild(option);
+    });
+  }
+
+  async function saveCurrentFanficPreset() {
+    const name = await showCustomPrompt('保存预设', '请为当前配置起个名字：');
+    if (!name) return;
+
+    const preset = {
+      name: name.trim(),
+      char1: document.getElementById('fanfic-char1-select').value,
+      char2: document.getElementById('fanfic-char2-select').value,
+      wordCount: document.getElementById('fanfic-wordcount-input').value,
+      type: document.getElementById('fanfic-type-input').value, // 新增：类型
+      style: document.getElementById('fanfic-style-input').value, // 新增：文风
+      worldview: document.getElementById('fanfic-worldview-input').value,
+    };
+
+    if (!state.globalSettings.fanficPresets) state.globalSettings.fanficPresets = [];
+    state.globalSettings.fanficPresets.push(preset);
+
+    await db.globalSettings.put(state.globalSettings);
+    await loadFanficPresets();
+
+    document.getElementById('fanfic-preset-select').value = state.globalSettings.fanficPresets.length - 1;
+    alert('预设保存成功！');
+  }
+
+  function applyFanficPreset() {
+    const index = document.getElementById('fanfic-preset-select').value;
+    if (index === '') return;
+
+    const preset = state.globalSettings.fanficPresets[index];
+    if (preset) {
+      document.getElementById('fanfic-char1-select').value = preset.char1;
+      document.getElementById('fanfic-char2-select').value = preset.char2;
+      document.getElementById('fanfic-wordcount-input').value = preset.wordCount || '';
+      document.getElementById('fanfic-type-input').value = preset.type || ''; // 回填类型
+      document.getElementById('fanfic-style-input').value = preset.style || ''; // 回填文风
+      document.getElementById('fanfic-worldview-input').value = preset.worldview || '';
+    }
+  }
+
+  // 删除选中的预设
+  async function deleteFanficPreset() {
+    const index = document.getElementById('fanfic-preset-select').value;
+    if (index === '') return;
+
+    const confirmed = await showCustomConfirm('确认删除', '确定要删除这个预设吗？');
+    if (confirmed) {
+      state.globalSettings.fanficPresets.splice(index, 1);
+      await db.globalSettings.put(state.globalSettings);
+      await loadFanficPresets();
+
+      // 清空输入框
+      document.getElementById('fanfic-wordcount-input').value = '';
+      document.getElementById('fanfic-style-input').value = '';
+      document.getElementById('fanfic-worldview-input').value = '';
+    }
+  }
+
+  // 切换折叠状态
+  function toggleFanficBar() {
+    const content = document.getElementById('fanfic-bar-content');
+    const icon = document.getElementById('fanfic-bar-toggle-icon');
+
+    if (content.classList.contains('collapsed')) {
+      content.classList.remove('collapsed');
+      icon.classList.remove('collapsed');
+    } else {
+      content.classList.add('collapsed');
+      icon.classList.add('collapsed');
+    }
+  }
 
   /**
-   * 打开小组编辑器
+   * 打开小组编辑器 (已升级：支持图片URL)
    */
   async function openGroupEditor(groupId) {
     editingGroupId = groupId;
@@ -1091,10 +1240,18 @@ ${worldviewContext}
 
     document.getElementById('group-editor-name-input').value = group.name;
     document.getElementById('group-editor-desc-input').value = group.description;
-    document.getElementById('group-editor-icon-input').value = group.icon;
+
+    // ★★★ 修改：获取图标输入框，并修改 placeholder 提示 ★★★
+    const iconInput = document.getElementById('group-editor-icon-input');
+    iconInput.value = group.icon;
+    // 修改输入框上方的 label 文字（通过修改 DOM 或设置 placeholder）
+    iconInput.placeholder = '输入图片链接(URL) 或 Emoji';
+    // 找到它前面的 label 元素并修改文字
+    const iconLabel = document.querySelector('label[for="group-editor-icon-input"]');
+    if (iconLabel) iconLabel.textContent = '小组封面 (图片URL / Emoji)';
+
     document.getElementById('group-editor-worldview-input').value = group.worldview || '';
 
-    // 将分类数组转换回带'#'的字符串
     const categoriesString = (group.categories || []).map(c => `#${c}`).join(' ');
     document.getElementById('group-editor-categories-input').value = categoriesString;
 
@@ -1188,14 +1345,6 @@ ${worldviewContext}
       await renderForumCategoryList();
     }
   }
-  // ▲▲▲ 新增函数结束 ▲▲▲
-
-  // ▲▲▲ 论坛功能核心代码结束 ▲▲▲
-
-  // ▼▼▼ 在 init() 函数的【上方】粘贴这【一整块新代码】 ▼▼▼
-  /**
-   * 【全新】打开创建小组的模态框
-   */
   async function openGroupCreator() {
     const name = await showCustomPrompt('创建新小组', '请输入小组名称：');
     if (!name || !name.trim()) {
@@ -1206,17 +1355,18 @@ ${worldviewContext}
     const desc = await showCustomPrompt('小组描述', '为你的小组写一句简介吧：');
     if (desc === null) return;
 
-    const icon = await showCustomPrompt('小组图标', '输入一个 Emoji 作为小组图标：', '💬');
+    // ★★★ 修改：提示输入 URL ★★★
+    const icon = await showCustomPrompt('小组封面', '请输入图片链接 (URL)：\n(留空则使用默认图标)', '', 'url');
     if (icon === null) return;
 
     try {
       const newGroup = {
         name: name.trim(),
         description: desc.trim(),
-        icon: icon.trim() || '💬', // 如果没输入就给个默认的
+        icon: icon.trim(), // 存入URL
       };
       await db.forumGroups.add(newGroup);
-      await renderForumScreen(); // 刷新小组列表
+      await renderForumScreen();
       alert(`小组“${name.trim()}”创建成功！`);
     } catch (error) {
       console.error('创建小组失败:', error);
@@ -1634,11 +1784,6 @@ ${JSON.stringify(publicFigures, null, 2)}
   // 4. 绑定帖子评论区的发送按钮
   document.getElementById('send-post-comment-btn').addEventListener('click', handleAddComment);
 
-  // 这是【修复后】的代码
-  document.getElementById('trigger-fanfic-generation-btn').addEventListener('click', () => {
-    generateFanfic(window.activeGroupId);
-  });
-
   // 绑定所有小组头部通用的“生成”按钮
   document.getElementById('generate-group-content-btn').addEventListener('click', handleGenerateGroupContent);
   // ▲▲▲ 替换结束 ▲▲▲
@@ -1780,6 +1925,14 @@ ${JSON.stringify(publicFigures, null, 2)}
     await applyForumFilter();
   });
   // ▲▲▲ 新增事件监听结束 ▲▲▲
+  // --- 同人文控制台事件绑定 ---
+  document.getElementById('fanfic-bar-header').addEventListener('click', toggleFanficBar);
+
+  document.getElementById('save-fanfic-preset-btn').addEventListener('click', saveCurrentFanficPreset);
+
+  document.getElementById('delete-fanfic-preset-btn').addEventListener('click', deleteFanficPreset);
+
+  document.getElementById('fanfic-preset-select').addEventListener('change', applyFanficPreset);
 
   // ▲▲▲ 论坛事件监听器结束 ▲▲▲
 });

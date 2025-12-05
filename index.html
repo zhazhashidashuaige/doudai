@@ -798,431 +798,278 @@
         </div>
       </div>
 
-      <div id="api-settings-screen" class="screen">
+      <!-- ▼▼▼ 请用这整块【超萌悬浮版】代码，替换旧的 <div id="api-settings-screen"> ▼▼▼ -->
+      <div id="api-settings-screen" class="screen moe-theme">
         <div class="header">
-          <span class="back-btn" onclick="showScreen('home-screen')">‹</span><span>API 设置</span
-          ><span style="width: 30px"></span>
+          <span class="back-btn" onclick="showScreen('home-screen')">‹</span>
+          <span> API设置 </span>
+          <span style="width: 30px"></span>
         </div>
+
+        <!-- 内容滚动区域 -->
         <div class="form-container">
-          <p style="font-size: 14px; color: #666; background-color: #f0f0f0; padding: 10px; border-radius: 8px">
-            提示: 若要使用“发送图片”功能, 请务必选择支持Vision(视觉)的模型, 如<code
-              style="background-color: #e0e0e0; padding: 2px 4px; border-radius: 4px"
-              >gpt-4o</code
-            >或<code style="background-color: #e0e0e0; padding: 2px 4px; border-radius: 4px">gpt-4-vision-preview</code
-            >。
-          </p>
-          <div class="form-group">
-            <label for="proxy-url">反代地址 (不需要添加/v1噢~)</label
-            ><input type="text" id="proxy-url" placeholder="例如: https://api.openai.com" />
-          </div>
-          <div class="form-group">
-            <label for="api-key">密钥 (直连轮询用英文逗号隔开)</label
-            ><input type="password" id="api-key" placeholder="sk-..." />
-          </div>
-          <div class="form-group">
-            <label for="model-select">模型</label
-            ><select id="model-select"></select>
-          </div>
-          <!-- ▼▼▼ 请将这段【全新的HTML代码】粘贴到 “模型” 下拉框的 form-group 之后 ▼▼▼ -->
-          <div class="form-group">
-            <label>API 预设</label>
-            <div class="bubble-preset-manager">
-              <!-- 复用现有样式 -->
-              <select id="api-preset-select" class="form-group select"></select>
-              <button id="manage-api-presets-btn" class="action-btn">管理</button>
+          <!-- 1. 云端大脑卡片 -->
+          <div class="moe-card">
+            <div class="moe-card-header">
+              <span class="icon">☁️</span>
+              <h3>API 连接</h3>
             </div>
-          </div>
-          <!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
-          <!-- ▼▼▼ 请将这段【全新的HTML代码】粘贴到这里 ▼▼▼ -->
-          <div class="form-group">
-            <label for="temperature-slider">模型温度 (Temperature): <span id="temperature-value">0.8</span></label>
-            <p style="font-size: 12px; font-weight: normal; color: #999; margin-top: 5px; margin-bottom: 10px">
-              数值越高，回复越随机、有创造性，但可能偏离人设。数值越低，回复越稳定、可预测。推荐值: 0.7 - 1.2
-            </p>
-            <input type="range" id="temperature-slider" min="0" max="2" step="0.1" value="0.8" style="width: 100%" />
-          </div>
-          <!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
-
-          <button class="form-button" id="fetch-models-btn">拉取模型</button>
-
-          <!-- ▼▼▼ 从这里开始，是全新的后台活动设置区 ▼▼▼ -->
-          <hr style="margin: 20px 0; opacity: 0.3" />
-
-          <!-- 1. 总开关 -->
-          <div class="form-group" style="display: flex; justify-content: space-between; align-items: center">
-            <label for="background-activity-switch" style="margin-bottom: 0">
-              启用后台角色活动 (总开关)
-              <p style="font-size: 12px; font-weight: normal; color: #ff6b6b; margin-top: 5px">
-                警告：开启后会显著增加API调用和费用！
-              </p>
-            </label>
-            <!-- 【重要】我们把原来的 checkbox 换成了更美观的 iOS 风格开关 -->
-            <label class="toggle-switch">
-              <input type="checkbox" id="background-activity-switch" />
-              <span class="slider"></span>
-            </label>
-          </div>
-
-          <!-- 2. 后台活动详细设置 (默认隐藏，由总开关控制) -->
-          <div id="background-activity-details" style="display: none">
-            <div
-              class="form-group"
-              style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px"
-            >
-              <label for="background-interval-input" style="margin-bottom: 0">
-                后台活动检测间隔 (秒)
-                <p style="font-size: 12px; font-weight: normal; color: #999; margin-top: 5px">
-                  建议值 60-300。值越大，费用越低，但角色反应越慢。
-                </p>
-              </label>
-              <input
-                type="number"
-                id="background-interval-input"
-                min="30"
-                value="60"
-                style="width: 80px; text-align: center"
-              />
-            </div>
-
-            <!-- 3. 角色选择与频率设置 -->
-            <div class="form-group">
-              <label>设置角色活动频率</label>
-              <div
-                id="background-activity-char-list"
-                style="
-                  max-height: 150px;
-                  overflow-y: auto;
-                  background: #f9f9f9;
-                  padding: 10px;
-                  border-radius: 8px;
-                  border: 1px solid var(--border-color);
-                "
-              >
-                <!-- 角色列表将由JS动态生成在这里 -->
+            <div class="moe-card-body">
+              <div class="form-group">
+                <label>反代地址 (Proxy)</label>
+                <input type="text" id="proxy-url" placeholder="https://api.openai.com" class="moe-input" />
               </div>
-              <div style="display: flex; gap: 10px; margin-top: 10px">
-                <button id="bg-select-all-chars" class="form-button-secondary" style="flex: 1; margin: 0">全选</button>
-                <button id="bg-deselect-all-chars" class="form-button-secondary" style="flex: 1; margin: 0">
-                  全不选
-                </button>
+              <div class="form-group">
+                <label>密钥 (Key)</label>
+                <input type="password" id="api-key" placeholder="sk-..." class="moe-input" />
+              </div>
+              <div class="form-group">
+                <label>模型选择</label>
+                <select id="model-select" class="moe-input"></select>
+              </div>
+              <div class="form-group">
+                <label>预设配置</label>
+                <div class="bubble-preset-manager">
+                  <select id="api-preset-select" class="moe-input"></select>
+                  <button id="manage-api-presets-btn" class="moe-btn-small">管理</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>温度 (随机性): <span id="temperature-value" style="color: var(--accent-color)">0.8</span></label>
+                <input type="range" id="temperature-slider" min="0" max="2" step="0.1" value="0.8" class="moe-slider" />
+              </div>
+              <button id="fetch-models-btn" class="moe-btn-secondary">📡 拉取模型列表</button>
+            </div>
+          </div>
+
+          <!-- 2. 语音合成卡片 -->
+          <div class="moe-card">
+            <div class="moe-card-header">
+              <span class="icon">🗣️</span>
+              <h3>Minimax 语音</h3>
+            </div>
+            <div class="moe-card-body">
+              <div class="form-group">
+                <label>Group ID</label>
+                <input type="text" id="minimax-group-id" class="moe-input" />
+              </div>
+              <div class="form-group">
+                <label>API Key</label>
+                <input type="password" id="minimax-api-key" class="moe-input" />
+              </div>
+              <div class="form-group">
+                <label>服务区域</label>
+                <select id="minimax-provider-select" class="moe-input">
+                  <option value="cn">国内版</option>
+                  <option value="io">海外版</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>语音模型</label>
+                <select id="minimax-speech-model-select" class="moe-input"></select>
+              </div>
+              <button id="fetch-minimax-speech-models-btn" class="moe-btn-secondary">🎵 拉取语音模型</button>
+            </div>
+          </div>
+
+          <!-- 3. 后台活动卡片 -->
+          <div class="moe-card">
+            <div class="moe-card-header">
+              <span class="icon">🤖</span>
+              <h3>角色后台活动</h3>
+            </div>
+            <div class="moe-card-body">
+              <div class="form-group">
+                <label class="toggle-switch-label">
+                  <span class="toggle-switch-text">启用后台活动</span>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="background-activity-switch" />
+                    <span class="slider"></span>
+                  </label>
+                </label>
+              </div>
+              <div id="background-activity-details" style="display: none; margin-top: 10px">
+                <div class="form-group">
+                  <label>检测间隔 (秒)</label>
+                  <input
+                    type="number"
+                    id="background-interval-input"
+                    min="30"
+                    value="60"
+                    class="moe-input center-text"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>角色频率设置</label>
+                  <div id="background-activity-char-list" class="moe-list-box"></div>
+                  <div class="moe-btn-group">
+                    <button id="bg-select-all-chars" class="moe-btn-mini">全选</button>
+                    <button id="bg-deselect-all-chars" class="moe-btn-mini">全不选</button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>设置频率</label>
+                  <div class="moe-btn-group">
+                    <button class="moe-btn-mini bg-freq-btn" data-freq="low">低</button>
+                    <button class="moe-btn-mini bg-freq-btn" data-freq="medium">中</button>
+                    <button class="moe-btn-mini bg-freq-btn" data-freq="high">高</button>
+                    <button class="moe-btn-mini bg-freq-btn" data-freq="none">关闭</button>
+                  </div>
+                </div>
+              </div>
+              <div class="moe-divider"></div>
+              <div class="form-group">
+                <label>拉黑冷静期 (小时)</label>
+                <input
+                  type="number"
+                  id="block-cooldown-input"
+                  min="0.1"
+                  step="0.1"
+                  value="1"
+                  class="moe-input center-text"
+                />
               </div>
             </div>
+          </div>
 
-            <div class="form-group">
-              <label>为选中角色设置频率</label>
-              <div style="display: flex; gap: 10px">
-                <button
-                  class="form-button-secondary bg-freq-btn"
-                  data-freq="low"
-                  style="flex: 1; margin: 0; border-color: #28a745"
-                >
-                  低
-                </button>
-                <button
-                  class="form-button-secondary bg-freq-btn"
-                  data-freq="medium"
-                  style="flex: 1; margin: 0; border-color: #fd7e14"
-                >
-                  中
-                </button>
-                <button
-                  class="form-button-secondary bg-freq-btn"
-                  data-freq="high"
-                  style="flex: 1; margin: 0; border-color: #dc3545"
-                >
-                  高
-                </button>
-                <!-- ▼▼▼ 就是新增了这个“关闭”按钮 ▼▼▼ -->
-                <button
-                  class="form-button-secondary bg-freq-btn"
-                  data-freq="none"
-                  style="flex: 1; margin: 0; border-color: #aaa"
-                >
-                  关闭
-                </button>
+          <!-- 4. 图像生成卡片 -->
+          <div class="moe-card">
+            <div class="moe-card-header">
+              <span class="icon">🎨</span>
+              <h3>NovelAI 生图</h3>
+            </div>
+            <div class="moe-card-body">
+              <div class="form-group">
+                <label class="toggle-switch-label">
+                  <span class="toggle-switch-text">启用图像生成</span>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="novelai-switch" />
+                    <span class="slider"></span>
+                  </label>
+                </label>
               </div>
-              <p style="font-size: 12px; font-weight: normal; color: #999; margin-top: 8px">
-                频率越高，角色主动行为的概率越大，费用也越高。
-              </p>
+              <div id="novelai-details" style="display: none; margin-top: 10px">
+                <div class="form-group">
+                  <label>模型</label>
+                  <select id="novelai-model" class="moe-input">
+                    <option value="nai-diffusion-4-curated-preview">V4.5 Curated</option>
+                    <option value="nai-diffusion-4-5-full">V4.5 Full</option>
+                    <option value="nai-diffusion-3">V3 Anime</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>API Key</label>
+                  <div style="position: relative">
+                    <input type="password" id="novelai-api-key" class="moe-input" />
+                    <span id="novelai-key-toggle" style="position: absolute; right: 10px; top: 10px; cursor: pointer"
+                      >👀</span
+                    >
+                  </div>
+                </div>
+                <div class="moe-btn-group">
+                  <button type="button" id="novelai-settings-btn" class="moe-btn-secondary">设置</button>
+                  <button type="button" id="novelai-test-btn" class="moe-btn-secondary">测试</button>
+                </div>
+              </div>
             </div>
           </div>
-          <!-- ▲▲▲ 全新的后台活动设置区结束 ▲▲▲ -->
 
-          <!-- ▼▼▼ 在这里新增 ▼▼▼ -->
-          <div
-            class="form-group"
-            style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px"
-          >
-            <label for="block-cooldown-input" style="margin-bottom: 0">
-              AI被拉黑后冷静期 (小时)
-              <p style="font-size: 12px; font-weight: normal; color: #999; margin-top: 5px">
-                被拉黑超过这个时间后，AI才有几率重新申请好友。
-              </p>
-            </label>
-            <input
-              type="number"
-              id="block-cooldown-input"
-              min="0.1"
-              step="0.1"
-              value="1"
-              style="width: 80px; text-align: center"
-            />
-          </div>
-          <!-- ▲▲▲ 新增结束 ▲▲▲ -->
-          <!-- ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼ -->
-          <hr style="margin: 20px 0; opacity: 0.3" />
-          <p style="font-size: 14px; color: #666; background-color: #f0f0f0; padding: 10px; border-radius: 8px">
-            以下是 Minimax 语音（TTS）的设置，用于AI发送语音消息。
-          </p>
-          <div class="form-group">
-            <label for="minimax-group-id">Minimax Group ID</label>
-            <input type="text" id="minimax-group-id" placeholder="输入你的 Minimax Group ID" />
-          </div>
-          <div class="form-group">
-            <label for="minimax-api-key">Minimax API Key</label>
-            <input type="password" id="minimax-api-key" placeholder="输入你的 Minimax API Key" />
-          </div>
-          <!-- ▼▼▼ 在 "Minimax API Key" 的 form-group 之后粘贴 ▼▼▼ -->
-          <div class="form-group">
-            <label for="minimax-provider-select">Minimax TTS 服务区</label>
-            <select id="minimax-provider-select">
-              <option value="cn">国内版 (api.minimaxi.com)</option>
-              <option value="io">海外版 (api.minimax.io)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="minimax-speech-model-select">Minimax 语音模型 (TTS Model)</label>
-            <select id="minimax-speech-model-select">
-              <!-- JS 会在这里填充选项 -->
-            </select>
-          </div>
-          <!-- ▲▲▲ 粘贴结束 ▲▲▲ -->
-
-          <button class="form-button" id="fetch-minimax-speech-models-btn">拉取语音模型</button>
-          <!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
-          <hr style="margin: 20px 0; opacity: 0.3" />
-          <!-- ▲▲▲ 粘贴结束 ▲▲▲ -->
-
-          <!-- ▼▼▼ NovelAI 图像生成系统配置 ▼▼▼ -->
-          <hr style="margin: 20px 0; opacity: 0.3" />
-          <div class="form-group" style="display: flex; justify-content: space-between; align-items: center">
-            <label for="novelai-switch" style="margin-bottom: 0">
-              启用 NovelAI 图像生成
-              <p style="font-size: 12px; font-weight: normal; color: #666; margin-top: 5px">
-                开启后可使用NovelAI官方API生成高质量动漫风格图像（必开🔮）
-              </p>
-              <p style="font-size: 12px; font-weight: normal; color: #666; margin-top: 5px">
-                1. 三击下载图片，下面可测试模型或关键词画师串
-              </p>
-              <p style="font-size: 12px; font-weight: normal; color: #666; margin-top: 5px">
-                2. 429是novel的访问频繁错误，等待几秒重新即可
-              </p>
-              <p style="font-size: 12px; font-weight: normal; color: #666; margin-top: 5px">
-                3. 403是多人共号限制，限制oplus免费出小图但可扣点数
-              </p>
-              <p style="font-size: 12px; font-weight: normal; color: #666; margin-top: 5px">
-                4. 403也会因为没开🔮报错，实在不行可更换出图尺寸
-              </p>
-              <p style="font-size: 12px; font-weight: normal; color: #666; margin-top: 5px">
-                5. 401是key没权限，检查key是否正确
-              </p>
-              <p style="font-size: 12px; font-weight: normal; color: #666; margin-top: 5px">
-                6. 生成失败:Failed to fetch是跨域限制，下方设置里换代理
-              </p>
-            </label>
-            <label class="toggle-switch">
-              <input type="checkbox" id="novelai-switch" />
-              <span class="slider"></span>
-            </label>
-          </div>
-
-          <div id="novelai-details" style="display: none">
-            <div class="form-group">
-              <label for="novelai-model" style="color: #333">NovelAI 模型</label>
-              <select
-                id="novelai-model"
-                style="background-color: #f8f9fa; color: #333; border: 1px solid #ccc; padding: 8px; border-radius: 4px"
-              >
-                <option value="nai-diffusion-4-curated-preview">NAI Diffusion V4.5 Curated (精选版无nsfw)</option>
-                <option value="nai-diffusion-4-5-full">NAI Diffusion V4.5 Full（完整版含nsfw）</option>
-                <option value="nai-diffusion-3">NAI Diffusion Anime V3（旧版）</option>
-                <option value="nai-diffusion-furry-3">NAI Diffusion Furry V3（旧旧版）</option>
-              </select>
-              <p style="font-size: 12px; color: #666; margin-top: 5px">💡 必须有oplus订阅的apikey才可以使用！</p>
+          <!-- 5. 存储与备份卡片 -->
+          <div class="moe-card">
+            <div class="moe-card-header">
+              <span class="icon">💾</span>
+              <h3>存储与备份</h3>
             </div>
+            <div class="moe-card-body">
+              <div class="form-group">
+                <label>图片压缩质量: <span id="image-quality-value">0.7</span></label>
+                <input
+                  type="range"
+                  id="image-quality-slider"
+                  min="0.1"
+                  max="1.0"
+                  step="0.1"
+                  value="0.7"
+                  class="moe-slider"
+                />
+              </div>
+              <button class="moe-btn-secondary" id="compress-all-images-btn">📉 一键压缩图片</button>
+              <p id="image-data-size-display" style="text-align: center; font-size: 12px; color: #aaa; margin-top: 5px">
+                ...
+              </p>
 
-            <div class="form-group">
-              <label for="novelai-api-key" style="color: #333">NovelAI API Key</label>
-              <div style="position: relative">
+              <div class="moe-divider"></div>
+
+              <h4 style="font-size: 14px; margin-bottom: 10px; color: var(--accent-color)">☁️ GitHub 云备份</h4>
+              <div class="form-group">
                 <input
                   type="password"
-                  id="novelai-api-key"
-                  placeholder="pst-xxxxxxxxxxxxxxxx"
-                  style="background-color: #f8f9fa; color: #333; border: 1px solid #ccc; padding-right: 40px"
+                  id="github-token"
+                  placeholder="Token"
+                  class="moe-input"
+                  style="margin-bottom: 5px"
                 />
-                <span
-                  id="novelai-key-toggle"
-                  style="
-                    position: absolute;
-                    right: 10px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    cursor: pointer;
-                    user-select: none;
-                    font-size: 18px;
-                  "
-                  >🧐</span
-                >
+                <input
+                  type="text"
+                  id="github-username"
+                  placeholder="用户名"
+                  class="moe-input"
+                  style="margin-bottom: 5px"
+                />
+                <input type="text" id="github-repo" placeholder="仓库名" class="moe-input" style="margin-bottom: 5px" />
+                <input type="text" id="github-path" placeholder="路径 (可选)" class="moe-input" />
               </div>
-              <p style="font-size: 12px; color: #666; margin-top: 5px">
-                💡 在 <a href="https://novelai.net" target="_blank" style="color: #007bff">NovelAI官网</a> 获取API Key
-              </p>
-            </div>
+              <div class="form-group">
+                <label class="toggle-switch-label">
+                  <span class="toggle-switch-text">自动备份 (30分钟)</span>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="github-auto-backup-switch" />
+                    <span class="slider"></span>
+                  </label>
+                </label>
+              </div>
+              <div class="moe-btn-group">
+                <button id="manual-github-backup-btn" class="moe-btn-secondary">☁️ 上传</button>
+                <button id="manual-github-restore-btn" class="moe-btn-secondary">📥 恢复</button>
+              </div>
 
-            <div style="display: flex; gap: 10px; margin-top: 15px">
-              <button
-                type="button"
-                id="novelai-settings-btn"
-                style="
-                  flex: 1;
-                  background-color: #6c757d;
-                  color: white;
-                  border: none;
-                  padding: 10px 20px;
-                  border-radius: 4px;
-                  cursor: pointer;
-                "
-              >
-                生成设置
+              <div class="moe-divider"></div>
+
+              <h4 style="font-size: 14px; margin-bottom: 10px; color: var(--accent-color)">📦 本地备份</h4>
+              <div class="moe-btn-group">
+                <button class="moe-btn-secondary" id="export-data-btn">导出</button>
+                <button class="moe-btn-secondary" id="import-btn">导入</button>
+                <button class="moe-btn-secondary" id="export-data-stream-btn">流式导出</button>
+              </div>
+              <button class="moe-btn-secondary" id="advanced-transfer-btn" style="margin-top: 8px; width: 100%">
+                高级导入/导出
               </button>
-              <button
-                type="button"
-                id="novelai-test-btn"
-                style="
-                  flex: 1;
-                  background-color: #28a745;
-                  color: white;
-                  border: none;
-                  padding: 10px 20px;
-                  border-radius: 4px;
-                  cursor: pointer;
-                "
-              >
-                测试生成
-              </button>
+
+              <div class="moe-divider"></div>
+              <button class="moe-btn-danger" id="clear-orphaned-data-btn">🧹 清理失效数据</button>
             </div>
           </div>
-          <!-- ▲▲▲ NovelAI 图像生成系统配置结束 ▲▲▲ -->
-          <!-- ▼▼▼ 请将这段【全新的HTML代码】粘贴到 “模型” 下拉框的 form-group 之后 ▼▼▼ -->
-          <hr style="margin: 20px 0; opacity: 0.3" />
-          <div class="form-group">
-            <label for="image-quality-slider"
-              >发送图片压缩质量 (0.1=高压缩, 1.0=不压缩): <span id="image-quality-value">0.7</span></label
-            >
-            <p style="font-size: 12px; font-weight: normal; color: #999; margin-top: 5px; margin-bottom: 10px">
-              数值越低，图片压缩率越高，体积越小，但画质越差。此功能对所有上传的图片生效（如聊天发图、换头像、壁纸等）。推荐值:
-              0.5 - 0.8。
-            </p>
-            <input
-              type="range"
-              id="image-quality-slider"
-              min="0.1"
-              max="1.0"
-              step="0.1"
-              value="0.7"
-              style="width: 100%"
-            />
+          <!-- ▼▼▼ 【新增】教程链接按钮 ▼▼▼ -->
+          <div style="text-align: center; margin-bottom: 15px; margin-top: 5px;">
+            <a href="https://jcny642xl7ll.feishu.cn/wiki/KGsnwECKji2xdxkCqDbcZNOnndd" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; background-color: rgba(255, 255, 255, 0.9); color: var(--accent-color, #007bff); text-decoration: none; border-radius: 25px; font-size: 14px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.05); transition: transform 0.2s;">
+              <span>📖</span> 兔k写的一些教程
+            </a>
           </div>
-          <!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
-          <!-- ▼▼▼ 请用这段【新代码】替换掉你旧的“计算图片大小”按钮和文本区域 ▼▼▼ -->
-          <button
-            class="form-button form-button-secondary"
-            id="compress-all-images-btn"
-            style="margin-top: 10px; background-color: #ffc107; border-color: #ffaf00; color: #333"
-          >
-            一键压缩全部现有图片
-          </button>
-          <p id="image-data-size-display" style="text-align: center; color: var(--text-secondary); margin-top: 5px">
-            正在计算图片数据大小...
-          </p>
-          <!-- ▲▲▲ 替换结束 ▲▲▲ -->
-          <!-- ▼▼▼ GitHub 备份设置区域 (插入到 API 设置页) ▼▼▼ -->
-          <hr style="margin: 20px 0; opacity: 0.3" />
-          <div class="form-group">
-            <label style="font-weight: 600; color: var(--accent-color)">☁️ GitHub 云备份</label>
-            <p
-              style="
-                font-size: 12px;
-                color: #666;
-                margin-bottom: 10px;
-                background: #f0f0f0;
-                padding: 8px;
-                border-radius: 6px;
-              "
-            >
-              可以将备份自动上传到你的私有仓库。需要申请 GitHub Token (勾选 repo 权限)。
-            </p>
-
-            <label for="github-token">GitHub Personal Access Token</label>
-            <input type="password" id="github-token" placeholder="ghp_xxxxxxxxxxxx..." />
-
-            <label for="github-username" style="margin-top: 10px">GitHub 用户名</label>
-            <input type="text" id="github-username" placeholder="例如: yourname" />
-
-            <label for="github-repo" style="margin-top: 10px">仓库名称 (Repository)</label>
-            <input type="text" id="github-repo" placeholder="例如: my-backup-repo" />
-
-            <label for="github-path" style="margin-top: 10px">文件路径 (可选)</label>
-            <input type="text" id="github-path" placeholder="默认为: ephone_backup.json" />
-
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px">
-              <label for="github-auto-backup-switch" style="margin-bottom: 0"> 开启自动定时备份 (每30分钟) </label>
-              <label class="toggle-switch">
-                <input type="checkbox" id="github-auto-backup-switch" />
-                <span class="slider"></span>
-              </label>
-            </div>
-
-            <button
-              id="manual-github-backup-btn"
-              class="form-button form-button-secondary"
-              style="margin-top: 15px; background-color: #24292e; color: white; border: none"
-            >
-              立即上传备份到 GitHub
-            </button>
-            <button
-              id="manual-github-restore-btn"
-              class="form-button form-button-secondary"
-              style="margin-top: 10px; background-color: #28a745; color: white; border: none"
-            >
-              📥 从 GitHub 恢复备份
-            </button>
-          </div>
-          <!-- ▲▲▲ GitHub 备份设置区域结束 ▲▲▲ -->
-
-          <button class="form-button" id="save-api-settings-btn">保存设置</button>
-          <hr style="margin: 20px 0; opacity: 0.3" />
-          <button
-            class="form-button form-button-secondary"
-            id="clear-orphaned-data-btn"
-            style="margin-top: 10px; border-color: #ff9966; color: #ff9966"
-          >
-            🧹 清理失效数据
-          </button>
-          <button class="form-button" id="export-data-btn">导出数据</button>
-          <!-- ▼▼▼ 在这里粘贴下面的新按钮 ▼▼▼ -->
-          <button class="form-button form-button-secondary" id="export-data-stream-btn" style="margin-top: 10px">
-            流式导出 (大数据专用)
-          </button>
-          <!-- ① 普通按钮，和“导出”一个 class -->
-          <button class="form-button" id="import-btn">导入备份文件</button>
-          <button class="form-button" id="advanced-transfer-btn" style="background-color: #6f42c1; margin-top: 10px">
-            高级导入/导出
-          </button>
-          <!-- ② 真正的文件选择器，完全隐藏 -->
-          <input id="import-data-input" type="file" accept="application/json" hidden />
+          <!-- ▲▲▲ 新增结束 ▲▲▲ -->
+          <!-- 底部留白，防止被悬浮按钮遮挡 -->
+          <div style="height: 80px"></div>
         </div>
+
+        <!-- ★★★ 萌系悬浮保存按钮 ★★★ -->
+        <button id="save-api-settings-btn" class="moe-fab-save">
+          💾<span style="font-size: 12px; display: block; margin-top: -2px">保存</span>
+        </button>
+
+        <!-- 隐藏的 input -->
+        <input id="import-data-input" type="file" accept="application/json" hidden />
       </div>
+      <!-- ▲▲▲ 替换结束 ▲▲▲ -->
+
       <!-- ▼▼▼ 用下面这段代码，完整替换掉你原来的 chat-list-screen ▼▼▼ -->
       <div id="chat-list-screen" class="screen">
         <!-- 主头部 (只在消息列表显示) -->
@@ -2065,233 +1912,240 @@
     </div>
     <!-- ▲▲▲ 替换结束 ▲▲▲ -->
 
-    <!-- ▼▼▼ 用这整块代码替换你原来的 id="wallpaper-screen" ▼▼▼ -->
+    <!-- ▼▼▼ 【修复版】外观设置页面 (已修复ID和布局) ▼▼▼ -->
     <div id="wallpaper-screen" class="screen">
       <div class="header">
         <span class="back-btn" onclick="showScreen('home-screen')">‹</span>
-        <!-- 【核心修改1】标题改为“外观设置”，更通用 -->
         <span>外观设置</span>
         <span style="width: 30px"></span>
       </div>
-      <div class="form-container">
-        <!-- 锁屏壁纸设置 (全新) -->
-        <div style="width: 100%; text-align: left; margin-bottom: 5px">
-          <label style="font-weight: 500; color: var(--text-secondary)">锁屏设置</label>
-        </div>
-        <div id="lockscreen-wallpaper-preview" class="wallpaper-preview">点击下方上传</div>
-        <button class="form-button" onclick="document.getElementById('lockscreen-wallpaper-upload-input').click();">
-          上传锁屏壁纸
-        </button>
-        <input type="file" id="lockscreen-wallpaper-upload-input" accept="image/*" hidden />
 
-        <div class="form-group" style="width: 100%; margin-top: 15px">
-          <label for="password-set-input">锁屏密码 (留空则无密码)</label>
-          <input type="text" id="password-set-input" placeholder="设置你的解锁密码" />
-        </div>
+      <!-- 内容滚动区域 -->
+      <div class="form-container settings-scroll-container">
+        <!-- 1. 锁屏与安全卡片 -->
+        <div class="settings-group-card">
+          <div class="settings-section-title">🔒 锁屏与安全</div>
 
-        <hr style="width: 80%; opacity: 0.3; margin: 20px 0" />
-
-        <!-- 主屏幕壁纸设置 (原有) -->
-        <div style="width: 100%; text-align: left; margin-bottom: 5px">
-          <label style="font-weight: 500; color: var(--text-secondary)">主屏幕设置</label>
-        </div>
-        <div id="wallpaper-preview">点击下方上传</div>
-        <!-- ▼▼▼ 请将这段新代码粘贴到 wallpaper-preview 的 div 之后 ▼▼▼ -->
-        <div class="form-group">
-          <label for="enable-lock-screen-toggle" class="toggle-switch-label">
-            <span class="toggle-switch-text">启用锁屏界面</span>
-            <input type="checkbox" id="enable-lock-screen-toggle" />
-            <span class="toggle-switch-slider"></span>
-          </label>
-        </div>
-        <!-- ▲▲▲ 粘贴结束 ▲▲▲ -->
-
-        <!-- ▼▼▼ 在这里粘贴新的“显示状态栏”开关代码 ▼▼▼ -->
-        <div class="form-group">
-          <label for="show-status-bar-toggle" class="toggle-switch-label">
-            <span class="toggle-switch-text">显示状态栏</span>
-            <input type="checkbox" id="show-status-bar-toggle" />
-            <span class="toggle-switch-slider"></span>
-          </label>
-        </div>
-        <!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
-        <div class="form-group">
-          <label for="dark-mode-toggle" class="toggle-switch-label">
-            <span class="toggle-switch-text">夜间模式</span>
-            <input type="checkbox" id="dark-mode-toggle" />
-            <span class="toggle-switch-slider"></span>
-          </label>
-        </div>
-
-        <button class="form-button" onclick="document.getElementById('wallpaper-upload-input').click();">
-          上传壁纸
-        </button>
-        <input type="file" id="wallpaper-upload-input" accept="image/*" />
-
-        <!-- ▼▼▼ 将【下面整块代码】，完整替换为下面这段【全新的代码】 ▼▼▼ -->
-        <div class="form-group" style="display: none">
-          <label for="theme-toggle-switch" style="margin-bottom: 0">夜间模式</label>
-          <label class="toggle-switch">
-            <input type="checkbox" id="theme-toggle-switch" />
-            <span class="slider"></span>
-          </label>
-        </div>
-        <!-- ▲▲▲ 替换结束 ▲▲▲ -->
-
-        <!-- === ▼▼▼ 以下是新增的美化功能UI ▼▼▼ === -->
-        <div style="width: 100%; text-align: left; margin-bottom: 15px">
-          <label style="font-weight: 500; color: var(--text-secondary)">手机美化 (CSS)</label>
-        </div>
-
-        <!-- 主题选择和管理 -->
-        <div class="form-group">
-          <label for="theme-selector">选择已存方案</label>
-          <div style="display: flex; gap: 10px">
-            <select id="theme-selector" style="flex-grow: 1"></select>
-            <button id="rename-theme-btn" class="form-button-secondary" style="margin: 0; padding: 0 10px">
-              重命名
-            </button>
-            <button
-              id="delete-theme-btn"
-              class="form-button-secondary"
-              style="margin: 0; padding: 0 10px; background-color: #ffdddd; color: #ff3b30"
-            >
-              删除
-            </button>
+          <div class="setting-row">
+            <label class="setting-label">启用锁屏界面</label>
+            <label class="toggle-switch-label">
+              <input type="checkbox" id="enable-lock-screen-toggle" />
+              <span class="toggle-switch-slider"></span>
+            </label>
           </div>
-        </div>
 
-        <!-- CSS 代码编辑区 -->
-        <div class="form-group">
-          <label for="theme-css-editor">美化代码编辑区</label>
-          <textarea
-            id="theme-css-editor"
-            rows="10"
-            style="font-family: monospace; font-size: 12px; resize: vertical"
-            placeholder="在这里粘贴或编辑美化代码..."
-          ></textarea>
-        </div>
-
-        <!-- 操作按钮 -->
-        <button id="apply-theme-btn" class="form-button">应用当前代码</button>
-        <div style="display: flex; gap: 10px; margin-top: 10px">
-          <button id="save-theme-btn" class="form-button-secondary" style="flex: 1">保存</button>
-          <button id="save-as-new-theme-btn" class="form-button-secondary" style="flex: 1">另存</button>
-        </div>
-        <div style="display: flex; gap: 10px; margin-top: 10px">
-          <button id="export-theme-btn" class="form-button-secondary" style="flex: 1">导出方案</button>
-          <button id="import-theme-btn" class="form-button-secondary" style="flex: 1">导入方案</button>
-          <input type="file" id="import-theme-input" accept=".json" hidden />
-        </div>
-        <!-- === ▲▲▲ 新增UI结束 ▲▲▲ === -->
-        <!-- ▼▼▼ 【V3最终美化版】主屏幕美化预设功能UI ▼▼▼ -->
-        <div class="preset-manager-container">
-          <div style="width: 100%; text-align: left; margin-bottom: 15px">
-            <label style="font-weight: 500; color: var(--text-secondary)">主屏幕预设</label>
+          <div class="setting-item">
+            <label>锁屏密码 (留空则无)</label>
+            <input type="text" id="password-set-input" class="moe-input" placeholder="设置解锁密码" />
           </div>
-          <div class="form-group">
-            <select id="home-preset-selector" class="form-group select"></select>
-            <div class="preset-manager-controls">
-              <!-- 独占一行的应用按钮 -->
-              <button id="apply-home-preset-btn" class="preset-btn-capsule preset-btn-apply" disabled>应用</button>
 
-              <!-- 2x2 网格按钮 -->
-              <button id="save-home-preset-btn" class="preset-btn-capsule preset-btn-save">保存</button>
-              <!-- ▼▼▼ 就是在这里新增了“更新”按钮 ▼▼▼ -->
-              <button id="update-home-preset-btn" class="preset-btn-capsule preset-btn-secondary" disabled>更新</button>
-              <button id="rename-home-preset-btn" class="preset-btn-capsule preset-btn-secondary" disabled>
-                重命名
+          <div class="setting-item">
+            <label>锁屏壁纸</label>
+            <div class="preview-upload-box">
+              <div id="lockscreen-wallpaper-preview" class="mini-preview">预览</div>
+              <button
+                class="upload-btn-pill"
+                onclick="document.getElementById('lockscreen-wallpaper-upload-input').click();"
+              >
+                更换壁纸
               </button>
-              <button id="import-home-preset-btn" class="preset-btn-capsule preset-btn-secondary">导入</button>
-              <button id="export-home-preset-btn" class="preset-btn-capsule preset-btn-secondary" disabled>导出</button>
-              <button id="delete-home-preset-btn" class="preset-btn-capsule preset-btn-delete" disabled>删除</button>
+            </div>
+            <input type="file" id="lockscreen-wallpaper-upload-input" accept="image/*" hidden />
+          </div>
+        </div>
+        <!-- 5. 高级美化 (CSS) 卡片 -->
+        <div class="settings-group-card">
+          <div class="settings-section-title">自定义css美化 (CSS)</div>
 
-              <input type="file" id="import-home-preset-input" accept=".json" hidden />
+          <div class="setting-item">
+            <div style="display: flex; gap: 5px; margin-bottom: 5px">
+              <select id="theme-selector" class="moe-input select" style="flex: 1"></select>
+              <button id="rename-theme-btn" class="btn-icon">✏️</button>
+              <button id="delete-theme-btn" class="btn-icon danger">🗑️</button>
+            </div>
+            <textarea
+              id="theme-css-editor"
+              class="moe-input code-area"
+              rows="6"
+              placeholder="在此输入CSS代码..."
+            ></textarea>
+            <div class="css-actions">
+              <button id="apply-theme-btn" class="upload-btn-pill primary">应用</button>
+              <button id="save-theme-btn" class="upload-btn-pill">保存</button>
+              <button id="save-as-new-theme-btn" class="upload-btn-pill">另存为</button>
+              <button id="export-theme-btn" class="upload-btn-pill secondary">导出</button>
+              <button id="import-theme-btn" class="upload-btn-pill secondary">导入</button>
+              <input type="file" id="import-theme-input" accept=".json" hidden />
             </div>
           </div>
         </div>
-        <!-- ▲▲▲ UI替换结束 ▲▲▲ -->
-        <!-- ▼▼▼ 步骤2：用这段新代码替换旧的颜色选择器HTML ▼▼▼ -->
-        <hr style="width: 80%; opacity: 0.3; margin: 30px 0" />
-        <div style="width: 100%; text-align: left; margin-bottom: 15px">
-          <label style="font-weight: 500; color: var(--text-secondary)">主屏幕图标及小组件字体颜色</label>
-        </div>
-        <div class="form-group">
-          <label for="home-icon-widget-text-color-picker">自定义字体颜色</label>
-          <input
-            type="color"
-            id="home-icon-widget-text-color-picker"
-            value="#FFFFFF"
-            style="width: 100%; height: 40px; padding: 0; border-radius: 8px"
-          />
-        </div>
-        <!-- ▲▲▲ 步骤2 HTML代码替换结束 ▲▲▲ -->
-        <!-- ▼▼▼ 在这里粘贴下面的新代码 ▼▼▼ -->
-        <div class="form-group">
-          <label for="remove-home-font-shadow-toggle" class="toggle-switch-label">
-            <span class="toggle-switch-text">去除主屏幕字体阴影</span>
-            <input type="checkbox" id="remove-home-font-shadow-toggle" />
-            <span class="toggle-switch-slider"></span>
-          </label>
-        </div>
-        <!-- ▲▲▲ 新代码粘贴结束 ▲▲▲ -->
 
-        <!-- 【核心修改2】新增图标设置区域 -->
-        <hr style="width: 80%; opacity: 0.3; margin: 30px 0" />
-        <div style="width: 100%; text-align: left; margin-bottom: 15px">
-          <label style="font-weight: 500; color: var(--text-secondary)">App 图标设置</label>
-        </div>
-        <div id="icon-settings-grid">
-          <!-- 图标设置项将由JS动态生成在这里 -->
-        </div>
-        <!-- ▼▼▼ 把下面这整块全新的代码，粘贴到“App图标设置”的 div 之后 ▼▼▼ -->
-        <hr style="width: 80%; opacity: 0.3; margin: 30px 0" />
-        <div style="width: 100%; text-align: left; margin-bottom: 15px">
-          <label style="font-weight: 500; color: var(--text-secondary)">主屏幕 App 名称</label>
-        </div>
-        <div id="icon-rename-grid" style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 15px 20px">
-          <!-- App 名称输入框将由JS动态生成在这里 -->
-        </div>
-        <button class="form-button form-button-secondary" id="reset-app-names-btn" style="margin-top: 15px">
-          恢复默认App名字
-        </button>
-        <hr style="width: 80%; opacity: 0.3; margin: 30px 0" />
-        <div style="width: 100%; text-align: left; margin-bottom: 15px">
-          <label style="font-weight: 500; color: var(--text-secondary)">铃声设置</label>
-        </div>
-        <div class="form-group" style="width: 100%">
-          <label for="ringtone-url-input">来电铃声 URL (.mp3, .wav, etc.)</label>
-          <input type="text" id="ringtone-url-input" placeholder="输入音频文件的网络链接..." />
-        </div>
-        <div class="form-group" style="width: 100%; margin-top: 15px">
-          <label for="notification-sound-url-input">消息提示音 URL (.mp3, .wav, etc.)</label>
-          <input type="text" id="notification-sound-url-input" placeholder="输入音频文件的网络链接..." />
-        </div>
-        <hr style="width: 80%; opacity: 0.3; margin: 30px 0" />
-        <div style="width: 100%; text-align: left; margin-bottom: 15px">
-          <label style="font-weight: 500; color: var(--text-secondary)">全局聊天背景</label>
-        </div>
-        <div id="global-bg-preview" class="wallpaper-preview">点击下方上传</div>
-        <button class="form-button" onclick="document.getElementById('global-bg-upload-input').click();">
-          上传全局背景
-        </button>
-        <input type="file" id="global-bg-upload-input" accept="image/*" hidden />
-        <button class="form-button form-button-secondary" id="remove-global-bg-btn" style="margin-top: 10px">
-          移除全局背景
-        </button>
-        <button
-          class="form-button form-button-secondary"
-          id="clear-all-single-bgs-btn"
-          style="margin-top: 10px; border-color: #ff3b30; color: #ff3b30"
-        >
-          一键清空所有单人聊天背景
-        </button>
+        <!-- 2. 主屏幕视觉卡片 -->
+        <div class="settings-group-card">
+          <div class="settings-section-title">📱 主屏幕视觉</div>
 
-        <!-- 【核心修改3】按钮文字也改一下 -->
-        <button class="form-button" id="save-wallpaper-btn" style="margin-top: 30px">保存所有外观设置</button>
+          <div class="setting-row">
+            <label class="setting-label">显示状态栏</label>
+            <label class="toggle-switch-label">
+              <input type="checkbox" id="show-status-bar-toggle" />
+              <span class="toggle-switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <label class="setting-label">夜间模式</label>
+            <label class="toggle-switch-label">
+              <!-- ★★★ 核心修复：ID 改回 theme-toggle-switch，解决报错 ★★★ -->
+              <input type="checkbox" id="theme-toggle-switch" />
+              <span class="toggle-switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <label class="setting-label">去除文字阴影</label>
+            <label class="toggle-switch-label">
+              <input type="checkbox" id="remove-home-font-shadow-toggle" />
+              <span class="toggle-switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-item">
+            <label>主屏幕壁纸</label>
+            <div class="preview-upload-box">
+              <div id="wallpaper-preview" class="mini-preview">预览</div>
+              <button class="upload-btn-pill" onclick="document.getElementById('wallpaper-upload-input').click();">
+                更换壁纸
+              </button>
+            </div>
+            <input type="file" id="wallpaper-upload-input" accept="image/*" hidden />
+          </div>
+
+          <div class="setting-item">
+            <label>图标/组件字体颜色</label>
+            <div class="color-picker-wrapper">
+              <!-- 1. 颜色选择器 (保持原ID) -->
+              <input type="color" id="home-icon-widget-text-color-picker" value="#FFFFFF" />
+
+              <!-- 2. 【新增】文本输入框，允许手动输入颜色代码 -->
+              <input
+                type="text"
+                id="home-icon-widget-text-color-input"
+                placeholder="#FFFFFF"
+                maxlength="7"
+                spellcheck="false"
+              />
+            </div>
+          </div>
+
+          <!-- 主屏幕预设部分 -->
+          <div class="setting-item">
+            <label>主屏幕预设管理</label>
+            <div class="preset-manager-container" style="margin-top: 5px; border: none; padding: 0">
+              <div class="form-group">
+                <select id="home-preset-selector" class="moe-input select"></select>
+                <div class="preset-manager-controls compact">
+                  <button id="apply-home-preset-btn" class="preset-btn-capsule preset-btn-apply" disabled>应用</button>
+                  <button id="save-home-preset-btn" class="preset-btn-capsule preset-btn-save">保存当前</button>
+                  <button id="update-home-preset-btn" class="preset-btn-capsule preset-btn-secondary" disabled>
+                    更新
+                  </button>
+                  <button id="rename-home-preset-btn" class="preset-btn-capsule preset-btn-secondary" disabled>
+                    重命名
+                  </button>
+                  <button id="delete-home-preset-btn" class="preset-btn-capsule preset-btn-delete" disabled>
+                    删除
+                  </button>
+                  <button id="import-home-preset-btn" class="preset-btn-capsule preset-btn-secondary">导入</button>
+                  <button id="export-home-preset-btn" class="preset-btn-capsule preset-btn-secondary" disabled>
+                    导出
+                  </button>
+                  <input type="file" id="import-home-preset-input" accept=".json" hidden />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. App 图标与名称卡片 -->
+        <div class="settings-group-card">
+          <div class="settings-section-title">🎨 图标与名称</div>
+          <div class="setting-item">
+            <label>App 图标定制</label>
+            <div id="icon-settings-grid" class="icon-grid-compact">
+              <!-- JS生成 -->
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <label>App 名称定制</label>
+            <div id="icon-rename-grid" class="name-grid-compact">
+              <!-- JS生成 -->
+            </div>
+            <button class="form-button-secondary small-btn" id="reset-app-names-btn">恢复默认名字</button>
+          </div>
+        </div>
+
+        <!-- 4. 声音与背景卡片 -->
+        <div class="settings-group-card">
+          <div class="settings-section-title">🎵 声音与背景</div>
+
+          <div class="setting-item">
+            <label>来电铃声 URL</label>
+            <input type="text" id="ringtone-url-input" class="moe-input" placeholder="音频链接..." />
+          </div>
+
+          <div class="setting-item">
+            <label>提示音 URL</label>
+            <input type="text" id="notification-sound-url-input" class="moe-input" placeholder="音频链接..." />
+          </div>
+          <!-- 4. 声音与背景卡片 -->
+          <div class="settings-group-card">
+            <div class="settings-section-title">🎵 声音与背景</div>
+
+            <div class="setting-item">
+              <label>来电铃声 URL</label>
+              <input type="text" id="ringtone-url-input" class="moe-input" placeholder="音频链接..." />
+            </div>
+
+            <div class="setting-item">
+              <label>提示音 URL</label>
+              <input type="text" id="notification-sound-url-input" class="moe-input" placeholder="音频链接..." />
+            </div>
+
+            <div class="setting-item">
+              <label>全局聊天背景</label>
+              <div class="preview-upload-box">
+                <!-- ★★★ 修改点：删除了 landscape 类名，现在它是竖屏的了 ★★★ -->
+                <div id="global-bg-preview" class="mini-preview">预览</div>
+                <div class="btn-col">
+                  <button class="upload-btn-pill" onclick="document.getElementById('global-bg-upload-input').click();">
+                    上传背景
+                  </button>
+                  <button class="upload-btn-pill danger" id="remove-global-bg-btn">移除背景</button>
+                </div>
+              </div>
+              <input type="file" id="global-bg-upload-input" accept="image/*" hidden />
+              <button
+                class="form-button-secondary small-btn danger-text"
+                id="clear-all-single-bgs-btn"
+                style="margin-top: 10px"
+              >
+                一键清空所有单人聊天背景
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 底部留白，防止被保存按钮遮挡 -->
+        <div style="height: 80px"></div>
       </div>
+
+      <!-- ★★★ 悬浮保存按钮 ★★★ -->
+      <button id="save-wallpaper-btn" class="moe-fab-save">
+        💾<span style="font-size: 12px; display: block; margin-top: -2px">保存</span>
+      </button>
     </div>
-    <!-- ▲▲▲ 替换结束 ▲▲▲ -->
+    <!-- ▲▲▲ 修复版 HTML 结束 ▲▲▲ -->
 
     <!-- ▼▼▼ 【全新】分享链接功能 HTML ▼▼▼ -->
     <div id="browser-screen" class="screen">
@@ -5767,39 +5621,60 @@ lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer
           <span class="action-btn" id="create-forum-post-btn" style="font-size: 28px; font-weight: 300">+</span>
         </div>
       </div>
-      <!-- ▼▼▼ 用这块新代码替换 ▼▼▼ -->
-      <div
-        id="fanfic-preference-bar"
-        style="
-          display: none;
-          padding: 10px 15px;
-          background-color: #f0f2f5;
-          border-bottom: 1px solid var(--border-color);
-          flex-shrink: 0;
-        "
-      >
-        <div class="form-group" style="margin: 0">
-          <label style="font-size: 14px; margin-bottom: 5px">选择CP偏好</label>
-          <div style="display: flex; align-items: center; gap: 10px">
-            <select id="fanfic-char1-select" style="flex: 1"></select>
-            <span>&</span>
-            <select id="fanfic-char2-select" style="flex: 1"></select>
-            <button
-              id="trigger-fanfic-generation-btn"
-              class="form-button"
-              style="margin: 0; padding: 10px 15px; width: auto"
-            >
-              生成
-            </button>
-          </div>
+      <!-- ▼▼▼ 【修改】同人文创作控制台 (无按钮版) ▼▼▼ -->
+      <div id="fanfic-preference-bar" style="display: none">
+        <!-- 1. 顶部标题栏 -->
+        <div id="fanfic-bar-header">
+          <span class="bar-title">🪄 同人创作控制台</span>
+          <span id="fanfic-bar-toggle-icon">▼</span>
         </div>
-        <!-- 这是我们新加的世界观输入框 -->
-        <div class="form-group" style="margin-top: 10px; margin-bottom: 0">
-          <label for="fanfic-worldview-input" style="font-size: 14px; margin-bottom: 5px">世界观偏好 (可选)</label>
-          <input type="text" id="fanfic-worldview-input" placeholder="例如：ABO、哨向、现代大学AU..." />
+
+        <!-- 2. 可折叠的内容区域 -->
+        <div id="fanfic-bar-content">
+          <!-- 预设管理 -->
+          <div class="fanfic-row presets-row">
+            <select id="fanfic-preset-select">
+              <option value="">-- 读取配置 --</option>
+            </select>
+            <button id="save-fanfic-preset-btn" class="mini-btn">保存</button>
+            <button id="delete-fanfic-preset-btn" class="mini-btn danger">删除</button>
+          </div>
+
+          <!-- CP 选择 -->
+          <div class="fanfic-row cp-row">
+            <select id="fanfic-char1-select"></select>
+            <span class="cp-symbol">×</span>
+            <select id="fanfic-char2-select"></select>
+          </div>
+
+          <!-- 核心参数 -->
+          <div class="fanfic-row params-row">
+            <div class="input-group">
+              <label>期望字数</label>
+              <input type="text" id="fanfic-wordcount-input" placeholder="例: 3000字" />
+            </div>
+            <div class="input-group">
+              <label>文章类型</label>
+              <input type="text" id="fanfic-type-input" placeholder="例: 甜文/ABO" />
+            </div>
+          </div>
+
+          <!-- 写作规范 -->
+          <div class="fanfic-row full-width">
+            <label>文风 / 写作规范</label>
+            <input type="text" id="fanfic-style-input" placeholder="例: 心理描写细腻，第一人称..." />
+          </div>
+
+          <!-- 世界观 -->
+          <div class="fanfic-row full-width">
+            <label>世界观 / 剧情梗概</label>
+            <textarea id="fanfic-worldview-input" rows="2" placeholder="在这里输入背景设定..."></textarea>
+          </div>
+
+          <!-- ★★★ 注意：这里的生成按钮已经被删除了！ ★★★ -->
         </div>
       </div>
-      <!-- ▲▲▲ 替换结束 ▲▲▲ -->
+      <!-- ▲▲▲ 修改结束 ▲▲▲ -->
 
       <div id="group-post-list" class="list-container" style="padding-top: 0">
         <!-- 帖子列表将由JS动态生成在这里 -->
@@ -6469,7 +6344,7 @@ lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer
           </div>
           <div class="form-group">
             <label for="group-editor-icon-input">小组图标 (Emoji)</label>
-            <input type="text" id="group-editor-icon-input" maxlength="2" />
+            <input type="text" id="group-editor-icon-input" />
           </div>
           <div class="form-group">
             <label for="group-editor-categories-input">小组分类 (用#号分隔, 例如: #科幻 #未来)</label>
@@ -13974,7 +13849,7 @@ lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer
           return JSON.stringify(backupData, null, 2);
         }
 
-        // ▼▼▼ 终极版：支持大文件自动分片上传 ▼▼▼
+        // ▼▼▼ 终极版：支持大文件自动分片上传 + 自动去除敏感Key防止报错 ▼▼▼
         async function uploadBackupToGitHub(isAuto = false) {
           let { githubToken, githubUsername, githubRepo, githubPath } = state.apiConfig;
 
@@ -13991,16 +13866,32 @@ lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer
           if (!isAuto) await showCustomAlert('准备中...', '正在打包并计算文件大小...');
 
           try {
-            // 2. 获取原始 JSON 数据
-            const jsonContent = await getFullBackupData();
+            // 2. 获取原始 JSON 数据字符串
+            const rawJsonContent = await getFullBackupData();
+
+            // ★★★ 核心修复：解析并移除敏感信息 ★★★
+            // GitHub 会拒绝包含 API Key 的文件上传，所以必须在上传前清空它们
+            const backupObj = JSON.parse(rawJsonContent);
+
+            if (backupObj.apiConfig) {
+              // 清空 OpenAI/API Key
+              backupObj.apiConfig.apiKey = '';
+              // 清空 GitHub Token (最关键，不删这个必报 secret detected)
+              backupObj.apiConfig.githubToken = '';
+              // 清空 Minimax Key
+              backupObj.apiConfig.minimaxApiKey = '';
+            }
+
+            // 重新转换回 JSON 字符串
+            const jsonContent = JSON.stringify(backupObj, null, 2);
+            // ★★★ 修复结束 ★★★
 
             // 3. 转成 Base64 (解决中文乱码)
-            // 注意：这里我们生成原始 Base64 字符串，后续根据需要切割
             const fullBase64 = btoa(unescape(encodeURIComponent(jsonContent)));
 
             // 计算 Base64 大小 (字节)
             const totalSize = fullBase64.length;
-            // 设定分片阈值：45MB (GitHub 限制 100MB，由于网络波动和编码，留足余量)
+            // 设定分片阈值：45MB
             const CHUNK_SIZE = 45 * 1024 * 1024;
 
             const totalChunks = Math.ceil(totalSize / CHUNK_SIZE);
@@ -14018,19 +13909,15 @@ lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer
                 const end = Math.min(start + CHUNK_SIZE, totalSize);
                 const chunkContent = fullBase64.substring(start, end);
 
-                // 分片文件名：xxx.json.001, xxx.json.002
                 const partName = `${githubPath}.${String(i + 1).padStart(3, '0')}`;
 
                 if (!isAuto) {
-                  const progress = Math.round(((i + 1) / totalChunks) * 100);
-                  // 更新提示框 (如果你的 UI 支持动态更新，这里是个简单的 log)
                   console.log(`正在上传分片 ${i + 1}/${totalChunks} ...`);
                 }
 
                 await uploadSingleFile(githubUsername, githubRepo, partName, githubToken, chunkContent, isAuto, true);
               }
 
-              // 上传一个索引文件，告诉系统总共有多少片(可选，方便人工查看)
               const infoContent = btoa(`{"total_parts": ${totalChunks}, "timestamp": ${Date.now()}}`);
               await uploadSingleFile(
                 githubUsername,
@@ -14045,18 +13932,26 @@ lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer
 
             console.log('GitHub 备份全部完成！');
             if (!isAuto) {
-              await showCustomAlert('上传成功', `大文件已切割为 ${totalChunks} 份保存。\n恢复时请下载所有分片并合并。`);
+              await showCustomAlert(
+                '上传成功',
+                `备份已上传。(为了安全，云端备份已自动移除API Key，恢复时请记得重新填写)`,
+              );
             }
           } catch (error) {
             console.error('GitHub 备份失败:', error);
-            if (!isAuto) await showCustomAlert('上传失败', error.message);
+            // 如果还是报 Bad credentials，提示用户检查 Token
+            if (error.message.includes('Bad credentials')) {
+              if (!isAuto)
+                await showCustomAlert(
+                  '认证失败',
+                  'GitHub Token 无效或过期。请重新生成 Token 并确保勾选了 "repo" 权限。',
+                );
+            } else {
+              if (!isAuto) await showCustomAlert('上传失败', error.message);
+            }
           }
         }
-        // ▼▼▼ GitHub 恢复备份核心功能 (支持切片) ▼▼▼
-
-        /**
-         * 从 GitHub 下载并恢复备份
-         */
+        // ▼▼▼ GitHub 恢复备份 (V4 - CORS 终极修复版) ▼▼▼
         async function restoreBackupFromGitHub() {
           let { githubToken, githubUsername, githubRepo, githubPath } = state.apiConfig;
 
@@ -14066,7 +13961,7 @@ lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer
             return;
           }
 
-          // 2. 这是一个高风险操作，必须确认
+          // 2. 确认操作
           const confirmed = await showCustomConfirm(
             '⚠️ 高能预警',
             '即将从 GitHub 下载备份并【覆盖】当前所有数据！\n\n如果 GitHub 上的备份较旧，您当前的新数据将会丢失。\n\n确定要继续吗？',
@@ -14094,41 +13989,50 @@ lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer
               });
               if (metaRes.ok) {
                 const metaJson = await metaRes.json();
-                // GitHub API 返回的内容在 content 字段，且可能有换行，需要清洗
-                const metaContentStr = decodeURIComponent(escape(atob(metaJson.content.replace(/\n/g, ''))));
+                const metaContentStr = atob(metaJson.content.replace(/\s/g, ''));
                 metaData = JSON.parse(metaContentStr);
               }
             } catch (e) {
               console.log('未找到 meta 文件，尝试单文件模式。');
             }
 
-            // 4. 分支处理
+            // 4. 分支处理：分片下载 vs 单文件下载
             if (metaData && metaData.total_parts) {
-              // === 分片模式 ===
+              // === 分片模式 (处理超大文件) ===
               const totalParts = metaData.total_parts;
               const modalTitle = document.getElementById('custom-modal-title');
 
               for (let i = 1; i <= totalParts; i++) {
-                // 更新弹窗提示进度
                 if (modalTitle) modalTitle.textContent = `正在下载分片 ${i}/${totalParts}...`;
 
                 const partName = `${githubPath}.${String(i).padStart(3, '0')}`;
-                const partUrl = `https://api.github.com/repos/${githubUsername}/${githubRepo}/contents/${partName}`;
+                // 获取分片文件的 SHA 信息
+                const partInfoUrl = `https://api.github.com/repos/${githubUsername}/${githubRepo}/contents/${partName}`;
 
-                const partRes = await fetch(partUrl, {
+                const partInfoRes = await fetch(partInfoUrl, {
                   headers: { Authorization: `token ${githubToken}` },
                 });
 
-                if (!partRes.ok) throw new Error(`分片 ${partName} 下载失败: ${partRes.status}`);
+                if (!partInfoRes.ok) throw new Error(`获取分片 ${partName} 信息失败`);
 
-                const partJson = await partRes.json();
-                // GitHub 返回的 content 是 base64，直接拼接到大字符串上
-                // 注意：这里不需要解码，我们要把所有 base64 拼起来最后统一解码
-                finalBase64String += partJson.content.replace(/\n/g, '');
+                const partJson = await partInfoRes.json();
+
+                // 核心修改：统一使用 Blob API 获取内容，避免 download_url 的 CORS 问题
+                // 无论是分片还是单文件，只要 SHA 存在，就用 Blob API
+                const blobUrl = `https://api.github.com/repos/${githubUsername}/${githubRepo}/git/blobs/${partJson.sha}`;
+                const blobRes = await fetch(blobUrl, {
+                  headers: { Authorization: `token ${githubToken}` },
+                });
+
+                if (!blobRes.ok) throw new Error(`分片 ${partName} 内容下载失败`);
+
+                const blobJson = await blobRes.json();
+                finalBase64String += blobJson.content.replace(/\s/g, '');
               }
               console.log('所有分片下载并拼接完成。');
             } else {
               // === 单文件模式 ===
+              // 1. 先获取文件的元数据（拿到 sha）
               const singleUrl = `https://api.github.com/repos/${githubUsername}/${githubRepo}/contents/${githubPath}`;
               const res = await fetch(singleUrl, {
                 headers: { Authorization: `token ${githubToken}` },
@@ -14140,26 +14044,72 @@ lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer
               }
 
               const json = await res.json();
-              finalBase64String = json.content.replace(/\n/g, '');
+
+              // ★★★ 核心修复：CORS 问题解决 ★★★
+              if (json.content) {
+                // 文件较小 (<1MB)，API 直接返回了 content
+                finalBase64String = json.content.replace(/\s/g, '');
+              } else if (json.sha) {
+                // 文件较大 (>1MB)，API 没有 content，但有 sha
+                // 使用 Blob API 获取内容（它支持 CORS 和 Token）
+                console.log('文件大于1MB，正在通过 Blob API 下载...');
+                if (document.getElementById('custom-modal-title')) {
+                  document.getElementById('custom-modal-title').textContent = '正在通过 Blob API 下载大文件...';
+                }
+
+                const blobUrl = `https://api.github.com/repos/${githubUsername}/${githubRepo}/git/blobs/${json.sha}`;
+                const blobRes = await fetch(blobUrl, {
+                  headers: { Authorization: `token ${githubToken}` },
+                });
+
+                if (!blobRes.ok) throw new Error(`Blob API 请求失败: ${blobRes.status}`);
+
+                const blobJson = await blobRes.json();
+                finalBase64String = blobJson.content.replace(/\s/g, '');
+              } else {
+                throw new Error('无法获取文件内容: GitHub API 未返回 content 或 sha');
+              }
             }
 
             // 5. 解码与恢复
-            if (modalTitle) document.getElementById('custom-modal-title').textContent = '正在解析数据...';
+            if (document.getElementById('custom-modal-title')) {
+              document.getElementById('custom-modal-title').textContent = '正在解析数据(可能需要几秒)...';
+            }
 
-            const jsonString = decodeURIComponent(escape(atob(finalBase64String)));
+            // a. Base64 -> 二进制字符串
+            const binaryString = atob(finalBase64String);
 
+            // b. 二进制字符串 -> Uint8Array -> UTF-8 字符串
+            // (这一步是为了解决中文乱码问题)
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+              bytes[i] = binaryString.charCodeAt(i);
+            }
+            const decoder = new TextDecoder('utf-8');
+            const jsonString = decoder.decode(bytes);
+
+            // c. 预检 JSON
+            try {
+              JSON.parse(jsonString);
+            } catch (parseErr) {
+              throw new Error(`JSON解析失败(文件可能不完整): ${parseErr.message}`);
+            }
+
+            // d. 导入
             const virtualFile = new File([jsonString], 'github_restore.json', { type: 'application/json' });
-
-            // 关闭之前的提示框（因为 importBackup 会弹它自己的提示）
             hideCustomModal();
-
             await importBackup(virtualFile);
           } catch (error) {
             console.error('恢复失败:', error);
-            await showCustomAlert('恢复失败', `错误信息: ${error.message}`);
+            // 如果是 403 错误，通常是 Token 权限问题
+            let extraMsg = '';
+            if (error.message.includes('403') || error.message.includes('Failed to fetch')) {
+              extraMsg = '\n\n(提示：这可能是网络问题，或者您的 GitHub Token 没有足够的权限访问该私有仓库。)';
+            }
+            await showCustomAlert('恢复失败', `错误信息: ${error.message}${extraMsg}`);
           }
         }
-        // ▲▲▲ GitHub 恢复功能结束 ▲▲▲
+        // ▲▲▲ 恢复功能结束 ▲▲▲
 
         // 辅助函数：上传单个文件
         async function uploadSingleFile(user, repo, path, token, contentBase64, isAuto, isPart = false) {
@@ -16418,8 +16368,9 @@ lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer
           }
 
           // 主屏幕字体颜色和阴影
-          document.getElementById('home-icon-widget-text-color-picker').value =
-            state.globalSettings.homeIconWidgetTextColor || '#FFFFFF';
+          const savedColor = state.globalSettings.homeIconWidgetTextColor || '#FFFFFF';
+          document.getElementById('home-icon-widget-text-color-picker').value = savedColor;
+          document.getElementById('home-icon-widget-text-color-input').value = savedColor;
           document.getElementById('remove-home-font-shadow-toggle').checked =
             !!state.globalSettings.removeHomeFontShadow;
 
@@ -39285,10 +39236,35 @@ lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer
                 console.log(`流式导出：正在处理表 ${tableName}...`);
 
                 try {
-                  const tableData = await db[tableName].toArray();
+                  // ★★★ 这是修复的核心 ★★★
+                  // 1. 定义哪些表是单个对象的设置表
+                  const singleObjectTables = [
+                    'apiConfig',
+                    'globalSettings',
+                    'musicLibrary',
+                    'qzoneSettings',
+                    'tukeyUserSettings',
+                    'tukeyCustomConfig',
+                    'tukeyAccountingGroups',
+                  ];
+
+                  let tableData;
+                  // 2. 判断当前表是否是单个对象的设置表
+                  if (singleObjectTables.includes(tableName)) {
+                    // 如果是，就只获取第一个（也可能是唯一一个）对象
+                    tableData = await db[tableName].toCollection().first();
+                    // 如果表是空的，first()会返回undefined，JSON.stringify(undefined)会出问题，所以转为null
+                    if (tableData === undefined) {
+                      tableData = null;
+                    }
+                  } else {
+                    // 如果是普通的多条记录表，就还是获取整个数组
+                    tableData = await db[tableName].toArray();
+                  }
+
                   const jsonString = JSON.stringify(tableData);
 
-                  // 写入 "tableName": [...]
+                  // 写入 "tableName": [...] 或 "tableName": {...}
                   controller.enqueue(encoder.encode(`"${tableName}": ${jsonString}`));
 
                   // 如果不是最后一个表，就加上逗号和换行符
@@ -41942,10 +41918,18 @@ lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer
             state.globalSettings.enableLockScreen = isLockEnabled;
             localStorage.setItem('lockScreenEnabled', isLockEnabled);
 
-            // 保存主屏幕字体颜色和阴影设置
-            state.globalSettings.homeIconWidgetTextColor = document.getElementById(
-              'home-icon-widget-text-color-picker',
-            ).value;
+            // 保存主屏幕字体颜色 (现在我们可以从任意一个输入框取值，因为它们是同步的)
+            // 这里优先取文本框的值，因为它更直观
+            const colorInputVal = document.getElementById('home-icon-widget-text-color-input').value;
+            // 做个最后校验，如果文本框里的不对，就用选色盘的
+            const hexRegex = /^#([0-9A-F]{3}){1,2}$/i;
+            if (hexRegex.test(colorInputVal)) {
+              state.globalSettings.homeIconWidgetTextColor = colorInputVal;
+            } else {
+              state.globalSettings.homeIconWidgetTextColor = document.getElementById(
+                'home-icon-widget-text-color-picker',
+              ).value;
+            }
             state.globalSettings.removeHomeFontShadow = document.getElementById(
               'remove-home-font-shadow-toggle',
             ).checked;
@@ -46775,12 +46759,47 @@ lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer
           // ▲▲▲ 新增JS逻辑结束 ▲▲▲
           initHomeScreenSlider(); // 初始化主屏幕滑动功能
 
-          // ▼▼▼ 在这里粘贴新代码 ▼▼▼
-          // 监听主屏幕图标和小组件颜色选择器的实时变化
-          document.getElementById('home-icon-widget-text-color-picker').addEventListener('input', e => {
-            applyHomeIconWidgetTextColor(e.target.value);
+          // --- 【全新】颜色选择器与文本框联动逻辑 ---
+          const colorPicker = document.getElementById('home-icon-widget-text-color-picker');
+          const colorInput = document.getElementById('home-icon-widget-text-color-input');
+
+          // 1. 当选色盘变化时 -> 同步给文本框 + 实时应用
+          colorPicker.addEventListener('input', e => {
+            const color = e.target.value;
+            colorInput.value = color.toUpperCase(); // 同步文字
+            applyHomeIconWidgetTextColor(color); // 实时应用
           });
-          // ▲▲▲ 新代码粘贴结束 ▲▲▲
+
+          // 2. 当文本框输入时 -> 验证 -> 同步给选色盘 + 实时应用
+          colorInput.addEventListener('input', e => {
+            let val = e.target.value;
+
+            // 自动添加 # 号 (如果用户忘了加)
+            if (val.length > 0 && !val.startsWith('#')) {
+              val = '#' + val;
+            }
+
+            // 简单的正则验证：必须是 # 加上 6位 0-9/A-F
+            const hexRegex = /^#([0-9A-F]{3}){1,2}$/i;
+
+            if (hexRegex.test(val)) {
+              // 如果格式正确
+              colorPicker.value = val; // 同步选色盘
+              applyHomeIconWidgetTextColor(val); // 实时应用
+              // (可选) 可以在这里去掉错误提示样式
+              colorInput.style.color = 'inherit';
+            } else {
+              // 如果格式不对，不应用，但也不阻止输入 (可以把字变红提示)
+              colorInput.style.color = 'red';
+            }
+          });
+
+          // 3. 当文本框失去焦点时，如果内容不完整，重置回选色盘的值
+          colorInput.addEventListener('blur', () => {
+            colorInput.value = colorPicker.value.toUpperCase();
+            colorInput.style.color = 'inherit';
+          });
+
           // 【全新】主屏幕字体阴影开关的实时预览事件
           document.getElementById('remove-home-font-shadow-toggle').addEventListener('change', e => {
             document.getElementById('phone-screen').classList.toggle('no-home-font-shadow', e.target.checked);
